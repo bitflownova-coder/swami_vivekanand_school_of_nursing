@@ -140,7 +140,7 @@ export default function AdmissionsPage() {
         </section>
 
         {/* Fee Structure */}
-        {/* <section className="mb-16">
+        <section className="mb-16">
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl text-center flex items-center justify-center gap-2">
@@ -149,80 +149,172 @@ export default function AdmissionsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-blue-50">
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
-                        Fee Component
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
-                        Amount (Per Year)
-                      </th>
-                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
-                        Description
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white">
-                      <td className="border border-gray-300 px-4 py-3 font-medium">Tuition Fee</td>
-                      <td className="border border-gray-300 px-4 py-3">₹45,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Academic instruction and theoretical classes
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3 font-medium">Laboratory Fee</td>
-                      <td className="border border-gray-300 px-4 py-3">₹15,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Practical sessions and laboratory equipment
-                      </td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="border border-gray-300 px-4 py-3 font-medium">Hostel Fee</td>
-                      <td className="border border-gray-300 px-4 py-3">₹35,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Accommodation and basic amenities (Optional)
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3 font-medium">Examination Fee</td>
-                      <td className="border border-gray-300 px-4 py-3">₹5,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Internal and university examination fees
-                      </td>
-                    </tr>
-                    <tr className="bg-white">
-                      <td className="border border-gray-300 px-4 py-3 font-medium">Library & Other Fees</td>
-                      <td className="border border-gray-300 px-4 py-3">₹8,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Library access, sports, and miscellaneous charges
-                      </td>
-                    </tr>
-                    <tr className="bg-blue-50">
-                      <td className="border border-gray-300 px-4 py-3 font-bold">Total Annual Fee</td>
-                      <td className="border border-gray-300 px-4 py-3 font-bold">₹1,08,000</td>
-                      <td className="border border-gray-300 px-4 py-3 text-gray-600">
-                        Including hostel accommodation
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="space-y-8">
+                {/* Swami Vivekanand School of Nursing - GNM */}
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    Swami Vivekanand School of Nursing - GNM
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">Chh. Sambhajinagar</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-blue-50">
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Sr. No.
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Course Year
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Fee Type
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Development Fee
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Tuition Fee
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Total Per Year
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white">
+                          <td className="border border-gray-300 px-4 py-3">1</td>
+                          <td className="border border-gray-300 px-4 py-3">2021-22</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,466</td>
+                          <td className="border border-gray-300 px-4 py-3">₹42,534</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹47,000</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-3">2</td>
+                          <td className="border border-gray-300 px-4 py-3">2022-23</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,466</td>
+                          <td className="border border-gray-300 px-4 py-3">₹42,534</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹47,000</td>
+                        </tr>
+                        <tr className="bg-white">
+                          <td className="border border-gray-300 px-4 py-3">3</td>
+                          <td className="border border-gray-300 px-4 py-3">2023-24</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,942</td>
+                          <td className="border border-gray-300 px-4 py-3">₹47,058</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹52,000</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-3">4</td>
+                          <td className="border border-gray-300 px-4 py-3">2024-25</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,942</td>
+                          <td className="border border-gray-300 px-4 py-3">₹47,058</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹52,000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Shri Swami Samarth Nursing School - ANM */}
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                    Shri Swami Samarth Nursing School - ANM
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-3">Chh. Sambhajinagar</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr className="bg-green-50">
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Sr. No.
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Course Year
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Fee Type
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Development Fee
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Tuition Fee
+                          </th>
+                          <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                            Total Per Year
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="bg-white">
+                          <td className="border border-gray-300 px-4 py-3">1</td>
+                          <td className="border border-gray-300 px-4 py-3">2021-22</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-3">2</td>
+                          <td className="border border-gray-300 px-4 py-3">2022-23</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                        <tr className="bg-white">
+                          <td className="border border-gray-300 px-4 py-3">3</td>
+                          <td className="border border-gray-300 px-4 py-3">2023-24</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-3">4</td>
+                          <td className="border border-gray-300 px-4 py-3">2024-25</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                        <tr className="bg-white">
+                          <td className="border border-gray-300 px-4 py-3">5</td>
+                          <td className="border border-gray-300 px-4 py-3">2023-24</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="border border-gray-300 px-4 py-3">6</td>
+                          <td className="border border-gray-300 px-4 py-3">2024-25</td>
+                          <td className="border border-gray-300 px-4 py-3">Approved Fee</td>
+                          <td className="border border-gray-300 px-4 py-3">₹4,545</td>
+                          <td className="border border-gray-300 px-4 py-3">₹45,455</td>
+                          <td className="border border-gray-300 px-4 py-3 font-bold">₹50,000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
               
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 className="font-semibold text-yellow-800 mb-2">Payment Information</h4>
+                <h4 className="font-semibold text-yellow-800 mb-2">Important Information</h4>
                 <ul className="space-y-1 text-yellow-700 text-sm">
-                  <li>• Fees can be paid annually or semester-wise</li>
-                  <li>• Additional charges may apply for uniforms, books, and stationery</li>
-                  <li>• Scholarships available for eligible students</li>
-                  <li>• Fees are subject to revision as per university guidelines</li>
+                  <li>• All fees are approved by the regulatory authorities</li>
+                  <li>• Fees are subject to revision as per government guidelines</li>
+                  <li>• Additional charges may apply for hostel, uniforms, books, and examination</li>
+                  <li>• Payment plans and scholarship opportunities are available for eligible students</li>
                 </ul>
               </div>
             </CardContent>
           </Card>
-        </section> */}
+        </section>
 
         {/* Application Process */}
         <section className="mb-16">
