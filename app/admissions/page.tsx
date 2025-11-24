@@ -63,14 +63,14 @@ export default function AdmissionsPage() {
           {[
             {
               icon: GraduationCap,
-              title: "ANM",
+              title: "GNM",
               subtitle: "Program Offered",
               color: "text-blue-600",
               border: "border-blue-600",
             },
             {
               icon: Clock,
-              title: "2 Years",
+              title: "3 Years",
               subtitle: "Full-Time Duration",
               color: "text-green-600",
               border: "border-green-600",
