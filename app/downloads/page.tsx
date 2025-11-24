@@ -35,7 +35,7 @@ export default function DownloadsPage() {
   const allFiles = [...syllabi, ...questionBanks, ...otherResources];
 
   // Global Filter Function
-  const filteredFiles = allFiles.filter(file => 
+  const filteredFiles = allFiles.filter((file: any) => 
     file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (file.year && file.year.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (file.category && file.category.toLowerCase().includes(searchQuery.toLowerCase()))
