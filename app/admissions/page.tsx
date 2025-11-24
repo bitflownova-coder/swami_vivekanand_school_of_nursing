@@ -130,7 +130,7 @@ export default function AdmissionsPage() {
                   Approved Curriculum
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Government-recognized ANM curriculum rigorously designed to
+                  Government-recognized GNM curriculum rigorously designed to
                   meet national nursing standards and regulatory requirements.
                 </p>
               </CardContent>
@@ -316,7 +316,7 @@ export default function AdmissionsPage() {
                       <li className="flex items-start gap-3 text-gray-600">
                         <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
                         <span>
-                          Passed 10th standard (SSC) or equivalent from a
+                          Passed 12th standard (HSC) or equivalent from a
                           recognized board.
                         </span>
                       </li>
@@ -347,7 +347,7 @@ export default function AdmissionsPage() {
                           Age Limit
                         </span>
                         <span className="font-medium text-gray-900">
-                          17 - 35 Years
+                          No Age Limit
                         </span>
                       </li>
                       <li className="bg-gray-50 p-3 rounded-lg">

@@ -2,10 +2,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { MapPin, Phone, Mail, Clock, Building, Users, Send, ChevronDown, Facebook, Instagram } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Building, Users, ChevronDown, Facebook, Instagram } from 'lucide-react';
 
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -13,7 +10,7 @@ export default function ContactPage() {
   const faqs = [
     {
       question: "What are the admission requirements?",
-      answer: "Candidates must have completed 10th standard with a minimum of 40% marks for the ANM program. Visit our Admissions page for detailed requirements and eligibility criteria."
+      answer: "Candidates must have completed 12th standard with a minimum of 40% marks for the GNM program. Visit our Admissions page for detailed requirements and eligibility criteria."
     },
     {
       question: "When does the academic session start?",
@@ -24,8 +21,8 @@ export default function ContactPage() {
       answer: "Yes, we have separate hostel facilities for boys and girls with all necessary amenities including mess, laundry, and 24/7 security."
     },
     {
-      question: "What is the duration of the ANM program?",
-      answer: "The ANM program is 2 years including practical training and internship for hands-on experience in healthcare settings."
+      question: "What is the duration of the GNM program?",
+      answer: "The GNM program is 3 years including practical training and internship for hands-on experience in healthcare settings."
     },
     {
       question: "Are scholarships available?",
@@ -108,8 +105,7 @@ export default function ContactPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Office Hours</h4>
                   <div className="text-gray-600 text-sm space-y-1">
-                    <p>Monday - Friday: <span className="font-medium">9:00 AM - 5:00 PM</span></p>
-                    <p>Saturday: <span className="font-medium">9:00 AM - 1:00 PM</span></p>
+                    <p>Monday - Saturday: <span className="font-medium">9:00 AM - 5:30 PM</span></p>
                     <p>Sunday: <span className="text-red-600 font-medium">Closed</span></p>
                   </div>
                 </div>
@@ -180,74 +176,28 @@ export default function ContactPage() {
           </Card>
         </section>
 
-        {/* Contact Form */}
+        {/* Google Form Embed */}
         <section className="mb-16">
           <Card className="shadow-xl border-0">
             <CardHeader className="bg-gray-50 border-b">
               <CardTitle className="text-3xl text-center font-serif text-gray-900">Send Us a Message</CardTitle>
               <p className="text-gray-600 text-center mt-2">
-                Fill out the form below and our team will get back to you within 24 hours.
+                Fill out the form below and we will get back to you shortly.
               </p>
             </CardHeader>
-            <CardContent className="p-8">
-              <form className="space-y-6 max-w-3xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
-                      First Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input id="firstName" placeholder="John" required className="h-11" />
-                  </div>
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Last Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input id="lastName" placeholder="Doe" required className="h-11" />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Email Address <span className="text-red-500">*</span>
-                    </label>
-                    <Input id="email" type="email" placeholder="john@example.com" required className="h-11" />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <Input id="phone" type="tel" placeholder="+91 98765 43210" className="h-11" />
-                  </div>
-                </div>
-                
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Subject <span className="text-red-500">*</span>
-                  </label>
-                  <Input id="subject" placeholder="Admission Inquiry" required className="h-11" />
-                </div>
-                
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                    Message <span className="text-red-500">*</span>
-                  </label>
-                  <Textarea 
-                    id="message" 
-                    placeholder="Please provide details about your inquiry..."
-                    rows={6}
-                    required
-                    className="resize-none"
-                  />
-                </div>
-                
-                <div className="text-center pt-4">
-                  <Button type="submit" size="lg" className="bg-blue-600 hover:bg-blue-700 px-12 py-6 text-lg">
-                    <Send className="mr-2 h-5 w-5" />
-                    Send Message
-                  </Button>
-                </div>
-              </form>
+            <CardContent className="p-0">
+              <div className="w-full flex justify-center bg-white p-4">
+                <iframe 
+                  src="https://docs.google.com/forms/d/e/1FAIpQLSfX3Q0SVVcbnh1LotfbiqXIuJTYRbEJfz92nd-Qc27Yh252NA/viewform?embedded=true"
+                  width="100%" 
+                  height="800" 
+                  style={{ border: 0 }} 
+                  title="Google Contact Form"
+                  className="max-w-4xl mx-auto"
+                >
+                  Loading…
+                </iframe>
+              </div>
             </CardContent>
           </Card>
         </section>
@@ -290,7 +240,7 @@ export default function ContactPage() {
             <CardContent className="p-0">
               <div className="w-full h-96 bg-gray-200">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.6421!2d75.3433!3d19.8767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDUyJzM2LjEiTiA3NcKwMjAnMzUuOSJF!5e0!3m2!1sen!2sin!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.6421!2d75.3433!3d19.8767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDUyJzM2LjEiTiA3NcKwMjGNMzUuOSJF!5e0!3m2!1sen!2sin!4v1234567890"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
