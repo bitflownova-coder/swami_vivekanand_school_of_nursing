@@ -47,11 +47,18 @@ export default function AdmissionsPage() {
               Apply Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button
+              asChild
               size="lg"
               variant="outline"
-              className="border-blue-400 text-blue-600 hover:bg-blue-800 hover:text-white px-8 py-6 text-lg font-semibold"
+              className="border-blue-400 text-blue-600 hover:bg-blue-800 hover:text-white px-8 py-6 text-lg font-semibold cursor-pointer"
             >
-              Download Brochure <Download className="ml-2 h-5 w-5" />
+              <a
+                href="https://drive.google.com/file/d/1MxykBvnYmWZQ3cqvCMbHLo9IFS6NxMjC/view"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download Brochure <Download className="ml-2 h-5 w-5" />
+              </a>
             </Button>
           </div>
         </div>

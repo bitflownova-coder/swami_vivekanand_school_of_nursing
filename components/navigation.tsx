@@ -25,11 +25,11 @@ const Navbar = () => {
     <header className="w-full z-50 bg-white sticky top-0 shadow-md">
       {/* TOP BAR: Logo & Name */}
       <div className="bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20 md:h-24 lg:h-28">
             {/* Logo and College Name */}
             <Link href="/" className="flex items-center gap-3 md:gap-5 group">
-              <div className="relative w-14 h-14 md:w-20 md:h-20 flex-shrink-0 transition-transform group-hover:scale-105">
+              <div className="relative w-14 h-14 md:w-22 md:h-28 flex-shrink-0 transition-transform group-hover:scale-105">
                 <Image
                   src="/nursinglogo (1).png"
                   alt="College Logo"

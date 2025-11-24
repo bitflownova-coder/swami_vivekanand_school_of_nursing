@@ -274,7 +274,7 @@ export default function Home() {
               <Link href="/admissions">Apply for Admission</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-blue-400 text-blue-600 hover:bg-blue-800 hover:text-white px-10 py-7 text-lg font-bold">
-              <Link href="/contact">Download Brochure</Link>
+              <Link target='_blank' href='https://drive.google.com/file/d/1MxykBvnYmWZQ3cqvCMbHLo9IFS6NxMjC/view'>Download Brochure</Link>
             </Button>
           </div>
         </div>

@@ -36,7 +36,7 @@ export default function DownloadsPage() {
       id: "s2",
       year: "Second Year",
       title: "Second Year GNM Syllabus",
-      size: "2.8 MB",
+      size: "View Folder",
       type: "PDF",
       date: "2024-01-15",
       category: "Syllabus",
@@ -100,6 +100,7 @@ export default function DownloadsPage() {
       type: "PDF",
       date: "2024-03-01",
       category: "Forms",
+      link:'https://drive.google.com/file/d/1m4c9Gpc1eAazJCNpbebRbhKeCNejM7j9/view'
     },
     {
       id: "r2",
