@@ -1,32 +1,27 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, FileText, BookOpen, HelpCircle, Search, File, AlertCircle } from 'lucide-react';
+import { Download, FileText, BookOpen, HelpCircle, Search, File, AlertCircle, X } from 'lucide-react';
 
 export default function DownloadsPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Sample Data - In a real app, this would come from an API
+  // Sample Data
   const syllabi = [
-    { id: 's1', semester: 'Semester 1', title: 'First Semester Syllabus', size: '2.3 MB', type: 'PDF', date: '2024-01-15' },
-    { id: 's2', semester: 'Semester 2', title: 'Second Semester Syllabus', size: '2.1 MB', type: 'PDF', date: '2024-01-15' },
-    { id: 's3', semester: 'Semester 3', title: 'Third Semester Syllabus', size: '2.5 MB', type: 'PDF', date: '2024-01-15' },
-    { id: 's4', semester: 'Semester 4', title: 'Fourth Semester Syllabus', size: '2.2 MB', type: 'PDF', date: '2024-01-15' },
-    { id: 's5', semester: 'Semester 5', title: 'Fifth Semester Syllabus', size: '2.4 MB', type: 'PDF', date: '2024-06-20' },
-    { id: 's6', semester: 'Semester 6', title: 'Sixth Semester Syllabus', size: '2.3 MB', type: 'PDF', date: '2024-06-20' },
-    { id: 's7', semester: 'Semester 7', title: 'Seventh Semester Syllabus', size: '2.1 MB', type: 'PDF', date: '2024-06-20' },
-    { id: 's8', semester: 'Semester 8', title: 'Eighth Semester Syllabus', size: '1.9 MB', type: 'PDF', date: '2024-06-20' },
+    { id: 's1', year: 'First Year', title: 'First Year GNM Syllabus', size: '2.5 MB', type: 'PDF', date: '2024-01-15', category: 'Syllabus' },
+    { id: 's2', year: 'Second Year', title: 'Second Year GNM Syllabus', size: '2.8 MB', type: 'PDF', date: '2024-01-15', category: 'Syllabus' },
+    { id: 's3', year: 'Third Year', title: 'Third Year GNM Syllabus', size: '2.4 MB', type: 'PDF', date: '2024-01-15', category: 'Syllabus' },
+    { id: 's4', year: 'Internship', title: 'Internship Guidelines & Logbook', size: '1.5 MB', type: 'PDF', date: '2024-01-15', category: 'Syllabus' },
   ];
 
   const questionBanks = [
-    { id: 'q1', semester: 'Semester 1', title: 'First Semester Question Bank', size: '1.8 MB', type: 'PDF', date: '2023-12-10' },
-    { id: 'q2', semester: 'Semester 2', title: 'Second Semester Question Bank', size: '1.9 MB', type: 'PDF', date: '2023-12-10' },
-    { id: 'q3', semester: 'Semester 3', title: 'Third Semester Question Bank', size: '2.1 MB', type: 'PDF', date: '2023-12-10' },
-    { id: 'q4', semester: 'Semester 4', title: 'Fourth Semester Question Bank', size: '2.0 MB', type: 'PDF', date: '2023-12-10' },
+    { id: 'q1', year: 'First Year', title: 'First Year Question Bank', size: '4.2 MB', type: 'PDF', date: '2023-12-10', category: 'Question Bank' },
+    { id: 'q2', year: 'Second Year', title: 'Second Year Question Bank', size: '4.5 MB', type: 'PDF', date: '2023-12-10', category: 'Question Bank' },
+    { id: 'q3', year: 'Third Year', title: 'Third Year Question Bank', size: '4.1 MB', type: 'PDF', date: '2023-12-10', category: 'Question Bank' },
   ];
 
   const otherResources = [
@@ -36,36 +31,48 @@ export default function DownloadsPage() {
     { id: 'r4', title: 'Scholarship Guidelines', size: '1.5 MB', type: 'PDF', date: '2023-09-10', category: 'Info' },
   ];
 
-  // Filter function
-  const filterFiles = (files: any[]) => {
-    return files.filter(file => 
-      file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (file.semester && file.semester.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+  // Combine all files for global search
+  const allFiles = [...syllabi, ...questionBanks, ...otherResources];
+
+  // Global Filter Function
+  const filteredFiles = allFiles.filter(file => 
+    file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (file.year && file.year.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (file.category && file.category.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Helper to determine icon and color based on file type/category
+  const getFileStyle = (file: any) => {
+    if (syllabi.find(s => s.id === file.id)) return { icon: FileText, colorClass: 'border-blue-500' };
+    if (questionBanks.find(q => q.id === file.id)) return { icon: HelpCircle, colorClass: 'border-green-500' };
+    return { icon: File, colorClass: 'border-purple-500' };
   };
 
-  const FileCard = ({ file, icon: Icon, colorClass }: { file: any, icon: any, colorClass: string }) => (
-    <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 hover:-translate-y-1" style={{ borderLeftColor: colorClass }}>
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 rounded-lg bg-opacity-10 ${colorClass.replace('border-', 'bg-').replace('text-', 'bg-')}`}>
-            <Icon className={`h-6 w-6 ${colorClass.replace('border-', 'text-')}`} />
+  const FileCard = ({ file }: { file: any }) => {
+    const { icon: Icon, colorClass } = getFileStyle(file);
+    return (
+      <Card className="group hover:shadow-lg transition-all duration-300 border-l-4 hover:-translate-y-1 bg-white" style={{ borderLeftColor: colorClass.replace('border-', 'var(--') }}>
+        <CardContent className="p-5">
+          <div className="flex items-start justify-between mb-4">
+            <div className={`p-3 rounded-lg bg-opacity-10 ${colorClass.replace('border-', 'bg-').replace('text-', 'bg-')}`}>
+              <Icon className={`h-6 w-6 ${colorClass.replace('border-', 'text-')}`} />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">{file.type}</span>
           </div>
-          <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">{file.type}</span>
-        </div>
-        <h3 className="font-bold text-gray-900 mb-1 line-clamp-2 min-h-[3rem]">{file.title}</h3>
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-          <span>{file.size}</span>
-          <span>•</span>
-          <span>{file.date}</span>
-        </div>
-        <Button className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-colors group-hover:border-blue-200">
-          <Download className="h-4 w-4 mr-2" />
-          Download
-        </Button>
-      </CardContent>
-    </Card>
-  );
+          <h3 className="font-bold text-gray-900 mb-1 line-clamp-2 min-h-[3rem]">{file.title}</h3>
+          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
+            <span className="font-medium text-blue-600">{file.year || file.category}</span>
+            <span>•</span>
+            <span>{file.size}</span>
+          </div>
+          <Button className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-colors group-hover:border-blue-200">
+            <Download className="h-4 w-4 mr-2" />
+            Download
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -79,91 +86,111 @@ export default function DownloadsPage() {
               Access all your academic materials, syllabi, and forms in one place.
             </p>
             
-            {/* Search Bar */}
+            {/* Global Search Bar */}
             <div className="relative max-w-xl mx-auto">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <Input
                 type="text"
-                placeholder="Search for files (e.g., 'Semester 1', 'Syllabus')..."
-                className="pl-10 py-6 text-lg rounded-full shadow-lg border-0 text-gray-900 placeholder:text-gray-400"
+                placeholder="Search for anything (e.g., 'First Year', 'Admission Form')..."
+                className="pl-10 pr-10 py-6 text-lg rounded-full shadow-lg border-0 text-gray-900 placeholder:text-gray-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-8 relative z-20">
-        <Tabs defaultValue="syllabus" className="w-full space-y-8">
-          <TabsList className="grid w-full grid-cols-3 lg:w-[600px] mx-auto bg-white p-1 shadow-md rounded-full h-auto">
-            <TabsTrigger value="syllabus" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Syllabus
-            </TabsTrigger>
-            <TabsTrigger value="question-banks" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Question Banks
-            </TabsTrigger>
-            <TabsTrigger value="resources" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
-              Other Resources
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Syllabus Content */}
-          <TabsContent value="syllabus" className="animate-fade-in">
-            <div className="mb-6 flex items-center gap-2 text-blue-800 bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <BookOpen className="h-5 w-5" />
-              <span className="font-medium">Comprehensive course content and learning objectives for all semesters.</span>
+        
+        {/* Conditional Rendering: Search Results vs Tabs */}
+        {searchQuery ? (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Search Results</h2>
+              <span className="text-sm text-gray-500">Found {filteredFiles.length} items</span>
             </div>
             
-            {filterFiles(syllabi).length > 0 ? (
+            {filteredFiles.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filterFiles(syllabi).map((file) => (
-                  <FileCard key={file.id} file={file} icon={FileText} colorClass="border-blue-500" />
+                {filteredFiles.map((file) => (
+                  <FileCard key={file.id} file={file} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-gray-500">No syllabus files found matching your search.</div>
-            )}
-          </TabsContent>
-
-          {/* Question Banks Content */}
-          <TabsContent value="question-banks" className="animate-fade-in">
-            <div className="mb-6 flex items-center gap-2 text-green-800 bg-green-50 p-4 rounded-lg border border-green-100">
-              <HelpCircle className="h-5 w-5" />
-              <span className="font-medium">Previous year questions and practice sets for exam preparation.</span>
-            </div>
-
-            {filterFiles(questionBanks).length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filterFiles(questionBanks).map((file) => (
-                  <FileCard key={file.id} file={file} icon={HelpCircle} colorClass="border-green-500" />
-                ))}
+              <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
+                <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900">No results found</h3>
+                <p className="text-gray-500">Try adjusting your search terms.</p>
+                <Button 
+                  variant="link" 
+                  onClick={() => setSearchQuery('')}
+                  className="text-blue-600 mt-2"
+                >
+                  Clear search
+                </Button>
               </div>
-            ) : (
-              <div className="text-center py-12 text-gray-500">No question banks found matching your search.</div>
             )}
-          </TabsContent>
+          </div>
+        ) : (
+          /* Default Tabs View */
+          <Tabs defaultValue="syllabus" className="w-full space-y-8">
+            <TabsList className="grid w-full grid-cols-3 lg:w-[600px] mx-auto bg-white p-1 shadow-md rounded-full h-auto">
+              <TabsTrigger value="syllabus" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+                Syllabus
+              </TabsTrigger>
+              <TabsTrigger value="question-banks" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+                Question Banks
+              </TabsTrigger>
+              <TabsTrigger value="resources" className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+                Other Resources
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Other Resources Content */}
-          <TabsContent value="resources" className="animate-fade-in">
-            <div className="mb-6 flex items-center gap-2 text-purple-800 bg-purple-50 p-4 rounded-lg border border-purple-100">
-              <File className="h-5 w-5" />
-              <span className="font-medium">Administrative forms, handbooks, and academic schedules.</span>
-            </div>
-
-            {filterFiles(otherResources).length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filterFiles(otherResources).map((file) => (
-                  <FileCard key={file.id} file={file} icon={File} colorClass="border-purple-500" />
-                ))}
+            {/* Syllabus Content */}
+            <TabsContent value="syllabus" className="animate-fade-in">
+              <div className="mb-6 flex items-center gap-2 text-blue-800 bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <BookOpen className="h-5 w-5" />
+                <span className="font-medium">Detailed curriculum and course content for all academic years.</span>
               </div>
-            ) : (
-              <div className="text-center py-12 text-gray-500">No resources found matching your search.</div>
-            )}
-          </TabsContent>
-        </Tabs>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {syllabi.map((file) => <FileCard key={file.id} file={file} />)}
+              </div>
+            </TabsContent>
+
+            {/* Question Banks Content */}
+            <TabsContent value="question-banks" className="animate-fade-in">
+              <div className="mb-6 flex items-center gap-2 text-green-800 bg-green-50 p-4 rounded-lg border border-green-100">
+                <HelpCircle className="h-5 w-5" />
+                <span className="font-medium">Previous year questions and practice sets for First, Second, and Third Year.</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {questionBanks.map((file) => <FileCard key={file.id} file={file} />)}
+              </div>
+            </TabsContent>
+
+            {/* Other Resources Content */}
+            <TabsContent value="resources" className="animate-fade-in">
+              <div className="mb-6 flex items-center gap-2 text-purple-800 bg-purple-50 p-4 rounded-lg border border-purple-100">
+                <File className="h-5 w-5" />
+                <span className="font-medium">Administrative forms, handbooks, and academic schedules.</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {otherResources.map((file) => <FileCard key={file.id} file={file} />)}
+              </div>
+            </TabsContent>
+          </Tabs>
+        )}
 
         {/* Download Guidelines */}
         <div className="mt-16 bg-yellow-50 border border-yellow-200 rounded-2xl p-8">

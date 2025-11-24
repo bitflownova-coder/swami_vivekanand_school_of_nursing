@@ -95,7 +95,7 @@ export default function Home() {
       </section>
 
       {/* STATS SECTION */}
-      <section className="relative z-30 -mt-16 md:-mt-20 px-4 mb-12">
+      {/* <section className="relative z-30 -mt-16 md:-mt-20 px-4 mb-12">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white shadow-2xl rounded-2xl border-t-4 border-blue-600 p-6 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 divide-x divide-gray-100">
             {[
@@ -114,7 +114,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* WELCOME SECTION */}
       <section className="py-16 md:py-24 bg-white">
