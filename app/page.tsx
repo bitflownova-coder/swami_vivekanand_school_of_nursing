@@ -273,7 +273,7 @@ export default function Home() {
             <Button asChild size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-bold px-10 py-7 text-lg shadow-xl transition-transform hover:scale-105">
               <Link href="/admissions">Apply for Admission</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-blue-400 text-blue-100 hover:bg-blue-800 hover:text-white px-10 py-7 text-lg font-bold">
+            <Button asChild size="lg" variant="outline" className="border-blue-400 text-blue-600 hover:bg-blue-800 hover:text-white px-10 py-7 text-lg font-bold">
               <Link href="/contact">Download Brochure</Link>
             </Button>
           </div>
