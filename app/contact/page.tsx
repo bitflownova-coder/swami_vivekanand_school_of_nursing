@@ -1,182 +1,249 @@
+'use client';
+
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { MapPin, Phone, Mail, Clock, Building, Users } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Building, Users, Send, ChevronDown, Facebook, Instagram } from 'lucide-react';
 
 export default function ContactPage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      question: "What are the admission requirements?",
+      answer: "Candidates must have completed 10th standard with a minimum of 40% marks for the ANM program. Visit our Admissions page for detailed requirements and eligibility criteria."
+    },
+    {
+      question: "When does the academic session start?",
+      answer: "The academic session typically begins in August. Application deadlines are usually in June. Check our Downloads section for the latest academic calendar."
+    },
+    {
+      question: "Do you provide hostel facilities?",
+      answer: "Yes, we have separate hostel facilities for boys and girls with all necessary amenities including mess, laundry, and 24/7 security."
+    },
+    {
+      question: "What is the duration of the ANM program?",
+      answer: "The ANM program is 2 years including practical training and internship for hands-on experience in healthcare settings."
+    },
+    {
+      question: "Are scholarships available?",
+      answer: "Yes, scholarships are available for eligible students based on merit and financial need. Contact our admissions office for more details."
+    },
+    {
+      question: "How can I schedule a campus visit?",
+      answer: "Contact us via phone at 7517275151 or email to schedule a campus tour and meet with our admissions team during office hours."
+    }
+  ];
+
   return (
-    <div className="py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Contact Us
+    <div className="min-h-screen bg-slate-50">
+      {/* Hero Section */}
+      <div className="relative bg-blue-900 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight font-serif">
+            Get in Touch
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Get in touch with us for admissions, inquiries, or any information 
-            about our nursing programs. We're here to help you start your healthcare career.
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed font-light">
+            Have questions about our nursing programs? We&apos;re here to help you start your healthcare career journey.
           </p>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-10 relative z-20">
+        
         {/* Contact Information Cards */}
-        <section className="mb-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* College Contact */}
-            <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
-              <CardHeader>
-                <CardTitle className="text-2xl text-blue-800 flex items-center gap-2">
-                  <Building className="h-8 w-8" />
-                  College Contact
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <MapPin className="h-6 w-6 text-blue-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Address</h4>
-                    <p className="text-gray-700">
-                      Beed Bypass Road<br />
-                      Chh. Sambhajinagar, Maharashtra – 431005
-                    </p>
-                  </div>
+        <section className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* College Contact */}
+          <Card className="shadow-xl border-0 overflow-hidden">
+            <div className="bg-blue-600 h-2 w-full"></div>
+            <CardHeader className="bg-blue-50 pb-4">
+              <CardTitle className="text-2xl text-gray-900 flex items-center gap-3">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <Building className="h-6 w-6 text-white" />
                 </div>
-                
-                <div className="flex items-center space-x-4">
-                  <Phone className="h-6 w-6 text-blue-600" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                    <p className="text-gray-700">7517275151</p>
-                  </div>
+                College Office
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-5">
+              <div className="flex items-start gap-4 group">
+                <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                  <MapPin className="h-5 w-5 text-blue-600" />
                 </div>
-                
-                <div className="flex items-center space-x-4">
-                  <Mail className="h-6 w-6 text-blue-600" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-700">swamivekanandschoolofnursing@gmail.com</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-4">
-                  <Clock className="h-6 w-6 text-blue-600 mt-1" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Office Hours</h4>
-                    <p className="text-gray-700">
-                      Monday - Friday: 9:00 AM - 5:00 PM<br />
-                      Saturday: 9:00 AM - 1:00 PM<br />
-                      Sunday: Closed
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Trust Contact */}
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-100 border-green-200">
-              <CardHeader>
-                <CardTitle className="text-2xl text-green-800 flex items-center gap-2">
-                  <Users className="h-8 w-8" />
-                  Trust Contact
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <MapPin className="h-6 w-6 text-green-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Address</h4>
-                    <p className="text-gray-700">
-                      Flat No. 04, Waheguru Complex<br />
-                      Pundalik Nagar Road<br />
-                      Near Gajanan Mandir<br />
-                      Chh. Sambhajinagar
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <Mail className="h-6 w-6 text-green-600" />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-700">indrayanipratishthan51@gmail.com</p>
-                  </div>
-                </div>
-                
-                <div className="bg-white p-4 rounded-lg">
-                  <h4 className="font-semibold text-gray-900 mb-2">Trust Information</h4>
-                  <p className="text-gray-700 text-sm">
-                    INDRAYANI PRATISHTHAN is the educational trust that manages 
-                    and oversees the operations of Swami Vivekanand School of Nursing. 
-                    For administrative and trust-related matters, please use this contact.
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Campus Address</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Beed Bypass Road<br />
+                    Chh. Sambhajinagar, Maharashtra – 431005
                   </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+              
+              <a href="tel:7517275151" className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                  <Phone className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
+                  <p className="text-blue-600 font-medium">7517275151</p>
+                </div>
+              </a>
+              
+              <a href="mailto:swamivekanandschoolofnursing@gmail.com" className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                  <Mail className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
+                  <p className="text-blue-600 text-sm break-all">swamivekanandschoolofnursing@gmail.com</p>
+                </div>
+              </a>
+              
+              <div className="flex items-start gap-4 bg-gray-50 p-3 rounded-lg">
+                <div className="bg-white p-2 rounded-lg">
+                  <Clock className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Office Hours</h4>
+                  <div className="text-gray-600 text-sm space-y-1">
+                    <p>Monday - Friday: <span className="font-medium">9:00 AM - 5:00 PM</span></p>
+                    <p>Saturday: <span className="font-medium">9:00 AM - 1:00 PM</span></p>
+                    <p>Sunday: <span className="text-red-600 font-medium">Closed</span></p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Trust Contact */}
+          <Card className="shadow-xl border-0 overflow-hidden">
+            <div className="bg-green-600 h-2 w-full"></div>
+            <CardHeader className="bg-green-50 pb-4">
+              <CardTitle className="text-2xl text-gray-900 flex items-center gap-3">
+                <div className="bg-green-600 p-2 rounded-lg">
+                  <Users className="h-6 w-6 text-white" />
+                </div>
+                Trust Office
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-5">
+              <div className="flex items-start gap-4 group">
+                <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-colors">
+                  <MapPin className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Trust Address</h4>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Flat No. 04, Waheguru Complex<br />
+                    Pundalik Nagar Road, Near Gajanan Mandir<br />
+                    Chh. Sambhajinagar
+                  </p>
+                </div>
+              </div>
+              
+              <a href="mailto:indrayanipratishthan51@gmail.com" className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-colors">
+                  <Mail className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
+                  <p className="text-green-600 text-sm break-all">indrayanipratishthan51@gmail.com</p>
+                </div>
+              </a>
+              
+              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <Building className="h-4 w-4 text-green-600" />
+                  About INDRAYANI PRATISHTHAN
+                </h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  The educational trust that manages and oversees the operations of Swami Vivekanand School of Nursing. 
+                  For administrative and trust-related matters, please use this contact.
+                </p>
+              </div>
+
+              {/* Social Media */}
+              <div className="pt-4 border-t">
+                <h4 className="font-semibold text-gray-900 mb-3">Connect With Us</h4>
+                <div className="flex gap-3">
+                  <a href="https://www.instagram.com/svs_of_nursing/" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-lg hover:shadow-lg transition-all text-white">
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                  <a href="https://www.facebook.com/swamivivekanandschoolofnursing/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 p-3 rounded-lg hover:shadow-lg transition-all text-white">
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* Contact Form */}
         <section className="mb-16">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">Send us a Message</CardTitle>
-              <p className="text-gray-600 text-center">
-                Have questions about admissions or our programs? Fill out the form below and we'll get back to you.
+          <Card className="shadow-xl border-0">
+            <CardHeader className="bg-gray-50 border-b">
+              <CardTitle className="text-3xl text-center font-serif text-gray-900">Send Us a Message</CardTitle>
+              <p className="text-gray-600 text-center mt-2">
+                Fill out the form below and our team will get back to you within 24 hours.
               </p>
             </CardHeader>
-            <CardContent>
-              <form className="space-y-6 max-w-2xl mx-auto">
+            <CardContent className="p-8">
+              <form className="space-y-6 max-w-3xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
+                    <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      First Name <span className="text-red-500">*</span>
                     </label>
-                    <Input id="firstName" placeholder="Enter your first name" required />
+                    <Input id="firstName" placeholder="John" required className="h-11" />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
+                    <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Last Name <span className="text-red-500">*</span>
                     </label>
-                    <Input id="lastName" placeholder="Enter your last name" required />
+                    <Input id="lastName" placeholder="Doe" required className="h-11" />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email Address <span className="text-red-500">*</span>
                     </label>
-                    <Input id="email" type="email" placeholder="Enter your email" required />
+                    <Input id="email" type="email" placeholder="john@example.com" required className="h-11" />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
                       Phone Number
                     </label>
-                    <Input id="phone" type="tel" placeholder="Enter your phone number" />
+                    <Input id="phone" type="tel" placeholder="+91 98765 43210" className="h-11" />
                   </div>
                 </div>
                 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
+                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Subject <span className="text-red-500">*</span>
                   </label>
-                  <Input id="subject" placeholder="What is this regarding?" required />
+                  <Input id="subject" placeholder="Admission Inquiry" required className="h-11" />
                 </div>
                 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                    Message <span className="text-red-500">*</span>
                   </label>
                   <Textarea 
                     id="message" 
                     placeholder="Please provide details about your inquiry..."
                     rows={6}
-                    required 
+                    required
+                    className="resize-none"
                   />
                 </div>
                 
-                <div className="text-center">
-                  <Button type="submit" size="lg" className="bg-blue-600 hover:bg-blue-700">
+                <div className="text-center pt-4">
+                  <Button type="submit" size="lg" className="bg-blue-600 hover:bg-blue-700 px-12 py-6 text-lg">
+                    <Send className="mr-2 h-5 w-5" />
                     Send Message
                   </Button>
                 </div>
@@ -185,100 +252,59 @@ export default function ContactPage() {
           </Card>
         </section>
 
-        {/* Quick Contact Options */}
+        {/* FAQ Section with Accordion */}
         <section className="mb-16">
-          <Card className="bg-gradient-to-r from-gray-50 to-blue-50">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">Quick Contact Options</CardTitle>
+          <Card className="shadow-xl border-0">
+            <CardHeader className="bg-gray-50 border-b">
+              <CardTitle className="text-3xl text-center font-serif text-gray-900">Frequently Asked Questions</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-6 bg-white rounded-lg hover:shadow-lg transition-shadow">
-                  <Phone className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Call Us</h3>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Speak directly with our admissions team
-                  </p>
-                  <Button variant="outline" size="sm">
-                    <Phone className="h-4 w-4 mr-2" />
-                    7517275151
-                  </Button>
-                </div>
-
-                <div className="text-center p-6 bg-white rounded-lg hover:shadow-lg transition-shadow">
-                  <Mail className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Email Us</h3>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Send us your questions anytime
-                  </p>
-                  <Button variant="outline" size="sm">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send Email
-                  </Button>
-                </div>
-
-                <div className="text-center p-6 bg-white rounded-lg hover:shadow-lg transition-shadow">
-                  <MapPin className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Visit Us</h3>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Schedule a campus tour
-                  </p>
-                  <Button variant="outline" size="sm">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Get Directions
-                  </Button>
-                </div>
+            <CardContent className="p-8">
+              <div className="max-w-4xl mx-auto space-y-4">
+                {faqs.map((faq, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg overflow-hidden hover:border-blue-300 transition-colors">
+                    <button
+                      onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                      className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors"
+                    >
+                      <span className="font-semibold text-gray-900 pr-4">{faq.question}</span>
+                      <ChevronDown className={`h-5 w-5 text-blue-600 flex-shrink-0 transition-transform ${openFaq === index ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openFaq === index && (
+                      <div className="px-5 pb-5 bg-gray-50 border-t border-gray-100">
+                        <p className="text-gray-600 text-sm leading-relaxed pt-4">{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* FAQ Section */}
+        {/* Google Maps Embed */}
         <section>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">Frequently Asked Questions</CardTitle>
+          <Card className="shadow-xl border-0 overflow-hidden">
+            <CardHeader className="bg-gray-50">
+              <CardTitle className="text-2xl text-center font-serif text-gray-900">Find Us on Map</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">What are the admission requirements?</h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Candidates must have completed 12th standard with Science stream and minimum 45% marks. 
-                    Visit our Admissions page for detailed requirements.
-                  </p>
-                  
-                  <h4 className="font-semibold text-gray-900 mb-2">When does the academic session start?</h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    The academic session typically begins in August. Application deadlines are usually in June.
-                  </p>
-                  
-                  <h4 className="font-semibold text-gray-900 mb-2">Do you provide hostel facilities?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Yes, we have separate hostel facilities for boys and girls with all necessary amenities.
-                  </p>
-                </div>
-                
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">What is the duration of the GNM program?</h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    The GNM program is 3.5 years including 6 months of internship for practical experience.
-                  </p>
-                  
-                  <h4 className="font-semibold text-gray-900 mb-2">Are scholarships available?</h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Yes, scholarships are available for eligible students based on merit and financial need.
-                  </p>
-                  
-                  <h4 className="font-semibold text-gray-900 mb-2">How can I schedule a campus visit?</h4>
-                  <p className="text-gray-600 text-sm">
-                    Contact us via phone or email to schedule a campus tour and meet with our admissions team.
-                  </p>
-                </div>
+            <CardContent className="p-0">
+              <div className="w-full h-96 bg-gray-200">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.6421!2d75.3433!3d19.8767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTnCsDUyJzM2LjEiTiA3NcKwMjAnMzUuOSJF!5e0!3m2!1sen!2sin!4v1234567890"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="College Location"
+                  className="grayscale hover:grayscale-0 transition-all duration-300"
+                ></iframe>
               </div>
             </CardContent>
           </Card>
         </section>
+
       </div>
     </div>
   );
