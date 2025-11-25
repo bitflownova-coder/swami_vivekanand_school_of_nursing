@@ -1,3 +1,5 @@
+export const dynamic = 'force-static'; // <--- This line fixes the build error
+
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
