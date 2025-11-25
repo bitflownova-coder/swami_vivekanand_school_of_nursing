@@ -1,41 +1,106 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google'; // Assuming you use Inter font
 import './globals.css';
-import { Analytics } from "@vercel/analytics/react";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Navigation from "@/components/navigation";
+import Navigation from "@/components/navigation"; // Your components
 import Footer from "@/components/footer";
+import { Analytics } from "@vercel/analytics/react";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
-// This line automatically handles your production and local URLs
-const siteUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-
+// 1. METADATA EXPORT (Server-side SEO)
 export const metadata: Metadata = {
-  // Add this one line to fix the warning
-  metadataBase: new URL(siteUrl),
-
-  title: "INDRAYANI PRATISHTHAN - Swami Vivekanand School of Nursing",
-  description:
-    "Premier institute for GNM nursing education in Maharashtra. Nurturing compassionate healthcare professionals dedicated to serving society.",
-  keywords:
-    "nursing school, GNM, Maharashtra, nursing education, healthcare, medical training",
+  metadataBase: new URL('https://www.svsnursing.org'),
+  title: {
+    default: 'Swami Vivekanand School of Nursing | GNM & ANM College',
+    template: '%s | Swami Vivekanand School of Nursing',
+  },
+  description: 'Premier nursing institute in Chh. Sambhajinagar offering GNM and ANM courses. Approved by Maharashtra Nursing Council. 100% placement support.',
+  keywords: [
+    'Nursing School', 
+    'GNM Course', 
+    'ANM Course', 
+    'Nursing College Aurangabad', 
+    'Swami Vivekanand Nursing', 
+    'Medical Education Maharashtra'
+  ],
   openGraph: {
-    title: "INDRAYANI PRATISHTHAN - Swami Vivekanand School of Nursing",
-    description: "Premier institute for GNM nursing education in Maharashtra.",
-    images: ['/og-image.png'], // You can now use relative paths
-    type: "website",
-    locale: "en_US",
+    title: 'Swami Vivekanand School of Nursing',
+    description: 'Shaping the future of healthcare professionals with excellence and compassion.',
+    url: 'https://www.svsnursing.org',
+    siteName: 'Swami Vivekanand Nursing School',
+    images: [
+      {
+        url: '/og-image.png', // Make sure "og-image.png" exists in your /public folder
+        width: 1200,
+        height: 630,
+        alt: 'Swami Vivekanand School of Nursing Campus',
+      },
+    ],
+    locale: 'en_IN',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/favicon.ico', 
+    apple: '/apple-touch-icon.png',
+  },
+  verification: {
+    google: 'your-google-verification-code', // Replace this later
   },
 };
 
+// 2. ROOT LAYOUT COMPONENT (The HTML structure)
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // JSON-LD Data
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollegeOrUniversity',
+    name: 'Swami Vivekanand School of Nursing',
+    url: 'https://www.svsnursing.org',
+    logo: 'https://www.svsnursing.org/nursinglogo (1).png',
+    description: 'Premier nursing institute offering GNM and ANM courses.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Beed Bypass Road, PWD Colony',
+      addressLocality: 'Chhatrapati Sambhajinagar',
+      postalCode: '431009',
+      addressRegion: 'Maharashtra',
+      addressCountry: 'IN',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+91-7517275151',
+      contactType: 'admissions',
+    },
+    sameAs: [
+      'https://www.facebook.com/swamivivekanandschoolofnursing/',
+      'https://www.instagram.com/svs_of_nursing/'
+    ]
+  };
+
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* Add JSON-LD Script Here */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        
         <Navigation />
         <main className="min-h-screen">{children}</main>
         <Footer />
