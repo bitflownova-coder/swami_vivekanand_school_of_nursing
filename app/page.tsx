@@ -69,7 +69,7 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              Admissions Open 2024-25
+              Admissions Open 2025-26
             </div>
             
             <h1 className="text-4xl md:text-7xl lg:text-8xl font-serif font-bold text-white tracking-tight leading-tight drop-shadow-2xl">
