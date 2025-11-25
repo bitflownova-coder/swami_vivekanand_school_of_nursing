@@ -96,6 +96,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         {/* Add JSON-LD Script Here */}
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
