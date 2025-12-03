@@ -1,43 +1,45 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google'; // Assuming you use Inter font
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google"; // Assuming you use Inter font
+import "./globals.css";
 import Navigation from "@/components/navigation"; // Your components
 import Footer from "@/components/footer";
 import { Analytics } from "@vercel/analytics/react";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 // 1. METADATA EXPORT (Server-side SEO)
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.svsnursing.org'),
+  metadataBase: new URL("https://www.svsnursing.org"),
   title: {
-    default: 'Swami Vivekanand School of Nursing | GNM & ANM College',
-    template: '%s | Swami Vivekanand School of Nursing',
+    default: "Swami Vivekanand School of Nursing | GNM & ANM College",
+    template: "%s | Swami Vivekanand School of Nursing",
   },
-  description: 'Premier nursing institute in Chh. Sambhajinagar offering GNM and ANM courses. Approved by Maharashtra Nursing Council. 100% placement support.',
+  description:
+    "Premier nursing institute in Chh. Sambhajinagar offering GNM and ANM courses. Approved by Maharashtra Nursing Council. 100% placement support.",
   keywords: [
-    'Nursing School', 
-    'GNM Course', 
-    'ANM Course', 
-    'Nursing College Aurangabad', 
-    'Swami Vivekanand Nursing', 
-    'Medical Education Maharashtra'
+    "Nursing School",
+    "GNM Course",
+    "ANM Course",
+    "Nursing College Aurangabad",
+    "Swami Vivekanand Nursing",
+    "Medical Education Maharashtra",
   ],
   openGraph: {
-    title: 'Swami Vivekanand School of Nursing',
-    description: 'Shaping the future of healthcare professionals with excellence and compassion.',
-    url: 'https://www.svsnursing.org',
-    siteName: 'Swami Vivekanand Nursing School',
+    title: "Swami Vivekanand School of Nursing",
+    description:
+      "Shaping the future of healthcare professionals with excellence and compassion.",
+    url: "https://www.svsnursing.org",
+    siteName: "Swami Vivekanand Nursing School",
     images: [
       {
-        url: '/og-image.png', // Make sure "og-image.png" exists in your /public folder
+        url: "/og-image.png", // Make sure "og-image.png" exists in your /public folder
         width: 1200,
         height: 630,
-        alt: 'Swami Vivekanand School of Nursing Campus',
+        alt: "Swami Vivekanand School of Nursing Campus",
       },
     ],
-    locale: 'en_IN',
-    type: 'website',
+    locale: "en_IN",
+    type: "website",
   },
   robots: {
     index: true,
@@ -45,17 +47,14 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   icons: {
-    icon: '/favicon.ico', 
-    apple: '/apple-touch-icon.png',
-  },
-  verification: {
-    google: 'your-google-verification-code', // Replace this later
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -67,41 +66,40 @@ export default function RootLayout({
 }) {
   // JSON-LD Data
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollegeOrUniversity',
-    name: 'Swami Vivekanand School of Nursing',
-    url: 'https://www.svsnursing.org',
-    logo: 'https://www.svsnursing.org/nursinglogo (1).png',
-    description: 'Premier nursing institute offering GNM and ANM courses.',
+    "@context": "https://schema.org",
+    "@type": "CollegeOrUniversity",
+    name: "Swami Vivekanand School of Nursing",
+    url: "https://www.svsnursing.org",
+    logo: "https://www.svsnursing.org/nursinglogo (1).png",
+    description: "Premier nursing institute offering GNM and ANM courses.",
     address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Beed Bypass Road, PWD Colony',
-      addressLocality: 'Chhatrapati Sambhajinagar',
-      postalCode: '431009',
-      addressRegion: 'Maharashtra',
-      addressCountry: 'IN',
+      "@type": "PostalAddress",
+      streetAddress: "Beed Bypass Road, PWD Colony",
+      addressLocality: "Chhatrapati Sambhajinagar",
+      postalCode: "431009",
+      addressRegion: "Maharashtra",
+      addressCountry: "IN",
     },
     contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: '+91-7517275151',
-      contactType: 'admissions',
+      "@type": "ContactPoint",
+      telephone: "+91-7517275151",
+      contactType: "admissions",
     },
     sameAs: [
-      'https://www.facebook.com/swamivivekanandschoolofnursing/',
-      'https://www.instagram.com/svs_of_nursing/'
-    ]
+      "https://www.facebook.com/swamivivekanandschoolofnursing/",
+      "https://www.instagram.com/svs_of_nursing/",
+    ],
   };
 
   return (
     <html lang="en">
       <body className={inter.className}>
         {/* Add JSON-LD Script Here */}
-        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        
+
         <Navigation />
         <main className="min-h-screen">{children}</main>
         <Footer />
