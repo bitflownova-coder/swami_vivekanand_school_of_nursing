@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { token, workshopId } = body;
 
@@ -16,7 +13,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const workshop = await Workshop.findById(workshopId);
+    const workshop = await prisma.workshop.findUnique({
+      where: { id: workshopId }
+    });
     
     if (!workshop) {
       return NextResponse.json(
@@ -53,7 +52,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       workshop: {
-        _id: workshop._id,
+        id: workshop.id,
+        _id: workshop.id, // For compatibility
         title: workshop.title,
         description: workshop.description,
         date: workshop.date,

@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Registration from '@/models/Registration';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { mncUID, mobileNumber } = body;
 
@@ -17,13 +13,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const registrations = await Registration.find({
-      mncUID: mncUID.toUpperCase(),
-      mobileNumber
-    })
-      .populate('workshopId', 'title date venue dayOfWeek fee credits')
-      .sort({ submittedAt: -1 })
-      .lean();
+    const registrations = await prisma.registration.findMany({
+      where: {
+        mncUID: mncUID.toUpperCase(),
+        mobileNumber
+      },
+      include: {
+        workshop: {
+          select: { id: true, title: true, date: true, venue: true, dayOfWeek: true, fee: true, credits: true }
+        }
+      },
+      orderBy: { submittedAt: 'desc' }
+    });
 
     if (registrations.length === 0) {
       return NextResponse.json(
@@ -32,9 +33,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Map to expected format with workshopId field for compatibility
+    const mappedRegistrations = registrations.map(reg => ({
+      ...reg,
+      workshopId: reg.workshop
+    }));
+
     return NextResponse.json({
       success: true,
-      registrations
+      registrations: mappedRegistrations
     });
   } catch (error: any) {
     console.error('Error viewing registration:', error);

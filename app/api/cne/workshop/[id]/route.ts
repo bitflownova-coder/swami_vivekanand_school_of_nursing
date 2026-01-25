@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -9,10 +8,11 @@ export async function GET(
   context: RouteContext
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
 
-    const workshop = await Workshop.findById(id).lean();
+    const workshop = await prisma.workshop.findUnique({
+      where: { id }
+    });
 
     if (!workshop) {
       return NextResponse.json(
@@ -39,9 +39,7 @@ export async function PUT(
   context: RouteContext
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
-
     const body = await request.json();
     
     const updateData: any = {};
@@ -61,18 +59,10 @@ export async function PUT(
     if (body.paymentQRCode !== undefined) updateData.paymentQRCode = body.paymentQRCode;
     if (body.upiId !== undefined) updateData.upiId = body.upiId;
 
-    const workshop = await Workshop.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true, runValidators: true }
-    );
-
-    if (!workshop) {
-      return NextResponse.json(
-        { success: false, error: 'Workshop not found' },
-        { status: 404 }
-      );
-    }
+    const workshop = await prisma.workshop.update({
+      where: { id },
+      data: updateData
+    });
 
     return NextResponse.json({
       success: true,
@@ -81,6 +71,12 @@ export async function PUT(
     });
   } catch (error: any) {
     console.error('Error updating workshop:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json(
+        { success: false, error: 'Workshop not found' },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to update workshop' },
       { status: 500 }
@@ -93,17 +89,11 @@ export async function DELETE(
   context: RouteContext
 ) {
   try {
-    await dbConnect();
     const { id } = await context.params;
 
-    const workshop = await Workshop.findByIdAndDelete(id);
-
-    if (!workshop) {
-      return NextResponse.json(
-        { success: false, error: 'Workshop not found' },
-        { status: 404 }
-      );
-    }
+    await prisma.workshop.delete({
+      where: { id }
+    });
 
     return NextResponse.json({
       success: true,
@@ -111,6 +101,12 @@ export async function DELETE(
     });
   } catch (error: any) {
     console.error('Error deleting workshop:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json(
+        { success: false, error: 'Workshop not found' },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to delete workshop' },
       { status: 500 }

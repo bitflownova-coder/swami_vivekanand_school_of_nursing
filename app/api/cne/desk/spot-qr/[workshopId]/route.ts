@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import dbConnect from '@/lib/mongodb';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 import crypto from 'crypto';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
@@ -22,10 +21,11 @@ export async function GET(
       );
     }
 
-    await dbConnect();
     const { workshopId } = await context.params;
 
-    const workshop = await Workshop.findById(workshopId);
+    const workshop = await prisma.workshop.findUnique({
+      where: { id: workshopId }
+    });
     
     if (!workshop) {
       return NextResponse.json(
@@ -39,8 +39,10 @@ export async function GET(
     
     if (!token) {
       token = crypto.randomBytes(32).toString('hex');
-      workshop.spotRegistrationQRToken = token;
-      await workshop.save();
+      await prisma.workshop.update({
+        where: { id: workshopId },
+        data: { spotRegistrationQRToken: token }
+      });
     }
 
     return NextResponse.json({

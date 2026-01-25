@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// CNE Workshop model
+model Workshop {
+  id                       String         @id @default(cuid())
+  title                    String         @db.VarChar(200)
+  description              String         @db.Text
+  date                     DateTime
+  dayOfWeek                String         @db.VarChar(10)
+  venue                    String         @db.VarChar(500)
+  venueLink                String         @default("") @db.VarChar(500)
+  fee                      Float          @default(0)
+  credits                  Float          @default(0)
+  maxSeats                 Int            @default(500)
+  currentRegistrations     Int            @default(0)
+  status                   String         @default("draft") @db.VarChar(20) // draft, upcoming, active, full, completed, cancelled, spot
+  spotRegistrationEnabled  Boolean        @default(false)
+  spotRegistrationLimit    Int            @default(50)
+  currentSpotRegistrations Int            @default(0)
+  spotRegistrationQRToken  String         @default("") @db.VarChar(500)
+  paymentQRCode            String?        @db.LongText
+  upiId                    String         @default("") @db.VarChar(100)
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+  
+  registrations            Registration[]
+  attendances              Attendance[]
+  
+  @@map("workshops")
+}
+
+// CNE Registration model
+model Registration {
+  id                    String    @id @default(cuid())
+  workshopId            String
+  workshop              Workshop  @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  
+  formNumber            Int
+  fullName              String    @db.VarChar(100)
+  mncUID                String    @db.VarChar(50)
+  mncRegistrationNumber String    @db.VarChar(50)
+  mobileNumber          String    @db.VarChar(15)
+  paymentUTR            String    @db.VarChar(100)
+  paymentScreenshot     String    @db.LongText
+  
+  registrationType      String    @default("online") @db.VarChar(20) // online or spot
+  attendanceStatus      String    @default("applied") @db.VarChar(20) // applied or present
+  downloadCount         Int       @default(0)
+  submittedAt           DateTime  @default(now())
+  ipAddress             String    @default("") @db.VarChar(50)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  
+  attendances           Attendance[]
+  
+  @@unique([workshopId, mncUID])
+  @@unique([workshopId, formNumber])
+  @@index([mncUID])
+  @@index([mobileNumber])
+  @@map("registrations")
+}
+
+// CNE Attendance model
+model Attendance {
+  id                    String       @id @default(cuid())
+  workshopId            String
+  workshop              Workshop     @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+  
+  registrationId        String
+  registration          Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+  
+  mncUID                String       @db.VarChar(50)
+  mncRegistrationNumber String       @default("") @db.VarChar(50)
+  studentName           String       @db.VarChar(100)
+  qrToken               String       @db.VarChar(500)
+  markedAt              DateTime     @default(now())
+  ipAddress             String       @default("") @db.VarChar(50)
+  userAgent             String       @default("") @db.VarChar(500)
+  
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  
+  @@unique([workshopId, registrationId])
+  @@index([workshopId])
+  @@index([qrToken])
+  @@map("attendances")
+}

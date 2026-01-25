@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Registration from '@/models/Registration';
-import Attendance from '@/models/Attendance';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { token, mncUID, mobileNumber, workshopId } = body;
 
@@ -32,10 +28,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Find the registration
-    const registration = await Registration.findOne({
-      workshopId,
-      mncUID: mncUID.toUpperCase().trim(),
-      mobileNumber: mobileNumber.trim()
+    const registration = await prisma.registration.findFirst({
+      where: {
+        workshopId,
+        mncUID: mncUID.toUpperCase().trim(),
+        mobileNumber: mobileNumber.trim()
+      }
     });
 
     if (!registration) {
@@ -46,9 +44,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if already marked present
-    const existingAttendance = await Attendance.findOne({
-      workshopId,
-      registrationId: registration._id
+    const existingAttendance = await prisma.attendance.findFirst({
+      where: {
+        workshopId,
+        registrationId: registration.id
+      }
     });
 
     if (existingAttendance) {
@@ -64,22 +64,23 @@ export async function POST(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || '';
 
     // Create attendance record
-    const attendance = new Attendance({
-      workshopId,
-      registrationId: registration._id,
-      mncUID: registration.mncUID,
-      mncRegistrationNumber: registration.mncRegistrationNumber,
-      studentName: registration.fullName,
-      qrToken: token,
-      ipAddress,
-      userAgent
+    await prisma.attendance.create({
+      data: {
+        workshopId,
+        registrationId: registration.id,
+        mncUID: registration.mncUID,
+        mncRegistrationNumber: registration.mncRegistrationNumber,
+        studentName: registration.fullName,
+        qrToken: token,
+        ipAddress,
+        userAgent
+      }
     });
 
-    await attendance.save();
-
     // Update registration status
-    await Registration.findByIdAndUpdate(registration._id, {
-      attendanceStatus: 'present'
+    await prisma.registration.update({
+      where: { id: registration.id },
+      data: { attendanceStatus: 'present' }
     });
 
     return NextResponse.json({
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error marking attendance:', error);
     
-    if (error.code === 11000) {
+    if (error.code === 'P2002') {
       return NextResponse.json(
         { success: false, error: 'Attendance already marked' },
         { status: 400 }

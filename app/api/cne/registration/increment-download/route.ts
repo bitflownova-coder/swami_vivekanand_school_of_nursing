@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Registration from '@/models/Registration';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     const { registrationId } = body;
 
@@ -16,7 +13,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const registration = await Registration.findById(registrationId);
+    const registration = await prisma.registration.findUnique({
+      where: { id: registrationId }
+    });
 
     if (!registration) {
       return NextResponse.json(
@@ -32,13 +31,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    registration.downloadCount += 1;
-    await registration.save();
+    const updatedRegistration = await prisma.registration.update({
+      where: { id: registrationId },
+      data: { downloadCount: registration.downloadCount + 1 }
+    });
 
     return NextResponse.json({
       success: true,
-      downloadCount: registration.downloadCount,
-      remainingDownloads: 2 - registration.downloadCount
+      downloadCount: updatedRegistration.downloadCount,
+      remainingDownloads: 2 - updatedRegistration.downloadCount
     });
   } catch (error: any) {
     console.error('Error incrementing download:', error);

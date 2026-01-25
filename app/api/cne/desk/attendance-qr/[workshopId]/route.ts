@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import dbConnect from '@/lib/mongodb';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -21,10 +20,11 @@ export async function GET(
       );
     }
 
-    await dbConnect();
     const { workshopId } = await context.params;
 
-    const workshop = await Workshop.findById(workshopId);
+    const workshop = await prisma.workshop.findUnique({
+      where: { id: workshopId }
+    });
     
     if (!workshop) {
       return NextResponse.json(

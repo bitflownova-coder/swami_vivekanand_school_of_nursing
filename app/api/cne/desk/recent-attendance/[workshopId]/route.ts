@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import dbConnect from '@/lib/mongodb';
-import Attendance from '@/models/Attendance';
+import prisma from '@/lib/prisma';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -21,13 +20,13 @@ export async function GET(
       );
     }
 
-    await dbConnect();
     const { workshopId } = await context.params;
 
-    const attendance = await Attendance.find({ workshopId })
-      .sort({ markedAt: -1 })
-      .limit(10)
-      .lean();
+    const attendance = await prisma.attendance.findMany({
+      where: { workshopId },
+      orderBy: { markedAt: 'desc' },
+      take: 10
+    });
 
     return NextResponse.json({
       success: true,

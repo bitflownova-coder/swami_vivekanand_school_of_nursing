@@ -1,14 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Registration from '@/models/Registration';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const formData = await request.formData();
     
     const workshopId = formData.get('workshopId') as string;
@@ -37,7 +33,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if workshop exists and is active
-    const workshop = await Workshop.findById(workshopId);
+    const workshop = await prisma.workshop.findUnique({
+      where: { id: workshopId }
+    });
+
     if (!workshop) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
@@ -53,9 +52,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicate registration
-    const existingRegistration = await Registration.findOne({
-      workshopId,
-      mncUID
+    const existingRegistration = await prisma.registration.findFirst({
+      where: {
+        workshopId,
+        mncUID
+      }
     });
 
     if (existingRegistration) {
@@ -91,9 +92,10 @@ export async function POST(request: NextRequest) {
     await writeFile(path.join(uploadDir, filename), buffer);
 
     // Get next form number
-    const lastRegistration = await Registration.findOne({ workshopId })
-      .sort({ formNumber: -1 })
-      .lean();
+    const lastRegistration = await prisma.registration.findFirst({
+      where: { workshopId },
+      orderBy: { formNumber: 'desc' }
+    });
     
     const formNumber = lastRegistration ? lastRegistration.formNumber + 1 : 1;
 
@@ -102,36 +104,49 @@ export async function POST(request: NextRequest) {
     const ipAddress = forwarded ? forwarded.split(',')[0] : 'unknown';
 
     // Create registration
-    const registration = new Registration({
-      workshopId,
-      formNumber,
-      fullName: fullName.trim(),
-      mncUID,
-      mncRegistrationNumber,
-      mobileNumber,
-      paymentUTR: paymentUTR.trim(),
-      paymentScreenshot: filename,
-      registrationType,
-      ipAddress
+    const registration = await prisma.registration.create({
+      data: {
+        workshopId,
+        formNumber,
+        fullName: fullName.trim(),
+        mncUID,
+        mncRegistrationNumber,
+        mobileNumber,
+        paymentUTR: paymentUTR.trim(),
+        paymentScreenshot: filename,
+        registrationType,
+        ipAddress
+      }
     });
-
-    await registration.save();
 
     // Update workshop registration count
     if (registrationType === 'spot') {
-      await Workshop.findByIdAndUpdate(workshopId, {
-        $inc: { currentSpotRegistrations: 1, currentRegistrations: 1 }
+      await prisma.workshop.update({
+        where: { id: workshopId },
+        data: {
+          currentSpotRegistrations: { increment: 1 },
+          currentRegistrations: { increment: 1 }
+        }
       });
     } else {
-      await Workshop.findByIdAndUpdate(workshopId, {
-        $inc: { currentRegistrations: 1 }
+      await prisma.workshop.update({
+        where: { id: workshopId },
+        data: {
+          currentRegistrations: { increment: 1 }
+        }
       });
     }
 
     // Check if workshop is now full
-    const updatedWorkshop = await Workshop.findById(workshopId);
+    const updatedWorkshop = await prisma.workshop.findUnique({
+      where: { id: workshopId }
+    });
+    
     if (updatedWorkshop && updatedWorkshop.currentRegistrations >= updatedWorkshop.maxSeats) {
-      await Workshop.findByIdAndUpdate(workshopId, { status: 'full' });
+      await prisma.workshop.update({
+        where: { id: workshopId },
+        data: { status: 'full' }
+      });
     }
 
     return NextResponse.json({
@@ -147,7 +162,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error submitting registration:', error);
     
-    if (error.code === 11000) {
+    if (error.code === 'P2002') {
       return NextResponse.json(
         { success: false, error: 'Duplicate registration detected' },
         { status: 400 }
@@ -163,20 +178,23 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const workshopId = searchParams.get('workshopId');
 
-    let query: any = {};
+    const where: any = {};
     if (workshopId) {
-      query.workshopId = workshopId;
+      where.workshopId = workshopId;
     }
 
-    const registrations = await Registration.find(query)
-      .populate('workshopId', 'title date venue')
-      .sort({ submittedAt: -1 })
-      .lean();
+    const registrations = await prisma.registration.findMany({
+      where,
+      include: {
+        workshop: {
+          select: { title: true, date: true, venue: true }
+        }
+      },
+      orderBy: { submittedAt: 'desc' }
+    });
 
     return NextResponse.json({
       success: true,

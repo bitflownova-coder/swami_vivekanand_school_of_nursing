@@ -1,27 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Workshop from '@/models/Workshop';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let query: any = {};
+    let where: any = {};
     
     if (status === 'active') {
-      query.status = { $in: ['active', 'spot'] };
+      where.status = { in: ['active', 'spot'] };
     } else if (status === 'upcoming') {
-      query.status = 'upcoming';
+      where.status = 'upcoming';
     } else if (status) {
-      query.status = status;
+      where.status = status;
     }
 
-    const workshops = await Workshop.find(query)
-      .sort({ date: 1 })
-      .lean();
+    const workshops = await prisma.workshop.findMany({
+      where,
+      orderBy: { date: 'asc' }
+    });
 
     return NextResponse.json({
       success: true,
@@ -38,28 +36,26 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
-
     const body = await request.json();
     
-    const workshop = new Workshop({
-      title: body.title,
-      description: body.description,
-      date: new Date(body.date),
-      dayOfWeek: body.dayOfWeek,
-      venue: body.venue,
-      venueLink: body.venueLink || '',
-      fee: Number(body.fee),
-      credits: Number(body.credits),
-      maxSeats: Number(body.maxSeats) || 500,
-      status: body.status || 'draft',
-      spotRegistrationEnabled: body.spotRegistrationEnabled || false,
-      spotRegistrationLimit: Number(body.spotRegistrationLimit) || 50,
-      paymentQRCode: body.paymentQRCode || '',
-      upiId: body.upiId || ''
+    const workshop = await prisma.workshop.create({
+      data: {
+        title: body.title,
+        description: body.description,
+        date: new Date(body.date),
+        dayOfWeek: body.dayOfWeek,
+        venue: body.venue,
+        venueLink: body.venueLink || '',
+        fee: Number(body.fee),
+        credits: Number(body.credits),
+        maxSeats: Number(body.maxSeats) || 500,
+        status: body.status || 'draft',
+        spotRegistrationEnabled: body.spotRegistrationEnabled || false,
+        spotRegistrationLimit: Number(body.spotRegistrationLimit) || 50,
+        paymentQRCode: body.paymentQRCode || '',
+        upiId: body.upiId || ''
+      }
     });
-
-    await workshop.save();
 
     return NextResponse.json({
       success: true,

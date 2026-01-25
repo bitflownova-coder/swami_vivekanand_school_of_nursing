@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Registration from '@/models/Registration';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
   try {
-    await dbConnect();
-
     const { searchParams } = new URL(request.url);
     const workshopId = searchParams.get('workshopId');
     const search = searchParams.get('search');
@@ -13,36 +10,45 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '100');
 
-    let query: any = {};
+    const where: any = {};
 
     if (workshopId && workshopId !== 'all') {
-      query.workshopId = workshopId;
+      where.workshopId = workshopId;
     }
 
     if (search) {
-      query.$or = [
-        { fullName: { $regex: search, $options: 'i' } },
-        { mncUID: { $regex: search, $options: 'i' } },
-        { mncRegistrationNumber: { $regex: search, $options: 'i' } },
-        { mobileNumber: { $regex: search, $options: 'i' } },
-        { paymentUTR: { $regex: search, $options: 'i' } }
+      where.OR = [
+        { fullName: { contains: search } },
+        { mncUID: { contains: search } },
+        { mncRegistrationNumber: { contains: search } },
+        { mobileNumber: { contains: search } },
+        { paymentUTR: { contains: search } }
       ];
     }
 
-    const sortOrder = sort === 'oldest' ? 1 : -1;
+    const registrations = await prisma.registration.findMany({
+      where,
+      include: {
+        workshop: {
+          select: { title: true, date: true, venue: true }
+        }
+      },
+      orderBy: { submittedAt: sort === 'oldest' ? 'asc' : 'desc' },
+      skip: (page - 1) * limit,
+      take: limit
+    });
 
-    const registrations = await Registration.find(query)
-      .populate('workshopId', 'title date venue')
-      .sort({ submittedAt: sortOrder })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .lean();
+    const total = await prisma.registration.count({ where });
 
-    const total = await Registration.countDocuments(query);
+    // Map to expected format with workshopId field for compatibility
+    const mappedRegistrations = registrations.map(reg => ({
+      ...reg,
+      workshopId: reg.workshop
+    }));
 
     return NextResponse.json({
       success: true,
-      registrations,
+      registrations: mappedRegistrations,
       pagination: {
         page,
         limit,
