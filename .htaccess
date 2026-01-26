@@ -1,0 +1,9 @@
+PassengerAppRoot /home/u984810592/domains/svsnursing.org/public_html
+PassengerAppType node
+PassengerNodejs /opt/alt/alt-nodejs18/root/bin/node
+PassengerStartupFile server.js
+PassengerBaseURI /
+PassengerNodeEnv production
+PassengerMaxPoolSize 1
+PassengerMinInstances 1
+PassengerMaxRequestQueueSize 100
