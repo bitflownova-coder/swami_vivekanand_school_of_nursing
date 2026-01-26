@@ -96,13 +96,13 @@ export async function POST(request: NextRequest) {
     );
     const formNumber = countResult[0].count + 1;
 
-    // Create registration
+    // Create registration - auto mark as present since done in front of desk
     const registrationId = uuidv4();
     await db.query<ResultSetHeader>(
       `INSERT INTO registrations (
         id, workshopId, formNumber, fullName, mncUID, mncRegistrationNumber,
         mobileNumber, paymentUTR, paymentScreenshot, registrationType, attendanceStatus
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'spot', 'applied')`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'spot', 'present')`,
       [
         registrationId, workshopId, formNumber, fullName, mncUID,
         mncRegistrationNumber, mobileNumber, paymentUTR, screenshotBase64
