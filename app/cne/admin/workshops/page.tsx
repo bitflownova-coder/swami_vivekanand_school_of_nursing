@@ -407,23 +407,24 @@ export default function AdminWorkshopsPage() {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <Card className="w-full max-w-2xl my-8">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>{editingWorkshop ? "Edit Workshop" : "Create Workshop"}</CardTitle>
-              <Button variant="ghost" size="icon" onClick={() => { setShowModal(false); resetForm(); }}>
-                <X className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
+        <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto">
+          <div className="w-full max-w-3xl my-8">
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between sticky top-0 bg-white z-10 border-b">
+                <CardTitle>{editingWorkshop ? "Edit Workshop" : "Create Workshop"}</CardTitle>
+                <Button variant="ghost" size="icon" onClick={() => { setShowModal(false); resetForm(); }}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </CardHeader>
+              <CardContent className="max-h-[calc(100vh-200px)] overflow-y-auto">
               {error && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-6 py-4">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <Label htmlFor="title">Workshop Title *</Label>
                     <Input
@@ -670,7 +671,7 @@ export default function AdminWorkshopsPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-3 pt-6 border-t sticky bottom-0 bg-white pb-2">
                   <Button 
                     type="button" 
                     variant="outline" 
@@ -698,6 +699,7 @@ export default function AdminWorkshopsPage() {
               </form>
             </CardContent>
           </Card>
+          </div>
         </div>
       )}
     </div>
