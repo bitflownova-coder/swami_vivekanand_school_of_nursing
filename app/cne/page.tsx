@@ -273,19 +273,31 @@ export default function CNEPage() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                       <div className="flex items-center text-sm text-gray-600">
-                        <Calendar className="h-4 w-4 mr-2" />
+                        <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
                         {formatDate(workshop.date)} ({workshop.dayOfWeek})
                       </div>
+                      {workshop.venueLink ? (
+                        <a 
+                          href={workshop.venueLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                          <span className="line-clamp-1">{workshop.venue}</span>
+                        </a>
+                      ) : (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+                          <span className="line-clamp-1">{workshop.venue}</span>
+                        </div>
+                      )}
                       <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        {workshop.venue}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <CreditCard className="h-4 w-4 mr-2" />
+                        <CreditCard className="h-4 w-4 mr-2 flex-shrink-0" />
                         ₹{workshop.fee} | {workshop.credits} Credits
                       </div>
                       <div className="flex items-center text-sm text-gray-600">
-                        <Users className="h-4 w-4 mr-2" />
+                        <Users className="h-4 w-4 mr-2 flex-shrink-0" />
                         {workshop.maxSeats - workshop.currentRegistrations} seats remaining
                       </div>
                     </CardContent>
@@ -319,13 +331,25 @@ export default function CNEPage() {
                 <CardDescription className="space-y-1">
                   <div className="font-semibold text-gray-700">{selectedWorkshop?.title}</div>
                   <div className="flex items-center text-sm">
-                    <Calendar className="h-3 w-3 mr-1" />
+                    <Calendar className="h-3 w-3 mr-1 flex-shrink-0" />
                     {selectedWorkshop && formatDate(selectedWorkshop.date)} ({selectedWorkshop?.dayOfWeek})
                   </div>
-                  <div className="flex items-center text-sm">
-                    <MapPin className="h-3 w-3 mr-1" />
-                    {selectedWorkshop?.venue}
-                  </div>
+                  {selectedWorkshop?.venueLink ? (
+                    <a 
+                      href={selectedWorkshop.venueLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                      {selectedWorkshop.venue}
+                    </a>
+                  ) : (
+                    <div className="flex items-center text-sm">
+                      <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                      {selectedWorkshop?.venue}
+                    </div>
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">
