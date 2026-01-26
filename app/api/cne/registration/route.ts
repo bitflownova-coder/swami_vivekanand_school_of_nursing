@@ -141,7 +141,8 @@ export async function POST(request: NextRequest) {
         formNumber,
         fullName: fullName.trim(),
         workshopTitle: workshop.title,
-        workshopDate: workshop.date
+        workshopDate: workshop.date,
+        workshopVenue: workshop.venue
       }
     }, { status: 201 });
   } catch (error: any) {

@@ -187,6 +187,10 @@ export default function CNEPage() {
                   <p><span className="font-medium">Name:</span> {successData.fullName}</p>
                   <p><span className="font-medium">Workshop:</span> {successData.workshopTitle}</p>
                   <p><span className="font-medium">Date:</span> {formatDate(successData.workshopDate)}</p>
+                  <p className="flex items-start">
+                    <span className="font-medium mr-2">Venue:</span> 
+                    <span className="flex-1">{successData.workshopVenue}</span>
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -312,8 +316,16 @@ export default function CNEPage() {
             <Card className="shadow-xl">
               <CardHeader className="bg-blue-50 border-b">
                 <CardTitle>Registration Form</CardTitle>
-                <CardDescription>
-                  {selectedWorkshop?.title} - {selectedWorkshop && formatDate(selectedWorkshop.date)}
+                <CardDescription className="space-y-1">
+                  <div className="font-semibold text-gray-700">{selectedWorkshop?.title}</div>
+                  <div className="flex items-center text-sm">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    {selectedWorkshop && formatDate(selectedWorkshop.date)} ({selectedWorkshop?.dayOfWeek})
+                  </div>
+                  <div className="flex items-center text-sm">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    {selectedWorkshop?.venue}
+                  </div>
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-6">

@@ -125,7 +125,8 @@ export async function POST(request: NextRequest) {
         formNumber,
         fullName,
         mncUID,
-        workshopTitle: workshop.title
+        workshopTitle: workshop.title,
+        workshopVenue: workshop.venue
       }
     });
   } catch (error: any) {
