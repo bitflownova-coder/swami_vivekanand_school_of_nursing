@@ -4,6 +4,12 @@ PassengerNodejs /opt/alt/alt-nodejs20/root/bin/node
 PassengerStartupFile server.js
 PassengerBaseURI /
 PassengerNodeEnv production
-PassengerMaxPoolSize 1
+PassengerSpawnMethod direct
+PassengerMaxPoolSize 2
 PassengerMinInstances 1
-PassengerMaxRequestQueueSize 100
+PassengerMaxInstances 3
+PassengerMaxRequestQueueSize 150
+PassengerMaxRequests 1000
+SetEnv UV_THREADPOOL_SIZE 4
+SetEnv UV_USE_IO_URING 0
+SetEnv NODE_OPTIONS "--max-old-space-size=1024"
