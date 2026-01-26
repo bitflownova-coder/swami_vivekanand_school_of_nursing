@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,16 +33,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Get workshop and verify token
-    const workshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM workshops WHERE id = ?',
+      [workshopId]
+    );
     
-    if (!workshop) {
+    if (workshops.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
         { status: 404 }
       );
     }
+
+    const workshop = workshops[0];
 
     if (workshop.spotRegistrationQRToken !== token) {
       return NextResponse.json(
@@ -65,17 +70,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if already registered
-    const existingRegistration = await prisma.registration.findFirst({
-      where: {
-        workshopId,
-        OR: [
-          { mncUID },
-          { mobileNumber }
-        ]
-      }
-    });
+    const [existingRegs] = await db.query<RowDataPacket[]>(
+      'SELECT id FROM registrations WHERE workshopId = ? AND (mncUID = ? OR mobileNumber = ?)',
+      [workshopId, mncUID, mobileNumber]
+    );
 
-    if (existingRegistration) {
+    if (existingRegs.length > 0) {
       return NextResponse.json(
         { success: false, error: 'You are already registered for this workshop' },
         { status: 400 }
@@ -90,33 +90,33 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate form number
-    const count = await prisma.registration.count({ where: { workshopId } });
-    const formNumber = count + 1;
+    const [countResult] = await db.query<RowDataPacket[]>(
+      'SELECT COUNT(*) as count FROM registrations WHERE workshopId = ?',
+      [workshopId]
+    );
+    const formNumber = countResult[0].count + 1;
 
     // Create registration
-    const registration = await prisma.registration.create({
-      data: {
-        workshopId,
-        formNumber,
-        fullName,
-        mncUID,
-        mncRegistrationNumber,
-        mobileNumber,
-        paymentUTR,
-        paymentScreenshot: screenshotBase64,
-        registrationType: 'spot',
-        attendanceStatus: 'applied'
-      }
-    });
+    const registrationId = uuidv4();
+    await db.query<ResultSetHeader>(
+      `INSERT INTO registrations (
+        id, workshopId, formNumber, fullName, mncUID, mncRegistrationNumber,
+        mobileNumber, paymentUTR, paymentScreenshot, registrationType, attendanceStatus
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'spot', 'applied')`,
+      [
+        registrationId, workshopId, formNumber, fullName, mncUID,
+        mncRegistrationNumber, mobileNumber, paymentUTR, screenshotBase64
+      ]
+    );
 
     // Update workshop spot count
-    await prisma.workshop.update({
-      where: { id: workshopId },
-      data: {
-        currentSpotRegistrations: { increment: 1 },
-        currentRegistrations: { increment: 1 }
-      }
-    });
+    await db.query<ResultSetHeader>(
+      `UPDATE workshops 
+       SET currentSpotRegistrations = currentSpotRegistrations + 1,
+           currentRegistrations = currentRegistrations + 1
+       WHERE id = ?`,
+      [workshopId]
+    );
 
     return NextResponse.json({
       success: true,
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error in spot registration:', error);
     
-    if (error.code === 'P2002') {
+    if (error.code === 'ER_DUP_ENTRY') {
       return NextResponse.json(
         { success: false, error: 'Duplicate registration detected' },
         { status: 400 }

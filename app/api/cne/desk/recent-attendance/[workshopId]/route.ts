@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -22,15 +23,20 @@ export async function GET(
 
     const { workshopId } = await context.params;
 
-    const attendance = await prisma.attendance.findMany({
-      where: { workshopId },
-      orderBy: { markedAt: 'desc' },
-      take: 10
-    });
+    const [attendance] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM attendances WHERE workshopId = ? ORDER BY markedAt DESC LIMIT 10',
+      [workshopId]
+    );
+
+    // Map id to _id for frontend compatibility
+    const mappedAttendance = attendance.map(a => ({
+      ...a,
+      _id: a.id
+    }));
 
     return NextResponse.json({
       success: true,
-      attendance
+      attendance: mappedAttendance
     });
   } catch (error: any) {
     console.error('Error fetching recent attendance:', error);

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
 import crypto from 'crypto';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -23,11 +24,12 @@ export async function GET(
 
     const { workshopId } = await context.params;
 
-    const workshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT spotRegistrationQRToken FROM workshops WHERE id = ?',
+      [workshopId]
+    );
     
-    if (!workshop) {
+    if (workshops.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
         { status: 404 }
@@ -35,14 +37,14 @@ export async function GET(
     }
 
     // Generate or get spot registration token
-    let token = workshop.spotRegistrationQRToken;
+    let token = workshops[0].spotRegistrationQRToken;
     
     if (!token) {
       token = crypto.randomBytes(32).toString('hex');
-      await prisma.workshop.update({
-        where: { id: workshopId },
-        data: { spotRegistrationQRToken: token }
-      });
+      await db.query<ResultSetHeader>(
+        'UPDATE workshops SET spotRegistrationQRToken = ? WHERE id = ?',
+        [token, workshopId]
+      );
     }
 
     return NextResponse.json({

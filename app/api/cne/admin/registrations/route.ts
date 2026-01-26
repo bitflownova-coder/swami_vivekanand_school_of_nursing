@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,40 +11,81 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '100');
 
-    const where: any = {};
+    let query = `
+      SELECT r.*, w.title as workshopTitle, w.date as workshopDate, w.venue as workshopVenue
+      FROM registrations r
+      JOIN workshops w ON r.workshopId = w.id
+      WHERE 1=1
+    `;
+    const params: any[] = [];
 
     if (workshopId && workshopId !== 'all') {
-      where.workshopId = workshopId;
+      query += ' AND r.workshopId = ?';
+      params.push(workshopId);
     }
 
     if (search) {
-      where.OR = [
-        { fullName: { contains: search } },
-        { mncUID: { contains: search } },
-        { mncRegistrationNumber: { contains: search } },
-        { mobileNumber: { contains: search } },
-        { paymentUTR: { contains: search } }
-      ];
+      query += ` AND (
+        r.fullName LIKE ? OR 
+        r.mncUID LIKE ? OR 
+        r.mncRegistrationNumber LIKE ? OR 
+        r.mobileNumber LIKE ? OR 
+        r.paymentUTR LIKE ?
+      )`;
+      const searchTerm = `%${search}%`;
+      params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
     }
 
-    const registrations = await prisma.registration.findMany({
-      where,
-      include: {
-        workshop: {
-          select: { title: true, date: true, venue: true }
-        }
-      },
-      orderBy: { submittedAt: sort === 'oldest' ? 'asc' : 'desc' },
-      skip: (page - 1) * limit,
-      take: limit
-    });
+    query += ` ORDER BY r.submittedAt ${sort === 'oldest' ? 'ASC' : 'DESC'}`;
+    query += ' LIMIT ? OFFSET ?';
+    params.push(limit, (page - 1) * limit);
 
-    const total = await prisma.registration.count({ where });
+    const [registrations] = await db.query<RowDataPacket[]>(query, params);
 
-    // Map to expected format with workshopId field for compatibility
+    // Count total records
+    let countQuery = 'SELECT COUNT(*) as total FROM registrations r WHERE 1=1';
+    const countParams: any[] = [];
+    
+    if (workshopId && workshopId !== 'all') {
+      countQuery += ' AND r.workshopId = ?';
+      countParams.push(workshopId);
+    }
+
+    if (search) {
+      countQuery += ` AND (
+        r.fullName LIKE ? OR 
+        r.mncUID LIKE ? OR 
+        r.mncRegistrationNumber LIKE ? OR 
+        r.mobileNumber LIKE ? OR 
+        r.paymentUTR LIKE ?
+      )`;
+      const searchTerm = `%${search}%`;
+      countParams.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
+    }
+
+    const [countResult] = await db.query<RowDataPacket[]>(countQuery, countParams);
+    const total = countResult[0].total;
+
+    // Map to expected format with _id for frontend compatibility
     const mappedRegistrations = registrations.map(reg => ({
-      ...reg,
-      workshopId: reg.workshop
+      _id: reg.id,
+      formNumber: reg.formNumber,
+      fullName: reg.fullName,
+      mncUID: reg.mncUID,
+      mncRegistrationNumber: reg.mncRegistrationNumber,
+      mobileNumber: reg.mobileNumber,
+      paymentUTR: reg.paymentUTR,
+      paymentScreenshot: reg.paymentScreenshot,
+      registrationType: reg.registrationType,
+      attendanceStatus: reg.attendanceStatus,
+      submittedAt: reg.submittedAt,
+      downloadCount: reg.downloadCount || 0,
+      workshopId: {
+        _id: reg.workshopId,
+        title: reg.workshopTitle,
+        date: reg.workshopDate,
+        venue: reg.workshopVenue
+      }
     }));
 
     return NextResponse.json({

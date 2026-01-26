@@ -1,29 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let where: any = {};
+    let query = 'SELECT * FROM workshops';
+    let params: any[] = [];
     
     if (status === 'active') {
-      where.status = { in: ['active', 'spot'] };
-    } else if (status === 'upcoming') {
-      where.status = 'upcoming';
+      query += ' WHERE status IN (?, ?)';
+      params = ['active', 'spot'];
     } else if (status) {
-      where.status = status;
+      query += ' WHERE status = ?';
+      params = [status];
     }
+    
+    query += ' ORDER BY date ASC';
 
-    const workshops = await prisma.workshop.findMany({
-      where,
-      orderBy: { date: 'asc' }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(query, params);
+
+    // Map id to _id for frontend compatibility
+    const mappedWorkshops = workshops.map(w => ({
+      ...w,
+      _id: w.id
+    }));
 
     return NextResponse.json({
       success: true,
-      workshops
+      workshops: mappedWorkshops
     });
   } catch (error: any) {
     console.error('Error fetching workshops:', error);
@@ -38,24 +46,41 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const workshop = await prisma.workshop.create({
-      data: {
-        title: body.title,
-        description: body.description,
-        date: new Date(body.date),
-        dayOfWeek: body.dayOfWeek,
-        venue: body.venue,
-        venueLink: body.venueLink || '',
-        fee: Number(body.fee),
-        credits: Number(body.credits),
-        maxSeats: Number(body.maxSeats) || 500,
-        status: body.status || 'draft',
-        spotRegistrationEnabled: body.spotRegistrationEnabled || false,
-        spotRegistrationLimit: Number(body.spotRegistrationLimit) || 50,
-        paymentQRCode: body.paymentQRCode || '',
-        upiId: body.upiId || ''
-      }
-    });
+    const workshopId = uuidv4();
+    const query = `
+      INSERT INTO workshops (
+        id, title, description, date, dayOfWeek, venue, venueLink, 
+        fee, credits, maxSeats, status, spotRegistrationEnabled, 
+        spotRegistrationLimit, paymentQRCode, upiId
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    const params = [
+      workshopId,
+      body.title,
+      body.description,
+      new Date(body.date),
+      body.dayOfWeek,
+      body.venue,
+      body.venueLink || '',
+      Number(body.fee),
+      Number(body.credits),
+      Number(body.maxSeats) || 500,
+      body.status || 'draft',
+      body.spotRegistrationEnabled || false,
+      Number(body.spotRegistrationLimit) || 50,
+      body.paymentQRCode || '',
+      body.upiId || ''
+    ];
+
+    await db.query<ResultSetHeader>(query, params);
+
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM workshops WHERE id = ?',
+      [workshopId]
+    );
+
+    const workshop = { ...workshops[0], _id: workshops[0].id };
 
     return NextResponse.json({
       success: true,

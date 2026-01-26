@@ -13,7 +13,7 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   compress: true,
   poweredByHeader: false,
-  swcMinify: true,
+  // swcMinify is now default in Next.js 16 and deprecated
 };
 
 module.exports = nextConfig;

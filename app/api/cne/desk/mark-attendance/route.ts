@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,60 +30,51 @@ export async function POST(request: NextRequest) {
     }
 
     // Find the registration
-    const registration = await prisma.registration.findFirst({
-      where: {
-        workshopId,
-        mncUID: mncUID.toUpperCase().trim(),
-        mobileNumber: mobileNumber.trim()
-      }
-    });
+    const [registrations] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM registrations WHERE workshopId = ? AND mncUID = ? AND mobileNumber = ?',
+      [workshopId, mncUID.toUpperCase().trim(), mobileNumber.trim()]
+    );
 
-    if (!registration) {
+    if (registrations.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Registration not found. Please check your MNC UID and mobile number.' },
         { status: 404 }
       );
     }
 
-    // Check if already marked present
-    const existingAttendance = await prisma.attendance.findFirst({
-      where: {
-        workshopId,
-        registrationId: registration.id
-      }
-    });
+    const registration = registrations[0];
 
-    if (existingAttendance) {
+    // Check if already marked present
+    const [existingAttendance] = await db.query<RowDataPacket[]>(
+      'SELECT id FROM attendances WHERE workshopId = ? AND registrationId = ?',
+      [workshopId, registration.id]
+    );
+
+    if (existingAttendance.length > 0) {
       return NextResponse.json(
         { success: false, error: 'Attendance already marked for this registration.' },
         { status: 400 }
       );
     }
 
-    // Get request info
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ipAddress = forwarded ? forwarded.split(',')[0] : 'unknown';
-    const userAgent = request.headers.get('user-agent') || '';
-
     // Create attendance record
-    await prisma.attendance.create({
-      data: {
-        workshopId,
-        registrationId: registration.id,
-        mncUID: registration.mncUID,
-        mncRegistrationNumber: registration.mncRegistrationNumber,
-        studentName: registration.fullName,
-        qrToken: token,
-        ipAddress,
-        userAgent
-      }
-    });
+    const attendanceId = uuidv4();
+    await db.query<ResultSetHeader>(
+      `INSERT INTO attendances (
+        id, workshopId, registrationId, mncUID, mncRegistrationNumber, 
+        studentName, qrToken
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        attendanceId, workshopId, registration.id, registration.mncUID,
+        registration.mncRegistrationNumber, registration.fullName, token
+      ]
+    );
 
     // Update registration status
-    await prisma.registration.update({
-      where: { id: registration.id },
-      data: { attendanceStatus: 'present' }
-    });
+    await db.query<ResultSetHeader>(
+      "UPDATE registrations SET attendanceStatus = 'present' WHERE id = ?",
+      [registration.id]
+    );
 
     return NextResponse.json({
       success: true,

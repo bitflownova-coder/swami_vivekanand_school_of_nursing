@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -23,19 +24,31 @@ export async function GET(
     const { workshopId } = await context.params;
 
     // Get total registrations
-    const total = await prisma.registration.count({ where: { workshopId } });
+    const [totalResult] = await db.query<RowDataPacket[]>(
+      'SELECT COUNT(*) as count FROM registrations WHERE workshopId = ?',
+      [workshopId]
+    );
+    const total = totalResult[0].count;
     
     // Get registrations by type
-    const online = await prisma.registration.count({ 
-      where: { workshopId, registrationType: 'online' } 
-    });
+    const [onlineResult] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'online'",
+      [workshopId]
+    );
+    const online = onlineResult[0].count;
     
-    const spot = await prisma.registration.count({ 
-      where: { workshopId, registrationType: 'spot' } 
-    });
+    const [spotResult] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'spot'",
+      [workshopId]
+    );
+    const spot = spotResult[0].count;
 
     // Get attendance count
-    const present = await prisma.attendance.count({ where: { workshopId } });
+    const [presentResult] = await db.query<RowDataPacket[]>(
+      'SELECT COUNT(*) as count FROM attendances WHERE workshopId = ?',
+      [workshopId]
+    );
+    const present = presentResult[0].count;
 
     const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
 

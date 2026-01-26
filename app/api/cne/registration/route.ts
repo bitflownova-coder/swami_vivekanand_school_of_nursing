@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import db from '@/lib/db';
+import { v4 as uuidv4 } from 'uuid';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,16 +33,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if workshop exists and is active
-    const workshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM workshops WHERE id = ?',
+      [workshopId]
+    );
 
-    if (!workshop) {
+    if (workshops.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
         { status: 404 }
       );
     }
+
+    const workshop = workshops[0];
 
     if (!['active', 'spot'].includes(workshop.status)) {
       return NextResponse.json(
@@ -52,14 +55,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Check for duplicate registration
-    const existingRegistration = await prisma.registration.findFirst({
-      where: {
-        workshopId,
-        mncUID
-      }
-    });
+    const [existingRegs] = await db.query<RowDataPacket[]>(
+      'SELECT id FROM registrations WHERE workshopId = ? AND mncUID = ?',
+      [workshopId, mncUID]
+    );
 
-    if (existingRegistration) {
+    if (existingRegs.length > 0) {
       return NextResponse.json(
         { success: false, error: 'You have already registered for this workshop' },
         { status: 400 }
@@ -81,72 +82,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Save payment screenshot
+    // Convert screenshot to base64
     const bytes = await paymentScreenshot.arrayBuffer();
-    const buffer = new Uint8Array(bytes);
-    
-    const filename = `${Date.now()}-${mncUID}-${paymentScreenshot.name}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'payments');
-    
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const screenshotBase64 = `data:${paymentScreenshot.type};base64,${Buffer.from(bytes).toString('base64')}`;
 
     // Get next form number
-    const lastRegistration = await prisma.registration.findFirst({
-      where: { workshopId },
-      orderBy: { formNumber: 'desc' }
-    });
+    const [lastReg] = await db.query<RowDataPacket[]>(
+      'SELECT formNumber FROM registrations WHERE workshopId = ? ORDER BY formNumber DESC LIMIT 1',
+      [workshopId]
+    );
     
-    const formNumber = lastRegistration ? lastRegistration.formNumber + 1 : 1;
-
-    // Get IP address
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ipAddress = forwarded ? forwarded.split(',')[0] : 'unknown';
+    const formNumber = lastReg.length > 0 ? lastReg[0].formNumber + 1 : 1;
 
     // Create registration
-    const registration = await prisma.registration.create({
-      data: {
-        workshopId,
-        formNumber,
-        fullName: fullName.trim(),
-        mncUID,
-        mncRegistrationNumber,
-        mobileNumber,
-        paymentUTR: paymentUTR.trim(),
-        paymentScreenshot: filename,
-        registrationType,
-        ipAddress
-      }
-    });
+    const registrationId = uuidv4();
+    await db.query<ResultSetHeader>(
+      `INSERT INTO registrations (
+        id, workshopId, formNumber, fullName, mncUID, mncRegistrationNumber, 
+        mobileNumber, paymentUTR, paymentScreenshot, registrationType
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [registrationId, workshopId, formNumber, fullName.trim(), mncUID, mncRegistrationNumber, 
+       mobileNumber, paymentUTR.trim(), screenshotBase64, registrationType]
+    );
 
     // Update workshop registration count
     if (registrationType === 'spot') {
-      await prisma.workshop.update({
-        where: { id: workshopId },
-        data: {
-          currentSpotRegistrations: { increment: 1 },
-          currentRegistrations: { increment: 1 }
-        }
-      });
+      await db.query<ResultSetHeader>(
+        `UPDATE workshops 
+         SET currentSpotRegistrations = currentSpotRegistrations + 1,
+             currentRegistrations = currentRegistrations + 1
+         WHERE id = ?`,
+        [workshopId]
+      );
     } else {
-      await prisma.workshop.update({
-        where: { id: workshopId },
-        data: {
-          currentRegistrations: { increment: 1 }
-        }
-      });
+      await db.query<ResultSetHeader>(
+        `UPDATE workshops SET currentRegistrations = currentRegistrations + 1 WHERE id = ?`,
+        [workshopId]
+      );
     }
 
     // Check if workshop is now full
-    const updatedWorkshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [updatedWorkshops] = await db.query<RowDataPacket[]>(
+      'SELECT currentRegistrations, maxSeats FROM workshops WHERE id = ?',
+      [workshopId]
+    );
     
-    if (updatedWorkshop && updatedWorkshop.currentRegistrations >= updatedWorkshop.maxSeats) {
-      await prisma.workshop.update({
-        where: { id: workshopId },
-        data: { status: 'full' }
-      });
+    if (updatedWorkshops.length > 0 && updatedWorkshops[0].currentRegistrations >= updatedWorkshops[0].maxSeats) {
+      await db.query<ResultSetHeader>(
+        `UPDATE workshops SET status = 'full' WHERE id = ?`,
+        [workshopId]
+      );
     }
 
     return NextResponse.json({
@@ -154,7 +139,7 @@ export async function POST(request: NextRequest) {
       message: 'Registration successful',
       data: {
         formNumber,
-        fullName: registration.fullName,
+        fullName: fullName.trim(),
         workshopTitle: workshop.title,
         workshopDate: workshop.date
       }
@@ -162,7 +147,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Error submitting registration:', error);
     
-    if (error.code === 'P2002') {
+    if (error.code === 'ER_DUP_ENTRY') {
       return NextResponse.json(
         { success: false, error: 'Duplicate registration detected' },
         { status: 400 }
@@ -181,24 +166,47 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const workshopId = searchParams.get('workshopId');
 
-    const where: any = {};
+    let query = `
+      SELECT r.*, w.title as workshopTitle, w.date as workshopDate, w.venue as workshopVenue
+      FROM registrations r
+      JOIN workshops w ON r.workshopId = w.id
+    `;
+    const params: any[] = [];
+
     if (workshopId) {
-      where.workshopId = workshopId;
+      query += ' WHERE r.workshopId = ?';
+      params.push(workshopId);
     }
 
-    const registrations = await prisma.registration.findMany({
-      where,
-      include: {
-        workshop: {
-          select: { title: true, date: true, venue: true }
-        }
-      },
-      orderBy: { submittedAt: 'desc' }
-    });
+    query += ' ORDER BY r.submittedAt DESC';
+
+    const [registrations] = await db.query<RowDataPacket[]>(query, params);
+
+    // Map id to _id for frontend compatibility
+    const mappedRegistrations = registrations.map(reg => ({
+      _id: reg.id,
+      formNumber: reg.formNumber,
+      fullName: reg.fullName,
+      mncUID: reg.mncUID,
+      mncRegistrationNumber: reg.mncRegistrationNumber,
+      mobileNumber: reg.mobileNumber,
+      paymentUTR: reg.paymentUTR,
+      paymentScreenshot: reg.paymentScreenshot,
+      registrationType: reg.registrationType,
+      attendanceStatus: reg.attendanceStatus,
+      submittedAt: reg.submittedAt,
+      downloadCount: reg.downloadCount,
+      workshopId: {
+        _id: reg.workshopId,
+        title: reg.workshopTitle,
+        date: reg.workshopDate,
+        venue: reg.workshopVenue
+      }
+    }));
 
     return NextResponse.json({
       success: true,
-      registrations
+      registrations: mappedRegistrations
     });
   } catch (error: any) {
     console.error('Error fetching registrations:', error);

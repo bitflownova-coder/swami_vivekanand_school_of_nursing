@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,16 +14,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const workshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT * FROM workshops WHERE id = ?',
+      [workshopId]
+    );
     
-    if (!workshop) {
+    if (workshops.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
         { status: 404 }
       );
     }
+
+    const workshop = workshops[0];
 
     // Verify token matches
     if (workshop.spotRegistrationQRToken !== token) {

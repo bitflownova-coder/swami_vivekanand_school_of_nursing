@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 
 // Admin credentials - in production, use environment variables and proper hashing
 const ADMIN_CREDENTIALS = {
-  username: process.env.CNE_ADMIN_USERNAME || 'svsnursing',
-  password: process.env.CNE_ADMIN_PASSWORD || 'SVSNursing@2025'
+  username: process.env.ADMIN_USERNAME || 'svsnursing',
+  password: process.env.ADMIN_PASSWORD || 'SVSNursing@2025'
 };
 
 export async function POST(request: NextRequest) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,33 +14,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const registration = await prisma.registration.findUnique({
-      where: { id: registrationId }
-    });
+    const [registrations] = await db.query<RowDataPacket[]>(
+      'SELECT downloadCount FROM registrations WHERE id = ?',
+      [registrationId]
+    );
 
-    if (!registration) {
+    if (registrations.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Registration not found' },
         { status: 404 }
       );
     }
 
-    if (registration.downloadCount >= 2) {
+    const downloadCount = registrations[0].downloadCount || 0;
+
+    if (downloadCount >= 2) {
       return NextResponse.json(
         { success: false, error: 'Maximum download limit (2) reached' },
         { status: 400 }
       );
     }
 
-    const updatedRegistration = await prisma.registration.update({
-      where: { id: registrationId },
-      data: { downloadCount: registration.downloadCount + 1 }
-    });
+    await db.query<ResultSetHeader>(
+      'UPDATE registrations SET downloadCount = downloadCount + 1 WHERE id = ?',
+      [registrationId]
+    );
 
     return NextResponse.json({
       success: true,
-      downloadCount: updatedRegistration.downloadCount,
-      remainingDownloads: 2 - updatedRegistration.downloadCount
+      downloadCount: downloadCount + 1,
+      remainingDownloads: 1 - downloadCount
     });
   } catch (error: any) {
     console.error('Error incrementing download:', error);

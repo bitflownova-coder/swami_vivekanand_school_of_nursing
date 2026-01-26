@@ -1,0 +1,126 @@
+=================================================================
+ MANUAL SERVER FIX - Prisma Database Setup
+=================================================================
+
+PROBLEM:
+The Prisma client is not properly generated on the server, causing
+"timer has gone away" errors when trying to access the database.
+
+SOLUTION:
+You need to connect to the server via SSH and run a few commands
+to regenerate Prisma and set up the database.
+
+=================================================================
+ METHOD 1: Using PuTTY (Recommended)
+=================================================================
+
+1. Download and install PuTTY if you don't have it:
+   https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
+
+2. Open PuTTY and configure:
+   - Host Name: 72.61.252.200
+   - Port: 65002
+   - Connection Type: SSH
+   - Click "Open"
+
+3. When prompted:
+   - login as: u984810592
+   - password: [enter your SSH password]
+
+4. Once connected, paste these commands ONE BY ONE:
+
+   cd domains/svsnursing.org/public_html
+   
+   npx prisma generate
+   
+   npx prisma migrate deploy
+   
+   mkdir -p tmp && touch tmp/restart.txt
+   
+   exit
+
+5. Wait 2-3 minutes, then test the website
+
+=================================================================
+ METHOD 2: Using Hostinger File Manager + SSH Terminal
+=================================================================
+
+1. Login to Hostinger control panel (hpanel.hostinger.com)
+
+2. Go to your website: svsnursing.org
+
+3. Click "Advanced" → "SSH Access" or find the terminal icon
+
+4. Click "Open SSH Terminal" (browser-based)
+
+5. Run these commands:
+
+   cd domains/svsnursing.org/public_html
+   npx prisma generate
+   npx prisma migrate deploy
+   mkdir -p tmp && touch tmp/restart.txt
+
+6. Close terminal and wait 2-3 minutes
+
+=================================================================
+ WHAT THESE COMMANDS DO:
+=================================================================
+
+1. cd domains/svsnursing.org/public_html
+   → Navigate to your website directory
+
+2. npx prisma generate
+   → Generate Prisma client for the server's platform
+   → This fixes the "timer has gone away" error
+
+3. npx prisma migrate deploy
+   → Create/update database tables according to schema
+   → Sets up all required tables (workshops, registrations, etc.)
+
+4. mkdir -p tmp && touch tmp/restart.txt
+   → Restart the Node.js application
+   → Passenger detects this and rebuilds the app
+
+=================================================================
+ EXPECTED OUTPUT:
+=================================================================
+
+When you run "npx prisma generate", you should see:
+  ✔ Generated Prisma Client
+
+When you run "npx prisma migrate deploy", you should see:
+  X migrations found in prisma/migrations
+  Applying migration...
+  The following migration have been applied: ...
+
+=================================================================
+ TROUBLESHOOTING:
+=================================================================
+
+If "npx prisma generate" fails:
+- Try: npm install
+- Then retry: npx prisma generate
+
+If "npx prisma migrate deploy" fails:
+- Check database credentials in .env file
+- Try: cat .env (to view the file)
+- The DATABASE_URL should be:
+  mysql://u984810592_svs:sCARFACE%40aMISHA%401804@localhost:3306/u984810592_svs_cne
+
+If app still doesn't work after 3 minutes:
+- Check logs: tail -50 stderr.log
+- Force restart: rm -rf .next && touch tmp/restart.txt
+
+=================================================================
+ AFTER COMPLETION:
+=================================================================
+
+Test these URLs to verify everything works:
+- https://svsnursing.org (main site)
+- https://svsnursing.org/cne/admin (admin portal)
+  Username: svsnursing
+  Password: SVSNursing@2025
+
+The API errors should be gone and the database should work!
+
+=================================================================

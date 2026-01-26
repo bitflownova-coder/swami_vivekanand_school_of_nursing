@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import prisma from '@/lib/prisma';
+import db from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -22,17 +23,19 @@ export async function GET(
 
     const { workshopId } = await context.params;
 
-    const workshop = await prisma.workshop.findUnique({
-      where: { id: workshopId }
-    });
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT currentSpotRegistrations, spotRegistrationLimit FROM workshops WHERE id = ?',
+      [workshopId]
+    );
     
-    if (!workshop) {
+    if (workshops.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Workshop not found' },
         { status: 404 }
       );
     }
 
+    const workshop = workshops[0];
     const total = workshop.currentSpotRegistrations || 0;
     const limit = workshop.spotRegistrationLimit || 50;
     const remaining = Math.max(0, limit - total);
