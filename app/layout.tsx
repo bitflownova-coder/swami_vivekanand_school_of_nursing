@@ -3,7 +3,6 @@ import { Inter } from "next/font/google"; // Assuming you use Inter font
 import "./globals.css";
 import Navigation from "@/components/navigation"; // Your components
 import Footer from "@/components/footer";
-import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -103,7 +102,6 @@ export default function RootLayout({
         <Navigation />
         <main className="min-h-screen">{children}</main>
         <Footer />
-        <Analytics />
       </body>
     </html>
   );
