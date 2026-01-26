@@ -25,6 +25,14 @@ export default function AdminLoginPage() {
   const checkSession = async () => {
     try {
       const response = await fetch("/api/cne/admin/check-session");
+      
+      // If response is not ok, just continue to login page
+      if (!response.ok) {
+        console.error("Session check failed:", response.status);
+        setCheckingSession(false);
+        return;
+      }
+      
       const data = await response.json();
       
       if (data.success && data.authenticated) {
@@ -32,6 +40,7 @@ export default function AdminLoginPage() {
       }
     } catch (err) {
       console.error("Session check error:", err);
+      // Continue to login page on error
     } finally {
       setCheckingSession(false);
     }

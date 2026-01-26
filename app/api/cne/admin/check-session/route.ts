@@ -19,9 +19,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Error checking session:', error);
-    return NextResponse.json(
-      { success: false, error: error.message || 'Session check failed' },
-      { status: 500 }
-    );
+    // Return unauthenticated instead of error to prevent 503
+    return NextResponse.json({
+      success: true,
+      authenticated: false
+    });
   }
 }

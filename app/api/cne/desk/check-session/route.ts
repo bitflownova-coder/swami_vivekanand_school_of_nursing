@@ -12,9 +12,10 @@ export async function GET() {
     });
   } catch (error: any) {
     console.error('Desk session check error:', error);
-    return NextResponse.json(
-      { success: false, authenticated: false },
-      { status: 500 }
-    );
+    // Return unauthenticated instead of error
+    return NextResponse.json({
+      success: true,
+      authenticated: false
+    });
   }
 }
