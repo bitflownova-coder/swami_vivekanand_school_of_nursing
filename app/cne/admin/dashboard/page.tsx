@@ -142,10 +142,28 @@ export default function AdminDashboardPage() {
   const handleExport = async () => {
     setExporting(true);
     try {
+      // Fetch ALL registrations for the selected workshop (no limit)
+      let url = `/api/cne/admin/registrations?sort=${sortOrder}`;
+      if (selectedWorkshop !== "all") {
+        url += `&workshopId=${selectedWorkshop}`;
+      }
+      if (searchQuery) {
+        url += `&search=${encodeURIComponent(searchQuery)}`;
+      }
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error('Failed to fetch registrations');
+      }
+
+      const allRegistrations = data.registrations;
+
       // Dynamic import for xlsx
       const XLSX = await import("xlsx");
       
-      const exportData = registrations.map((reg, index) => ({
+      const exportData = allRegistrations.map((reg: any, index: number) => ({
         "S.No": index + 1,
         "Form No.": reg.formNumber,
         "Name": reg.fullName,
@@ -164,10 +182,14 @@ export default function AdminDashboardPage() {
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Registrations");
       
-      const filename = `CNE_Registrations_${new Date().toISOString().split("T")[0]}.xlsx`;
+      const workshopName = selectedWorkshop === "all" 
+        ? "All_Workshops" 
+        : workshops.find(w => w._id === selectedWorkshop)?.title?.replace(/[^a-zA-Z0-9]/g, '_') || "Workshop";
+      const filename = `CNE_Registrations_${workshopName}_${new Date().toISOString().split("T")[0]}.xlsx`;
       XLSX.writeFile(wb, filename);
     } catch (err) {
       console.error("Error exporting:", err);
+      alert("Failed to export registrations. Please try again.");
     } finally {
       setExporting(false);
     }

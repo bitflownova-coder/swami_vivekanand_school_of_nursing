@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const sort = searchParams.get('sort') || 'newest';
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '100');
+    const limit = parseInt(searchParams.get('limit') || '999999'); // No limit by default
 
     let query = `
       SELECT r.*, w.title as workshopTitle, w.date as workshopDate, w.venue as workshopVenue
