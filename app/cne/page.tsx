@@ -92,7 +92,7 @@ export default function CNEPage() {
 
   const validateForm = () => {
     if (!formData.fullName.trim()) return "Full name is required";
-    if (!formData.mncUID.trim()) return "MNC UID is required";
+    if (!/^[0-9]{10}$/.test(formData.mncUID)) return "MNC UID must be exactly 10 digits";
     if (!formData.mncRegistrationNumber.trim()) return "MNC Registration Number is required";
     if (!/^[0-9]{10}$/.test(formData.mobileNumber)) return "Mobile number must be 10 digits";
     if (!formData.paymentUTR.trim()) return "Payment UTR is required";
@@ -374,13 +374,15 @@ export default function CNEPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="mncUID">MNC UID *</Label>
+                    <Label htmlFor="mncUID">MNC UID (10 digit) *</Label>
                     <Input
                       id="mncUID"
                       name="mncUID"
+                      type="tel"
                       value={formData.mncUID}
-                      onChange={handleInputChange}
-                      placeholder="Enter your MNC UID"
+                      onChange={(e) => setFormData(prev => ({ ...prev, mncUID: e.target.value.replace(/\D/g, '') }))}
+                      placeholder="Enter your 10-digit MNC UID"
+                      maxLength={10}
                       className="mt-1"
                     />
                   </div>

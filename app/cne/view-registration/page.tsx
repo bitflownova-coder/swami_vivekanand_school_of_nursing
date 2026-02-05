@@ -218,12 +218,14 @@ export default function ViewRegistrationPage() {
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="mncUID">MNC UID</Label>
+                  <Label htmlFor="mncUID">MNC UID (10 digit)</Label>
                   <Input
                     id="mncUID"
+                    type="tel"
                     value={searchData.mncUID}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, mncUID: e.target.value }))}
-                    placeholder="Enter your MNC UID"
+                    onChange={(e) => setSearchData(prev => ({ ...prev, mncUID: e.target.value.replace(/\D/g, '') }))}
+                    placeholder="Enter your 10-digit MNC UID"
+                    maxLength={10}
                     required
                     className="mt-1"
                   />
@@ -232,8 +234,9 @@ export default function ViewRegistrationPage() {
                   <Label htmlFor="mobileNumber">Mobile Number</Label>
                   <Input
                     id="mobileNumber"
+                    type="tel"
                     value={searchData.mobileNumber}
-                    onChange={(e) => setSearchData(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                    onChange={(e) => setSearchData(prev => ({ ...prev, mobileNumber: e.target.value.replace(/\D/g, '') }))}
                     placeholder="10-digit mobile number"
                     maxLength={10}
                     required
