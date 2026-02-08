@@ -12,8 +12,8 @@ export async function GET(request: NextRequest) {
     let params: any[] = [];
     
     if (status === 'active') {
-      query += ' WHERE status IN (?, ?)';
-      params = ['active', 'spot'];
+      query += ' WHERE status IN (?, ?, ?)';
+      params = ['active', 'full', 'spot'];
     } else if (status) {
       query += ' WHERE status = ?';
       params = [status];

@@ -55,15 +55,12 @@ export default function DeskPortalPage() {
   const [spotStats, setSpotStats] = useState<SpotStats | null>(null);
   const [recentAttendance, setRecentAttendance] = useState<RecentAttendance[]>([]);
   const [loading, setLoading] = useState(true);
-  const [countdown, setCountdown] = useState(30);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const countdownRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     checkAuth();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, []);
 
@@ -74,7 +71,6 @@ export default function DeskPortalPage() {
     }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, [selectedWorkshop]);
 
@@ -130,7 +126,6 @@ export default function DeskPortalPage() {
       
       if (data.success) {
         setAttendanceQrToken(data.token);
-        setCountdown(30);
       }
     } catch (err) {
       console.error("Error generating attendance QR token:", err);
@@ -154,17 +149,13 @@ export default function DeskPortalPage() {
 
   const startAutoRefresh = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
-    if (countdownRef.current) clearInterval(countdownRef.current);
 
-    // Refresh every 30 seconds
+    // Refresh stats and recent attendance every 30 seconds (but not QR codes)
     intervalRef.current = setInterval(() => {
-      loadAllData();
+      loadAttendanceStats();
+      loadSpotStats();
+      loadRecentAttendance();
     }, 30000);
-
-    // Countdown for attendance QR
-    countdownRef.current = setInterval(() => {
-      setCountdown(prev => prev > 0 ? prev - 1 : 30);
-    }, 1000);
   };
 
   const loadAttendanceStats = async () => {
@@ -349,18 +340,18 @@ export default function DeskPortalPage() {
                             className="w-64 h-64"
                           />
                         </div>
-                        <div className="flex items-center gap-2 mt-4 text-sm text-gray-600">
-                          <Clock className="h-4 w-4" />
-                          Refreshes in {countdown}s
+                        <div className="flex items-center gap-2 mt-4 text-sm text-green-600">
+                          <CheckCircle className="h-4 w-4" />
+                          Static QR Code
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => { generateAttendanceQRToken(); setCountdown(30); }}
+                          onClick={generateAttendanceQRToken}
                           className="mt-2"
                         >
                           <RefreshCw className="h-4 w-4 mr-2" />
-                          Refresh Now
+                          Refresh QR
                         </Button>
                         <p className="text-xs text-gray-500 mt-4 text-center">
                           Students scan this QR with their phone camera to mark attendance
