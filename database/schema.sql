@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `workshops` (
   `spotRegistrationLimit` INT NOT NULL DEFAULT 50,
   `currentSpotRegistrations` INT NOT NULL DEFAULT 0,
   `spotRegistrationQRToken` VARCHAR(500) NOT NULL DEFAULT '',
+  `attendanceQRToken` VARCHAR(500) NOT NULL DEFAULT '',
   `paymentQRCode` LONGTEXT NULL,
   `upiId` VARCHAR(100) NOT NULL DEFAULT '',
   `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

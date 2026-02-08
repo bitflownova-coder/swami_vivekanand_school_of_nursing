@@ -15,16 +15,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate token (time-based, valid for current and previous 30-second windows)
-    const currentTimestamp = Math.floor(Date.now() / 30000);
-    const validTokens = [
-      Buffer.from(`attendance-${workshopId}-${currentTimestamp}`).toString('base64'),
-      Buffer.from(`attendance-${workshopId}-${currentTimestamp - 1}`).toString('base64')
-    ];
+    // Validate token against the workshop's permanent attendance QR token
+    const [workshops] = await db.query<RowDataPacket[]>(
+      'SELECT attendanceQRToken FROM workshops WHERE id = ?',
+      [workshopId]
+    );
 
-    if (!validTokens.includes(token)) {
+    if (workshops.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'QR code has expired. Please scan the current QR code from the registration desk.' },
+        { success: false, error: 'Workshop not found.' },
+        { status: 404 }
+      );
+    }
+
+    if (workshops[0].attendanceQRToken !== token) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid QR code. Please scan the official attendance QR code from the registration desk.' },
         { status: 400 }
       );
     }

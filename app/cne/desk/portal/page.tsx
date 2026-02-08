@@ -342,17 +342,8 @@ export default function DeskPortalPage() {
                         </div>
                         <div className="flex items-center gap-2 mt-4 text-sm text-green-600">
                           <CheckCircle className="h-4 w-4" />
-                          Static QR Code
+                          One QR per Workshop - Never Expires
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={generateAttendanceQRToken}
-                          className="mt-2"
-                        >
-                          <RefreshCw className="h-4 w-4 mr-2" />
-                          Refresh QR
-                        </Button>
                         <p className="text-xs text-gray-500 mt-4 text-center">
                           Students scan this QR with their phone camera to mark attendance
                         </p>
@@ -483,18 +474,13 @@ export default function DeskPortalPage() {
                             className="w-64 h-64"
                           />
                         </div>
-                        <p className="text-xs text-gray-500 mt-4 text-center">
+                        <div className="flex items-center gap-2 mt-4 text-sm text-purple-600">
+                          <CheckCircle className="h-4 w-4" />
+                          One QR per Workshop - Never Expires
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2 text-center">
                           Candidates scan this QR with their phone camera to register on spot
                         </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={generateSpotQRToken}
-                          className="mt-4"
-                        >
-                          <RefreshCw className="h-4 w-4 mr-2" />
-                          Refresh QR
-                        </Button>
                       </>
                     ) : (
                       <div className="py-8 text-center text-gray-500">

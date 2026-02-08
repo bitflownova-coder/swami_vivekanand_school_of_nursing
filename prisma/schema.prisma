@@ -28,6 +28,7 @@ model Workshop {
   spotRegistrationLimit    Int            @default(50)
   currentSpotRegistrations Int            @default(0)
   spotRegistrationQRToken  String         @default("") @db.VarChar(500)
+  attendanceQRToken        String         @default("") @db.VarChar(500)
   paymentQRCode            String?        @db.LongText
   upiId                    String         @default("") @db.VarChar(100)
   createdAt                DateTime       @default(now())

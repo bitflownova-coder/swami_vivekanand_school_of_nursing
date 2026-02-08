@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import db from '@/lib/db';
-import { RowDataPacket } from 'mysql2';
+import crypto from 'crypto';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 type RouteContext = { params: Promise<{ workshopId: string }> };
 
@@ -24,7 +25,7 @@ export async function GET(
     const { workshopId } = await context.params;
 
     const [workshops] = await db.query<RowDataPacket[]>(
-      'SELECT id FROM workshops WHERE id = ?',
+      'SELECT attendanceQRToken FROM workshops WHERE id = ?',
       [workshopId]
     );
     
@@ -35,9 +36,16 @@ export async function GET(
       );
     }
 
-    // Generate a time-based token (changes every 30 seconds)
-    const timestamp = Math.floor(Date.now() / 30000);
-    const token = Buffer.from(`attendance-${workshopId}-${timestamp}`).toString('base64');
+    // Generate or get attendance token (permanent per workshop)
+    let token = workshops[0].attendanceQRToken;
+    
+    if (!token) {
+      token = crypto.randomBytes(32).toString('hex');
+      await db.query<ResultSetHeader>(
+        'UPDATE workshops SET attendanceQRToken = ? WHERE id = ?',
+        [token, workshopId]
+      );
+    }
 
     return NextResponse.json({
       success: true,
