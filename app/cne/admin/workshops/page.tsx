@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   Plus, Pencil, Trash2, ArrowLeft, Calendar, MapPin, 
-  Users, CreditCard, Loader2, X, AlertCircle, CheckCircle, Upload, Image
+  Users, CreditCard, Loader2, X, AlertCircle, CheckCircle
 } from "lucide-react";
 import Link from "next/link";
 
@@ -29,8 +29,6 @@ interface Workshop {
   spotRegistrationEnabled: boolean;
   spotRegistrationLimit: number;
   currentSpotRegistrations: number;
-  paymentQRCode: string;
-  upiId: string;
 }
 
 const DAYS_OF_WEEK = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
@@ -59,12 +57,7 @@ export default function AdminWorkshopsPage() {
     status: "draft",
     spotRegistrationEnabled: false,
     spotRegistrationLimit: "50",
-    paymentQRCode: "",
-    upiId: ""
   });
-
-  const [qrUploadMode, setQrUploadMode] = useState<'url' | 'upload'>('url');
-  const [qrPreview, setQrPreview] = useState<string>("");
 
   useEffect(() => {
     checkAuth();
@@ -114,20 +107,14 @@ export default function AdminWorkshopsPage() {
       status: "draft",
       spotRegistrationEnabled: false,
       spotRegistrationLimit: "50",
-      paymentQRCode: "",
-      upiId: ""
     });
     setEditingWorkshop(null);
-    setQrUploadMode('url');
-    setQrPreview("");
   };
 
   const openCreateModal = () => {
     resetForm();
     setShowModal(true);
     setError("");
-    setQrUploadMode('url');
-    setQrPreview("");
   };
 
   const openEditModal = (workshop: Workshop) => {
@@ -145,55 +132,10 @@ export default function AdminWorkshopsPage() {
       status: workshop.status,
       spotRegistrationEnabled: workshop.spotRegistrationEnabled,
       spotRegistrationLimit: workshop.spotRegistrationLimit.toString(),
-      paymentQRCode: workshop.paymentQRCode || "",
-      upiId: workshop.upiId || ""
     });
-    
-    // Set QR preview if exists
-    if (workshop.paymentQRCode) {
-      setQrPreview(workshop.paymentQRCode);
-      setQrUploadMode(workshop.paymentQRCode.startsWith('data:') ? 'upload' : 'url');
-    } else {
-      setQrPreview("");
-      setQrUploadMode('url');
-    }
     
     setShowModal(true);
     setError("");
-  };
-
-  const handleQRUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file (JPG, PNG, etc.)');
-      return;
-    }
-
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      setError('Image size should be less than 2MB');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      setFormData(prev => ({ ...prev, paymentQRCode: base64 }));
-      setQrPreview(base64);
-      setError("");
-    };
-    reader.onerror = () => {
-      setError('Failed to read the image file');
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const removeQRImage = () => {
-    setFormData(prev => ({ ...prev, paymentQRCode: "" }));
-    setQrPreview("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -548,99 +490,6 @@ export default function AdminWorkshopsPage() {
                         <option key={status} value={status}>{status.toUpperCase()}</option>
                       ))}
                     </select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="upiId">UPI ID</Label>
-                    <Input
-                      id="upiId"
-                      value={formData.upiId}
-                      onChange={(e) => setFormData(prev => ({ ...prev, upiId: e.target.value }))}
-                      placeholder="example@upi"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <Label>Payment QR Code</Label>
-                    
-                    {/* Toggle between URL and Upload */}
-                    <div className="flex gap-2 mt-2 mb-3">
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={qrUploadMode === 'url' ? 'default' : 'outline'}
-                        onClick={() => setQrUploadMode('url')}
-                        className={qrUploadMode === 'url' ? 'bg-blue-600' : ''}
-                      >
-                        <Image className="h-4 w-4 mr-1" />
-                        Enter URL
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant={qrUploadMode === 'upload' ? 'default' : 'outline'}
-                        onClick={() => setQrUploadMode('upload')}
-                        className={qrUploadMode === 'upload' ? 'bg-blue-600' : ''}
-                      >
-                        <Upload className="h-4 w-4 mr-1" />
-                        Upload Image
-                      </Button>
-                    </div>
-
-                    {qrUploadMode === 'url' ? (
-                      <Input
-                        id="paymentQRCode"
-                        value={formData.paymentQRCode.startsWith('data:') ? '' : formData.paymentQRCode}
-                        onChange={(e) => {
-                          setFormData(prev => ({ ...prev, paymentQRCode: e.target.value }));
-                          setQrPreview(e.target.value);
-                        }}
-                        placeholder="https://example.com/qr-code.png"
-                        className="mt-1"
-                      />
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-400 transition-colors">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleQRUpload}
-                            className="hidden"
-                            id="qr-upload"
-                          />
-                          <label htmlFor="qr-upload" className="cursor-pointer">
-                            <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                            <p className="text-sm text-gray-600">Click to upload QR code image</p>
-                            <p className="text-xs text-gray-400 mt-1">JPG, PNG (max 2MB)</p>
-                          </label>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* QR Preview */}
-                    {qrPreview && (
-                      <div className="mt-3 relative inline-block">
-                        <p className="text-sm text-gray-600 mb-2">Preview:</p>
-                        <div className="relative">
-                          <img 
-                            src={qrPreview} 
-                            alt="Payment QR Code" 
-                            className="max-w-[150px] max-h-[150px] border rounded-lg shadow-sm"
-                            onError={() => setQrPreview("")}
-                          />
-                          <Button
-                            type="button"
-                            size="icon"
-                            variant="destructive"
-                            className="absolute -top-2 -right-2 h-6 w-6"
-                            onClick={removeQRImage}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   <div className="md:col-span-2 border-t pt-4">

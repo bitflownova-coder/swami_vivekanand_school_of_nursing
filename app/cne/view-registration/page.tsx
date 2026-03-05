@@ -16,6 +16,8 @@ interface Registration {
   mncRegistrationNumber: string;
   mobileNumber: string;
   paymentUTR: string;
+  paymentStatus: string;
+  paymentMethod: string;
   registrationType: string;
   attendanceStatus: string;
   downloadCount: number;
@@ -156,7 +158,8 @@ export default function ViewRegistrationPage() {
       ["Venue", registration.workshopId.venue],
       ["Fee Paid", `₹${registration.workshopId.fee}`],
       ["Credits", registration.workshopId.credits.toString()],
-      ["Payment UTR", registration.paymentUTR],
+      ["Payment Reference", registration.paymentUTR || "Online Gateway"],
+      ["Payment Method", (registration.paymentMethod || 'manual').toUpperCase()],
       ["Registration Type", registration.registrationType.toUpperCase()],
       ["Attendance Status", registration.attendanceStatus.toUpperCase()],
       ["Submitted On", formatDate(registration.submittedAt)]
@@ -328,8 +331,20 @@ export default function ViewRegistrationPage() {
                       <p className="font-medium">{registration.mobileNumber}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Payment UTR</p>
-                      <p className="font-medium">{registration.paymentUTR}</p>
+                      <p className="text-sm text-gray-500">Payment Reference</p>
+                      <p className="font-medium">{registration.paymentUTR || "Online Gateway"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Payment Status</p>
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        registration.paymentStatus === 'success'
+                          ? 'bg-green-100 text-green-700'
+                          : registration.paymentStatus === 'pending'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}>
+                        {(registration.paymentStatus || 'success').toUpperCase()}
+                      </span>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Registration Type</p>
@@ -364,7 +379,7 @@ export default function ViewRegistrationPage() {
                   </p>
                   <Button
                     onClick={() => handleDownload(registration)}
-                    disabled={registration.downloadCount >= 2 || downloading === registration._id}
+                    disabled={registration.downloadCount >= 2 || downloading === registration._id || registration.paymentStatus === 'pending'}
                     className="bg-green-600 hover:bg-green-700"
                   >
                     {downloading === registration._id ? (

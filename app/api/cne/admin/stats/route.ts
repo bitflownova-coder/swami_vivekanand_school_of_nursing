@@ -8,12 +8,13 @@ export async function GET(request: NextRequest) {
     const workshopId = searchParams.get('workshopId');
 
     if (!workshopId || workshopId === 'all') {
-      // Get overall stats
-      const [totalRegs] = await db.query<RowDataPacket[]>('SELECT COUNT(*) as count FROM registrations');
-      const [presentRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE attendanceStatus = 'present'");
-      const [appliedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE attendanceStatus = 'applied'");
-      const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'spot'");
-      const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'online'");
+      // Get overall stats (only count successful payments)
+      const [totalRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE paymentStatus = 'success'");
+      const [presentRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE attendanceStatus = 'present' AND paymentStatus = 'success'");
+      const [appliedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE attendanceStatus = 'applied' AND paymentStatus = 'success'");
+      const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'spot' AND paymentStatus = 'success'");
+      const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'online' AND paymentStatus = 'success'");
+      const [pendingRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE paymentStatus = 'pending'");
       const [workshopSeats] = await db.query<RowDataPacket[]>('SELECT SUM(maxSeats) as totalSeats FROM workshops');
 
       const totalRegistrations = totalRegs[0].count;
@@ -27,6 +28,7 @@ export async function GET(request: NextRequest) {
           applied: appliedRegs[0].count,
           spot: spotRegs[0].count,
           online: onlineRegs[0].count,
+          pending: pendingRegs[0].count,
           totalSeats,
           remaining: totalSeats - totalRegistrations
         }
@@ -45,11 +47,12 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      const [totalRegs] = await db.query<RowDataPacket[]>('SELECT COUNT(*) as count FROM registrations WHERE workshopId = ?', [workshopId]);
-      const [presentRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND attendanceStatus = 'present'", [workshopId]);
-      const [appliedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND attendanceStatus = 'applied'", [workshopId]);
-      const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'spot'", [workshopId]);
-      const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'online'", [workshopId]);
+      const [totalRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND paymentStatus = 'success'", [workshopId]);
+      const [presentRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND attendanceStatus = 'present' AND paymentStatus = 'success'", [workshopId]);
+      const [appliedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND attendanceStatus = 'applied' AND paymentStatus = 'success'", [workshopId]);
+      const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'spot' AND paymentStatus = 'success'", [workshopId]);
+      const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'online' AND paymentStatus = 'success'", [workshopId]);
+      const [pendingRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND paymentStatus = 'pending'", [workshopId]);
 
       const totalRegistrations = totalRegs[0].count;
 
@@ -61,6 +64,7 @@ export async function GET(request: NextRequest) {
           applied: appliedRegs[0].count,
           spot: spotRegs[0].count,
           online: onlineRegs[0].count,
+          pending: pendingRegs[0].count,
           totalSeats: workshops[0].maxSeats,
           remaining: workshops[0].maxSeats - totalRegistrations
         }

@@ -35,8 +35,14 @@ export async function GET(
       );
     }
 
+    // Count only successful spot registrations
+    const [successfulSpotRegs] = await db.query<RowDataPacket[]>(
+      "SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'spot' AND paymentStatus = 'success'",
+      [workshopId]
+    );
+
     const workshop = workshops[0];
-    const total = workshop.currentSpotRegistrations || 0;
+    const total = successfulSpotRegs[0].count || 0;
     const limit = workshop.spotRegistrationLimit || 50;
     const remaining = Math.max(0, limit - total);
     const isFull = remaining <= 0;

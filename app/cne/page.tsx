@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, MapPin, Clock, CreditCard, Users, CheckCircle, AlertCircle, Upload, Loader2 } from "lucide-react";
+import { Calendar, MapPin, Clock, CreditCard, Users, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface Workshop {
@@ -21,8 +21,6 @@ interface Workshop {
   maxSeats: number;
   currentRegistrations: number;
   status: string;
-  paymentQRCode: string;
-  upiId: string;
 }
 
 export default function CNEPage() {
@@ -40,8 +38,6 @@ export default function CNEPage() {
     mncUID: "",
     mncRegistrationNumber: "",
     mobileNumber: "",
-    paymentUTR: "",
-    paymentScreenshot: null as File | null
   });
 
   useEffect(() => {
@@ -74,29 +70,11 @@ export default function CNEPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-        setError("Only JPEG, JPG, or PNG files are allowed");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        setError("File size must be less than 5MB");
-        return;
-      }
-      setFormData(prev => ({ ...prev, paymentScreenshot: file }));
-      setError("");
-    }
-  };
-
   const validateForm = () => {
     if (!formData.fullName.trim()) return "Full name is required";
     if (!/^[0-9]{10}$/.test(formData.mncUID)) return "MNC UID must be exactly 10 digits";
     if (!formData.mncRegistrationNumber.trim()) return "MNC Registration Number is required";
     if (!/^[0-9]{10}$/.test(formData.mobileNumber)) return "Mobile number must be 10 digits";
-    if (!formData.paymentUTR.trim()) return "Payment UTR is required";
-    if (!formData.paymentScreenshot) return "Payment screenshot is required";
     return null;
   };
 
@@ -117,30 +95,26 @@ export default function CNEPage() {
     setError("");
 
     try {
-      const data = new FormData();
-      data.append("workshopId", selectedWorkshop._id);
-      data.append("fullName", formData.fullName);
-      data.append("mncUID", formData.mncUID);
-      data.append("mncRegistrationNumber", formData.mncRegistrationNumber);
-      data.append("mobileNumber", formData.mobileNumber);
-      data.append("paymentUTR", formData.paymentUTR);
-      if (formData.paymentScreenshot) {
-        data.append("paymentScreenshot", formData.paymentScreenshot);
-      }
-
-      const response = await fetch("/api/cne/registration", {
+      const response = await fetch("/api/cne/payment/initiate", {
         method: "POST",
-        body: data
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workshopId: selectedWorkshop._id,
+          fullName: formData.fullName,
+          mncUID: formData.mncUID,
+          mncRegistrationNumber: formData.mncRegistrationNumber,
+          mobileNumber: formData.mobileNumber,
+          registrationType: "online",
+        })
       });
 
       const result = await response.json();
 
-      if (result.success) {
-        setSuccessData(result.data);
-        setShowConfirmation(false);
-        setShowForm(false);
+      if (result.success && result.redirectUrl) {
+        // Redirect to ICICI payment gateway
+        window.location.href = result.redirectUrl;
       } else {
-        setError(result.error || "Registration failed");
+        setError(result.error || "Failed to initiate payment");
         setShowConfirmation(false);
       }
     } catch (err) {
@@ -207,8 +181,6 @@ export default function CNEPage() {
                   mncUID: "",
                   mncRegistrationNumber: "",
                   mobileNumber: "",
-                  paymentUTR: "",
-                  paymentScreenshot: null
                 });
                 setSelectedWorkshop(null);
               }}>
@@ -412,76 +384,24 @@ export default function CNEPage() {
                     />
                   </div>
 
-                  {/* Payment Section */}
+                  {/* Fee Info */}
                   <div className="border-t pt-4 mt-4">
-                    <h3 className="font-semibold text-gray-800 mb-3">Payment Details</h3>
-                    <div className="bg-yellow-50 p-4 rounded-lg mb-4">
-                      <p className="text-sm text-gray-700 mb-2">
-                        <strong>Fee:</strong> ₹{selectedWorkshop?.fee}
-                      </p>
-                      {selectedWorkshop?.upiId && (
-                        <p className="text-sm text-gray-700">
-                          <strong>UPI ID:</strong> {selectedWorkshop.upiId}
-                        </p>
-                      )}
-                      
-                      {/* Payment QR Code */}
-                      {selectedWorkshop?.paymentQRCode && (
-                        <div className="mt-4 text-center">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Scan to Pay:</p>
-                          <div className="inline-block bg-white p-3 rounded-lg shadow-sm">
-                            <img 
-                              src={selectedWorkshop.paymentQRCode} 
-                              alt="Payment QR Code" 
-                              className="max-w-[200px] max-h-[200px] mx-auto"
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500 mt-2">
-                            Scan this QR code with any UPI app to make payment
-                          </p>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-700">Registration Fee</p>
+                          <p className="text-2xl font-bold text-blue-600">₹{selectedWorkshop?.fee}</p>
                         </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="paymentUTR">Payment UTR Number *</Label>
-                      <Input
-                        id="paymentUTR"
-                        name="paymentUTR"
-                        value={formData.paymentUTR}
-                        onChange={handleInputChange}
-                        placeholder="Enter UTR/Transaction ID"
-                        className="mt-1"
-                      />
-                    </div>
-
-                    <div className="mt-4">
-                      <Label htmlFor="paymentScreenshot">Payment Screenshot *</Label>
-                      <div className="mt-1">
-                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="h-8 w-8 text-gray-400 mb-2" />
-                            <p className="text-sm text-gray-600">
-                              {formData.paymentScreenshot 
-                                ? formData.paymentScreenshot.name 
-                                : "Click to upload payment screenshot"}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-1">JPEG, JPG, PNG (max 5MB)</p>
-                          </div>
-                          <input
-                            id="paymentScreenshot"
-                            type="file"
-                            accept="image/jpeg,image/jpg,image/png"
-                            onChange={handleFileChange}
-                            className="hidden"
-                          />
-                        </label>
+                        <CreditCard className="h-8 w-8 text-blue-400" />
                       </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        You will be redirected to a secure payment page after confirming your details.
+                      </p>
                     </div>
                   </div>
 
                   <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 mt-6">
-                    Submit Registration
+                    Proceed to Payment
                   </Button>
                 </form>
               </CardContent>
@@ -502,8 +422,12 @@ export default function CNEPage() {
                 <p><strong>Name:</strong> {formData.fullName}</p>
                 <p><strong>MNC UID:</strong> {formData.mncUID}</p>
                 <p><strong>Mobile:</strong> {formData.mobileNumber}</p>
-                <p><strong>UTR:</strong> {formData.paymentUTR}</p>
-                <div className="bg-yellow-50 p-3 rounded-lg text-sm text-gray-700 mt-4">
+                <p><strong>Fee:</strong> ₹{selectedWorkshop?.fee}</p>
+                <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mt-4">
+                  <p className="font-medium mb-1">Secure Payment</p>
+                  <p>You will be redirected to ICICI Bank&apos;s secure payment gateway to complete the payment.</p>
+                </div>
+                <div className="bg-yellow-50 p-3 rounded-lg text-sm text-gray-700">
                   <p className="font-medium mb-2">Disclaimer:</p>
                   <p>I confirm that all the information provided is accurate. I understand that providing false information may result in cancellation of my registration.</p>
                 </div>
@@ -525,10 +449,10 @@ export default function CNEPage() {
                   {submitting ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Submitting...
+                      Redirecting to payment...
                     </>
                   ) : (
-                    "Confirm & Submit"
+                    "Confirm & Pay"
                   )}
                 </Button>
               </CardFooter>

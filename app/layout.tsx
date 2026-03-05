@@ -77,8 +77,8 @@ export default function RootLayout({
     description: "Premier nursing institute offering GNM and ANM courses.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Beed Bypass Road, PWD Colony",
-      addressLocality: "Chhatrapati Sambhajinagar",
+      streetAddress: "Beed Bypass Road, Beside Surya Lawns",
+      addressLocality: "Aurangabad",
       postalCode: "431009",
       addressRegion: "Maharashtra",
       addressCountry: "IN",

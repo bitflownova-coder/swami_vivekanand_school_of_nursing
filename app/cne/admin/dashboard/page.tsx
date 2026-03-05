@@ -25,6 +25,8 @@ interface Registration {
   mncRegistrationNumber: string;
   mobileNumber: string;
   paymentUTR: string;
+  paymentStatus: string;
+  paymentMethod: string;
   registrationType: string;
   attendanceStatus: string;
   downloadCount: number;
@@ -170,10 +172,12 @@ export default function AdminDashboardPage() {
         "MNC UID": reg.mncUID,
         "MNC Reg. No.": reg.mncRegistrationNumber,
         "Mobile": reg.mobileNumber,
-        "UTR": reg.paymentUTR,
+        "Payment Ref": reg.paymentUTR || "N/A",
+        "Payment Status": (reg.paymentStatus || 'success').toUpperCase(),
+        "Payment Method": (reg.paymentMethod || 'manual').toUpperCase(),
         "Workshop": reg.workshopId?.title || "N/A",
         "Type": reg.registrationType.toUpperCase(),
-        "Status": reg.attendanceStatus.toUpperCase(),
+        "Attendance": reg.attendanceStatus.toUpperCase(),
         "Downloads": reg.downloadCount,
         "Submitted": new Date(reg.submittedAt).toLocaleDateString("en-IN")
       }));
@@ -363,9 +367,10 @@ export default function AdminDashboardPage() {
                     <th className="px-4 py-3 text-left">Name</th>
                     <th className="px-4 py-3 text-left">MNC UID</th>
                     <th className="px-4 py-3 text-left">Mobile</th>
-                    <th className="px-4 py-3 text-left">UTR</th>
+                    <th className="px-4 py-3 text-left">Payment Ref</th>
+                    <th className="px-4 py-3 text-left">Payment</th>
                     <th className="px-4 py-3 text-left">Workshop</th>
-                    <th className="px-4 py-3 text-left">Status</th>
+                    <th className="px-4 py-3 text-left">Attendance</th>
                     <th className="px-4 py-3 text-left">Type</th>
                     <th className="px-4 py-3 text-left">Submitted</th>
                   </tr>
@@ -378,7 +383,18 @@ export default function AdminDashboardPage() {
                       <td className="px-4 py-3">{reg.fullName}</td>
                       <td className="px-4 py-3">{reg.mncUID}</td>
                       <td className="px-4 py-3">{reg.mobileNumber}</td>
-                      <td className="px-4 py-3">{reg.paymentUTR}</td>
+                      <td className="px-4 py-3">{reg.paymentUTR || "-"}</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          reg.paymentStatus === 'success'
+                            ? 'bg-green-100 text-green-700'
+                            : reg.paymentStatus === 'pending'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}>
+                          {(reg.paymentStatus || 'success').toUpperCase()}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">{reg.workshopId?.title || "N/A"}</td>
                       <td className="px-4 py-3">
                         <span className={`px-2 py-1 text-xs rounded-full ${

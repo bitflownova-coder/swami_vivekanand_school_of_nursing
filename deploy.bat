@@ -29,7 +29,7 @@ scp -P %SERVER_PORT% %PROJECT_NAME%.tar.gz %SERVER_USER%@%SERVER_HOST%:~/%SERVER
 
 REM Deploy on server
 echo Deploying on server...
-ssh -p %SERVER_PORT% %SERVER_USER%@%SERVER_HOST% "cd %SERVER_PATH% && tar -xzf %PROJECT_NAME%.tar.gz && rm %PROJECT_NAME%.tar.gz && export PATH=/opt/alt/alt-nodejs20/root/usr/bin:$PATH && npm install --production && mysql -u u984810592_svs -p'sCARFACE@aMISHA@1804' u984810592_svs_cne < database/schema.sql 2>/dev/null; mkdir -p logs && pm2 stop svs-nursing-website 2>/dev/null; pm2 delete svs-nursing-website 2>/dev/null; pm2 start ecosystem.config.js && pm2 save"
+ssh -p %SERVER_PORT% %SERVER_USER%@%SERVER_HOST% "cd %SERVER_PATH% && tar -xzf %PROJECT_NAME%.tar.gz && rm %PROJECT_NAME%.tar.gz && export PATH=/opt/alt/alt-nodejs20/root/usr/bin:$PATH && npm install --production && mysql -u u984810592_svs -p'sCARFACE@aMISHA@1804' u984810592_svs_cne < database/migration-payment-gateway.sql 2>/dev/null; mysql -u u984810592_svs -p'sCARFACE@aMISHA@1804' u984810592_svs_cne < database/schema.sql 2>/dev/null; mkdir -p logs && pm2 stop svs-nursing-website 2>/dev/null; pm2 delete svs-nursing-website 2>/dev/null; pm2 start ecosystem.config.js && pm2 save"
 
 REM Cleanup
 del %PROJECT_NAME%.tar.gz

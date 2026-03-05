@@ -69,8 +69,6 @@ export async function POST(request: NextRequest) {
       body.status || 'draft',
       body.spotRegistrationEnabled || false,
       Number(body.spotRegistrationLimit) || 50,
-      body.paymentQRCode || '',
-      body.upiId || ''
     ];
 
     await db.query<ResultSetHeader>(query, params);

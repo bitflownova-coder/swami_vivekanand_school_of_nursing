@@ -90,9 +90,9 @@ export default function ContactPage() {
                     Campus Address
                   </h4>
                   <p className="text-gray-600 text-sm leading-relaxed">
-                    Beed Bypass Road
+                    Beed Bypass Road, Beside Surya Lawns
                     <br />
-                    Chh. Sambhajinagar, Maharashtra – 431005
+                    Aurangabad, Maharashtra, India – 431009
                   </p>
                 </div>
               </div>

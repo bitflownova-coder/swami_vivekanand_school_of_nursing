@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
               w.venue as workshop_venue, w.dayOfWeek as workshop_dayOfWeek, w.fee as workshop_fee, w.credits as workshop_credits
        FROM registrations r
        JOIN workshops w ON r.workshopId = w.id
-       WHERE r.mncUID = ? AND r.mobileNumber = ?
+       WHERE r.mncUID = ? AND r.mobileNumber = ? AND r.paymentStatus = 'success'
        ORDER BY r.submittedAt DESC`,
       [mncUID.toUpperCase(), mobileNumber]
     );
@@ -40,7 +40,8 @@ export async function POST(request: NextRequest) {
       mncRegistrationNumber: reg.mncRegistrationNumber,
       mobileNumber: reg.mobileNumber,
       paymentUTR: reg.paymentUTR,
-      paymentScreenshot: reg.paymentScreenshot,
+      paymentStatus: reg.paymentStatus || 'success',
+      paymentMethod: reg.paymentMethod || 'manual',
       registrationType: reg.registrationType,
       attendanceStatus: reg.attendanceStatus,
       submittedAt: reg.submittedAt,

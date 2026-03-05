@@ -61,8 +61,6 @@ export async function PUT(
     if (body.status) { updates.push('status = ?'); params.push(body.status); }
     if (body.spotRegistrationEnabled !== undefined) { updates.push('spotRegistrationEnabled = ?'); params.push(body.spotRegistrationEnabled); }
     if (body.spotRegistrationLimit !== undefined) { updates.push('spotRegistrationLimit = ?'); params.push(Number(body.spotRegistrationLimit)); }
-    if (body.paymentQRCode !== undefined) { updates.push('paymentQRCode = ?'); params.push(body.paymentQRCode); }
-    if (body.upiId !== undefined) { updates.push('upiId = ?'); params.push(body.upiId); }
 
     if (updates.length === 0) {
       return NextResponse.json(

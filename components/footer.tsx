@@ -120,7 +120,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3 group">
                 <MapPin className="h-5 w-5 text-blue-400 mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Beed Bypass Road, Chh. Sambhajinagar, Maharashtra – 431005
+                  Beed Bypass Road, Beside Surya Lawns, Aurangabad, Maharashtra, India – 431009
                 </p>
               </div>
               <a 

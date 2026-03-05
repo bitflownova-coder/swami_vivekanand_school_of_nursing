@@ -12,14 +12,12 @@ export async function POST(request: NextRequest) {
     const mncUID = (formData.get('mncUID') as string)?.toUpperCase();
     const mncRegistrationNumber = (formData.get('mncRegistrationNumber') as string)?.toUpperCase();
     const mobileNumber = formData.get('mobileNumber') as string;
-    const paymentUTR = formData.get('paymentUTR') as string;
-    const paymentScreenshot = formData.get('paymentScreenshot') as File;
     const registrationType = (formData.get('registrationType') as string) || 'online';
 
     // Validation
-    if (!workshopId || !fullName || !mncUID || !mncRegistrationNumber || !mobileNumber || !paymentUTR || !paymentScreenshot) {
+    if (!workshopId || !fullName || !mncUID || !mncRegistrationNumber || !mobileNumber) {
       return NextResponse.json(
-        { success: false, error: 'All fields are required' },
+        { success: false, error: 'All required fields must be provided' },
         { status: 400 }
       );
     }
@@ -82,10 +80,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert screenshot to base64
-    const bytes = await paymentScreenshot.arrayBuffer();
-    const screenshotBase64 = `data:${paymentScreenshot.type};base64,${Buffer.from(bytes).toString('base64')}`;
-
     // Get next form number
     const [lastReg] = await db.query<RowDataPacket[]>(
       'SELECT formNumber FROM registrations WHERE workshopId = ? ORDER BY formNumber DESC LIMIT 1',
@@ -96,13 +90,15 @@ export async function POST(request: NextRequest) {
 
     // Create registration
     const registrationId = uuidv4();
+    const paymentMethod = 'gateway';
+    const paymentStatus = 'pending';
     await db.query<ResultSetHeader>(
       `INSERT INTO registrations (
         id, workshopId, formNumber, fullName, mncUID, mncRegistrationNumber, 
-        mobileNumber, paymentUTR, paymentScreenshot, registrationType
+        mobileNumber, registrationType, paymentStatus, paymentMethod
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [registrationId, workshopId, formNumber, fullName.trim(), mncUID, mncRegistrationNumber, 
-       mobileNumber, paymentUTR.trim(), screenshotBase64, registrationType]
+       mobileNumber, registrationType, paymentStatus, paymentMethod]
     );
 
     // Update workshop registration count
@@ -192,7 +188,8 @@ export async function GET(request: NextRequest) {
       mncRegistrationNumber: reg.mncRegistrationNumber,
       mobileNumber: reg.mobileNumber,
       paymentUTR: reg.paymentUTR,
-      paymentScreenshot: reg.paymentScreenshot,
+      paymentStatus: reg.paymentStatus || 'success',
+      paymentMethod: reg.paymentMethod || 'manual',
       registrationType: reg.registrationType,
       attendanceStatus: reg.attendanceStatus,
       submittedAt: reg.submittedAt,
