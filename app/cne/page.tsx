@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, MapPin, Clock, CreditCard, Users, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Calendar, MapPin, CreditCard, Users, CheckCircle, AlertCircle, Loader2, Upload, QrCode } from "lucide-react";
 import Link from "next/link";
 
 interface Workshop {
@@ -21,6 +21,8 @@ interface Workshop {
   maxSeats: number;
   currentRegistrations: number;
   status: string;
+  paymentQRCode: string;
+  upiId: string;
 }
 
 export default function CNEPage() {
@@ -29,7 +31,7 @@ export default function CNEPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [successData, setSuccessData] = useState<any>(null);
   const [error, setError] = useState("");
 
@@ -39,6 +41,10 @@ export default function CNEPage() {
     mncRegistrationNumber: "",
     mobileNumber: "",
   });
+
+  const [paymentUTR, setPaymentUTR] = useState("");
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string>("");
 
   useEffect(() => {
     fetchWorkshops();
@@ -85,41 +91,58 @@ export default function CNEPage() {
       setError(validationError);
       return;
     }
-    setShowConfirmation(true);
+    setError("");
+    setShowPayment(true);
+  };
+
+  const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPaymentScreenshot(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setScreenshotPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
   };
 
   const confirmSubmission = async () => {
     if (!selectedWorkshop) return;
-    
+    if (!paymentUTR.trim()) {
+      setError("Please enter the UTR / Transaction ID");
+      return;
+    }
+
     setSubmitting(true);
     setError("");
 
     try {
-      const response = await fetch("/api/cne/payment/initiate", {
+      const data = new FormData();
+      data.append("workshopId", selectedWorkshop._id);
+      data.append("fullName", formData.fullName);
+      data.append("mncUID", formData.mncUID);
+      data.append("mncRegistrationNumber", formData.mncRegistrationNumber);
+      data.append("mobileNumber", formData.mobileNumber);
+      data.append("registrationType", "online");
+      data.append("paymentUTR", paymentUTR.trim());
+      if (paymentScreenshot) {
+        data.append("paymentScreenshot", paymentScreenshot);
+      }
+
+      const response = await fetch("/api/cne/registration", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          workshopId: selectedWorkshop._id,
-          fullName: formData.fullName,
-          mncUID: formData.mncUID,
-          mncRegistrationNumber: formData.mncRegistrationNumber,
-          mobileNumber: formData.mobileNumber,
-          registrationType: "online",
-        })
+        body: data,
       });
 
       const result = await response.json();
 
-      if (result.success && result.redirectUrl) {
-        // Redirect to ICICI payment gateway
-        window.location.href = result.redirectUrl;
+      if (result.success) {
+        setSuccessData(result.data);
+        setShowPayment(false);
       } else {
-        setError(result.error || "Failed to initiate payment");
-        setShowConfirmation(false);
+        setError(result.error || "Registration failed. Please try again.");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
-      setShowConfirmation(false);
     } finally {
       setSubmitting(false);
     }
@@ -182,6 +205,9 @@ export default function CNEPage() {
                   mncRegistrationNumber: "",
                   mobileNumber: "",
                 });
+                setPaymentUTR("");
+                setPaymentScreenshot(null);
+                setScreenshotPreview("");
                 setSelectedWorkshop(null);
               }}>
                 Register for Another Workshop
@@ -286,6 +312,137 @@ export default function CNEPage() {
                 ))}
               </div>
             )}
+          </div>
+        ) : showPayment ? (
+          /* Payment Step */
+          <div className="max-w-2xl mx-auto">
+            <Button
+              variant="ghost"
+              className="mb-4"
+              onClick={() => { setShowPayment(false); setError(""); }}
+            >
+              ← Back to Form
+            </Button>
+
+            <Card className="shadow-xl">
+              <CardHeader className="bg-blue-50 border-b">
+                <CardTitle>Complete Payment</CardTitle>
+                <CardDescription>
+                  Pay ₹{selectedWorkshop?.fee} via UPI and enter the transaction details below
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex items-center">
+                    <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                    {error}
+                  </div>
+                )}
+
+                {/* QR Code */}
+                <div className="text-center">
+                  {selectedWorkshop?.paymentQRCode ? (
+                    <div className="inline-block p-3 bg-white border-2 border-blue-200 rounded-xl shadow-sm">
+                      <img
+                        src={selectedWorkshop.paymentQRCode}
+                        alt="Payment QR Code"
+                        className="w-52 h-52 object-contain mx-auto"
+                      />
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center justify-center w-52 h-52 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300">
+                      <QrCode className="h-16 w-16 text-gray-400" />
+                    </div>
+                  )}
+                  {selectedWorkshop?.upiId && (
+                    <div className="mt-3">
+                      <p className="text-sm text-gray-500">UPI ID</p>
+                      <p className="font-mono font-semibold text-blue-700 text-lg select-all">
+                        {selectedWorkshop.upiId}
+                      </p>
+                    </div>
+                  )}
+                  <div className="mt-3 inline-flex items-center justify-center bg-blue-600 text-white px-6 py-2 rounded-full text-lg font-bold">
+                    ₹{selectedWorkshop?.fee}
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
+                  <ol className="space-y-1 list-decimal list-inside">
+                    <li>Scan the QR code or use the UPI ID above to pay ₹{selectedWorkshop?.fee}</li>
+                    <li>After payment, note the UTR / Transaction ID from your UPI app</li>
+                    <li>Enter the UTR below and (optionally) upload your payment screenshot</li>
+                    <li>Click <strong>Submit Registration</strong> to complete your registration</li>
+                  </ol>
+                </div>
+
+                {/* UTR Input */}
+                <div>
+                  <Label htmlFor="paymentUTR">UTR / Transaction ID *</Label>
+                  <Input
+                    id="paymentUTR"
+                    value={paymentUTR}
+                    onChange={(e) => setPaymentUTR(e.target.value)}
+                    placeholder="Enter UTR or Transaction ID from your UPI app"
+                    className="mt-1"
+                  />
+                </div>
+
+                {/* Screenshot Upload */}
+                <div>
+                  <Label htmlFor="paymentScreenshot">Payment Screenshot (optional)</Label>
+                  <label
+                    htmlFor="paymentScreenshot"
+                    className="mt-1 flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors"
+                  >
+                    {screenshotPreview ? (
+                      <img
+                        src={screenshotPreview}
+                        alt="Payment screenshot preview"
+                        className="max-h-40 object-contain rounded"
+                      />
+                    ) : (
+                      <>
+                        <Upload className="h-8 w-8 text-gray-400 mb-2" />
+                        <p className="text-sm text-gray-500">Click to upload payment screenshot</p>
+                        <p className="text-xs text-gray-400">PNG, JPG, JPEG up to 5MB</p>
+                      </>
+                    )}
+                    <input
+                      id="paymentScreenshot"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleScreenshotChange}
+                    />
+                  </label>
+                </div>
+
+                {/* Summary */}
+                <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1 border">
+                  <p className="font-semibold text-gray-700 mb-2">Registration Summary</p>
+                  <p><span className="text-gray-500">Name:</span> {formData.fullName}</p>
+                  <p><span className="text-gray-500">MNC UID:</span> {formData.mncUID}</p>
+                  <p><span className="text-gray-500">Mobile:</span> {formData.mobileNumber}</p>
+                  <p><span className="text-gray-500">Workshop:</span> {selectedWorkshop?.title}</p>
+                </div>
+
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={confirmSubmission}
+                  disabled={submitting || !paymentUTR.trim()}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit Registration"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         ) : (
           <div className="max-w-2xl mx-auto">
@@ -395,7 +552,7 @@ export default function CNEPage() {
                         <CreditCard className="h-8 w-8 text-blue-400" />
                       </div>
                       <p className="text-xs text-gray-500 mt-2">
-                        You will be redirected to a secure payment page after confirming your details.
+                        Pay via UPI using the QR code on the next step.
                       </p>
                     </div>
                   </div>
@@ -405,57 +562,6 @@ export default function CNEPage() {
                   </Button>
                 </form>
               </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Confirmation Modal */}
-        {showConfirmation && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="max-w-md w-full">
-              <CardHeader>
-                <CardTitle>Confirm Registration</CardTitle>
-                <CardDescription>Please review your details before submitting</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <p><strong>Workshop:</strong> {selectedWorkshop?.title}</p>
-                <p><strong>Name:</strong> {formData.fullName}</p>
-                <p><strong>MNC UID:</strong> {formData.mncUID}</p>
-                <p><strong>Mobile:</strong> {formData.mobileNumber}</p>
-                <p><strong>Fee:</strong> ₹{selectedWorkshop?.fee}</p>
-                <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800 mt-4">
-                  <p className="font-medium mb-1">Secure Payment</p>
-                  <p>You will be redirected to ICICI Bank&apos;s secure payment gateway to complete the payment.</p>
-                </div>
-                <div className="bg-yellow-50 p-3 rounded-lg text-sm text-gray-700">
-                  <p className="font-medium mb-2">Disclaimer:</p>
-                  <p>I confirm that all the information provided is accurate. I understand that providing false information may result in cancellation of my registration.</p>
-                </div>
-              </CardContent>
-              <CardFooter className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => setShowConfirmation(false)}
-                  disabled={submitting}
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
-                  onClick={confirmSubmission}
-                  disabled={submitting}
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Redirecting to payment...
-                    </>
-                  ) : (
-                    "Confirm & Pay"
-                  )}
-                </Button>
-              </CardFooter>
             </Card>
           </div>
         )}

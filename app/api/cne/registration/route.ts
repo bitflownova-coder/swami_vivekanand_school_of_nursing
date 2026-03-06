@@ -13,11 +13,13 @@ export async function POST(request: NextRequest) {
     const mncRegistrationNumber = (formData.get('mncRegistrationNumber') as string)?.toUpperCase();
     const mobileNumber = formData.get('mobileNumber') as string;
     const registrationType = (formData.get('registrationType') as string) || 'online';
+    const paymentUTR = (formData.get('paymentUTR') as string)?.trim();
+    const paymentScreenshot = formData.get('paymentScreenshot') as File | null;
 
     // Validation
-    if (!workshopId || !fullName || !mncUID || !mncRegistrationNumber || !mobileNumber) {
+    if (!workshopId || !fullName || !mncUID || !mncRegistrationNumber || !mobileNumber || !paymentUTR) {
       return NextResponse.json(
-        { success: false, error: 'All required fields must be provided' },
+        { success: false, error: 'All required fields must be provided including payment UTR' },
         { status: 400 }
       );
     }
@@ -88,17 +90,22 @@ export async function POST(request: NextRequest) {
     
     const formNumber = lastReg.length > 0 ? lastReg[0].formNumber + 1 : 1;
 
+    // Convert screenshot to base64 if provided
+    let screenshotBase64 = '';
+    if (paymentScreenshot && paymentScreenshot.size > 0) {
+      const bytes = await paymentScreenshot.arrayBuffer();
+      screenshotBase64 = `data:${paymentScreenshot.type};base64,${Buffer.from(bytes).toString('base64')}`;
+    }
+
     // Create registration
     const registrationId = uuidv4();
-    const paymentMethod = 'gateway';
-    const paymentStatus = 'pending';
     await db.query<ResultSetHeader>(
       `INSERT INTO registrations (
         id, workshopId, formNumber, fullName, mncUID, mncRegistrationNumber, 
-        mobileNumber, registrationType, paymentStatus, paymentMethod
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        mobileNumber, registrationType, paymentUTR, paymentScreenshot, paymentStatus, paymentMethod
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'success', 'manual')`,
       [registrationId, workshopId, formNumber, fullName.trim(), mncUID, mncRegistrationNumber, 
-       mobileNumber, registrationType, paymentStatus, paymentMethod]
+       mobileNumber, registrationType, paymentUTR, screenshotBase64 || null]
     );
 
     // Update workshop registration count
