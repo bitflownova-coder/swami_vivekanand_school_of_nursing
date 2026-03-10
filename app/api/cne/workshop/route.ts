@@ -44,31 +44,31 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    
+    const formData = await request.formData();
+
     const workshopId = uuidv4();
     const query = `
       INSERT INTO workshops (
-        id, title, description, date, dayOfWeek, venue, venueLink, 
-        fee, credits, maxSeats, status, spotRegistrationEnabled, 
-        spotRegistrationLimit, paymentQRCode, upiId
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        id, title, description, date, dayOfWeek, venue, venueLink,
+        fee, credits, maxSeats, status, spotRegistrationEnabled,
+        spotRegistrationLimit
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    
+
     const params = [
       workshopId,
-      body.title,
-      body.description,
-      new Date(body.date),
-      body.dayOfWeek,
-      body.venue,
-      body.venueLink || '',
-      Number(body.fee),
-      Number(body.credits),
-      Number(body.maxSeats) || 500,
-      body.status || 'draft',
-      body.spotRegistrationEnabled || false,
-      Number(body.spotRegistrationLimit) || 50,
+      formData.get('title') as string,
+      formData.get('description') as string,
+      new Date(formData.get('date') as string),
+      formData.get('dayOfWeek') as string,
+      formData.get('venue') as string,
+      (formData.get('venueLink') as string) || '',
+      Number(formData.get('fee')),
+      Number(formData.get('credits')),
+      Number(formData.get('maxSeats')) || 500,
+      (formData.get('status') as string) || 'draft',
+      formData.get('spotRegistrationEnabled') === 'true',
+      Number(formData.get('spotRegistrationLimit')) || 50,
     ];
 
     await db.query<ResultSetHeader>(query, params);

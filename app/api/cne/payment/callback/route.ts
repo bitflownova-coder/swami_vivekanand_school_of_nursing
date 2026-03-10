@@ -5,7 +5,7 @@ import { verifySecureHash, isPaymentSuccess } from '@/lib/icici-pg';
 
 /**
  * ICICI Orange PG Callback Handler
- * 
+ *
  * ICICI redirects the user here (via browser POST/GET) after payment.
  * We process the response, update DB, then redirect to our frontend result page.
  */
@@ -160,7 +160,7 @@ async function handleCallback(params: Record<string, string>) {
 
       // Update registration to success
       await connection.query<ResultSetHeader>(
-        `UPDATE registrations SET 
+        `UPDATE registrations SET
           paymentStatus = 'success',
           paymentUTR = ?,
           attendanceStatus = ?
@@ -175,7 +175,7 @@ async function handleCallback(params: Record<string, string>) {
       // Increment seat count
       if (reg.registrationType === 'spot') {
         await connection.query<ResultSetHeader>(
-          `UPDATE workshops SET 
+          `UPDATE workshops SET
             currentSpotRegistrations = currentSpotRegistrations + 1,
             currentRegistrations = currentRegistrations + 1
           WHERE id = ?`,

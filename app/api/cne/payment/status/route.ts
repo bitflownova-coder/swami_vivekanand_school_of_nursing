@@ -5,7 +5,7 @@ import { checkTransactionStatus, isPaymentSuccess } from '@/lib/icici-pg';
 
 /**
  * GET /api/cne/payment/status?merchantTxnNo=...
- * 
+ *
  * Calls ICICI status check API and updates local records.
  * Useful for reconciliation or when callback was missed.
  */
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
             const paymentRef = iciciData.paymentID || iciciData.PaymentID || merchantTxnNo;
 
             await connection.query<ResultSetHeader>(
-              `UPDATE registrations SET 
+              `UPDATE registrations SET
                 paymentStatus = 'success', paymentUTR = ?,
                 attendanceStatus = ?
               WHERE id = ?`,
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
 
             if (reg.registrationType === 'spot') {
               await connection.query<ResultSetHeader>(
-                `UPDATE workshops SET 
+                `UPDATE workshops SET
                   currentSpotRegistrations = currentSpotRegistrations + 1,
                   currentRegistrations = currentRegistrations + 1
                 WHERE id = ?`,

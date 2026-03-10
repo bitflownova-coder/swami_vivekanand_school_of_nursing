@@ -24,12 +24,12 @@ export function isPaymentSuccess(responseCode: string): boolean {
 }
 
 // ─── Secure Hash Generation ───────────────────────────────────────────────────
-// Per ICICI spec: sort params alphabetically by key name, concatenate values  
+// Per ICICI spec: sort params alphabetically by key name, concatenate values
 // directly (no delimiter), then HMAC-SHA256 with the API key.
 
 /**
  * Generates the secureHash for ICICI initiateSale request.
- * 
+ *
  * Hash algorithm (from ICICI Orange PG spec):
  * 1. Take all request parameters (excluding secureHash itself)
  * 2. Sort parameter NAMES alphabetically (case-sensitive)
@@ -56,8 +56,8 @@ export function generateSecureHash(
 
 /**
  * Verifies the secureHash received in the ICICI callback response.
- * 
- * For response verification: sort response param names alphabetically 
+ *
+ * For response verification: sort response param names alphabetically
  * (excluding 'securehash'/'secureHash'), concatenate values directly (no delimiter),
  * HMAC-SHA256 with key, then compare.
  */

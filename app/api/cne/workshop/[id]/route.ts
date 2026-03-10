@@ -44,11 +44,16 @@ export async function PUT(
 ) {
   try {
     const { id } = await context.params;
-    const body = await request.json();
-    
+    const formData = await request.formData();
+
+    const body: Record<string, any> = {};
+    formData.forEach((value, key) => {
+      body[key] = value;
+    });
+
     const updates: string[] = [];
     const params: any[] = [];
-    
+
     if (body.title) { updates.push('title = ?'); params.push(body.title); }
     if (body.description) { updates.push('description = ?'); params.push(body.description); }
     if (body.date) { updates.push('date = ?'); params.push(new Date(body.date)); }
@@ -59,7 +64,7 @@ export async function PUT(
     if (body.credits !== undefined) { updates.push('credits = ?'); params.push(Number(body.credits)); }
     if (body.maxSeats !== undefined) { updates.push('maxSeats = ?'); params.push(Number(body.maxSeats)); }
     if (body.status) { updates.push('status = ?'); params.push(body.status); }
-    if (body.spotRegistrationEnabled !== undefined) { updates.push('spotRegistrationEnabled = ?'); params.push(body.spotRegistrationEnabled); }
+    if (body.spotRegistrationEnabled !== undefined) { updates.push('spotRegistrationEnabled = ?'); params.push(body.spotRegistrationEnabled === 'true'); }
     if (body.spotRegistrationLimit !== undefined) { updates.push('spotRegistrationLimit = ?'); params.push(Number(body.spotRegistrationLimit)); }
 
     if (updates.length === 0) {
@@ -71,7 +76,7 @@ export async function PUT(
 
     params.push(id);
     const query = `UPDATE workshops SET ${updates.join(', ')} WHERE id = ?`;
-    
+
     const [result] = await db.query<ResultSetHeader>(query, params);
 
     if (result.affectedRows === 0) {

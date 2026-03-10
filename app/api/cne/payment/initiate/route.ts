@@ -134,8 +134,8 @@ export async function POST(request: NextRequest) {
 
       // Update the registration details in case they changed
       await db.query<ResultSetHeader>(
-        `UPDATE registrations SET 
-          fullName = ?, mncRegistrationNumber = ?, mobileNumber = ?, 
+        `UPDATE registrations SET
+          fullName = ?, mncRegistrationNumber = ?, mobileNumber = ?,
           paymentStatus = 'pending', registrationType = ?
         WHERE id = ?`,
         [fullName.trim(), mncRegistrationNumber, mobileNumber, registrationType, registrationId]

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Plus, Pencil, Trash2, ArrowLeft, Calendar, MapPin, 
+import {
+  Plus, Pencil, Trash2, ArrowLeft, Calendar, MapPin,
   Users, CreditCard, Loader2, X, AlertCircle, CheckCircle
 } from "lucide-react";
 import Link from "next/link";
@@ -133,7 +133,7 @@ export default function AdminWorkshopsPage() {
       spotRegistrationEnabled: workshop.spotRegistrationEnabled,
       spotRegistrationLimit: workshop.spotRegistrationLimit.toString(),
     });
-    
+
     setShowModal(true);
     setError("");
   };
@@ -144,22 +144,29 @@ export default function AdminWorkshopsPage() {
     setSaving(true);
 
     try {
-      const url = editingWorkshop 
+      const url = editingWorkshop
         ? `/api/cne/workshop/${editingWorkshop._id}`
         : "/api/cne/workshop";
-      
+
       const method = editingWorkshop ? "PUT" : "POST";
+
+      const submitData = new FormData();
+      submitData.append('title', formData.title);
+      submitData.append('description', formData.description);
+      submitData.append('date', formData.date);
+      submitData.append('dayOfWeek', formData.dayOfWeek);
+      submitData.append('venue', formData.venue);
+      submitData.append('venueLink', formData.venueLink);
+      submitData.append('fee', formData.fee);
+      submitData.append('credits', formData.credits);
+      submitData.append('maxSeats', formData.maxSeats);
+      submitData.append('status', formData.status);
+      submitData.append('spotRegistrationEnabled', String(formData.spotRegistrationEnabled));
+      submitData.append('spotRegistrationLimit', formData.spotRegistrationLimit);
 
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          fee: Number(formData.fee),
-          credits: Number(formData.credits),
-          maxSeats: Number(formData.maxSeats),
-          spotRegistrationLimit: Number(formData.spotRegistrationLimit)
-        })
+        body: submitData
       });
 
       const data = await response.json();
