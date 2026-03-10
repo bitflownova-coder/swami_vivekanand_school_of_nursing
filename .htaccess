@@ -13,3 +13,10 @@ PassengerMaxRequests 1000
 SetEnv UV_THREADPOOL_SIZE 4
 SetEnv UV_USE_IO_URING 0
 SetEnv NODE_OPTIONS "--max-old-space-size=1024"
+
+# Force no-cache on all responses
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires "0"
+</IfModule>

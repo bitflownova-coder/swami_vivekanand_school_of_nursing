@@ -21,7 +21,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 REM Create deployment package
 echo Creating deployment package...
-tar -czf %PROJECT_NAME%.tar.gz --exclude=node_modules --exclude=.git --exclude=*.log --exclude=.next/cache --exclude=.env.example .next public package.json package-lock.json ecosystem.config.js next.config.js .env database
+tar -czf %PROJECT_NAME%.tar.gz --exclude=node_modules --exclude=.git --exclude=*.log --exclude=.next/cache --exclude=.env.example .next public package.json package-lock.json ecosystem.config.js next.config.js .htaccess .env database
 
 REM Upload to server
 echo Uploading to server...
