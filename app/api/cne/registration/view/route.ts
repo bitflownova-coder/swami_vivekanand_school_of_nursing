@@ -16,10 +16,13 @@ export async function POST(request: NextRequest) {
 
     const [registrations] = await db.query<RowDataPacket[]>(
       `SELECT r.*, w.id as workshop_id, w.title as workshop_title, w.date as workshop_date, 
-              w.venue as workshop_venue, w.dayOfWeek as workshop_dayOfWeek, w.fee as workshop_fee, w.credits as workshop_credits
+              w.venue as workshop_venue, w.dayOfWeek as workshop_dayOfWeek, w.fee as workshop_fee, w.credits as workshop_credits,
+              pt.merchantTxnNo, pt.iciciPaymentId
        FROM registrations r
        JOIN workshops w ON r.workshopId = w.id
-       WHERE r.mncUID = ? AND r.mobileNumber = ? AND r.paymentStatus = 'success'
+       LEFT JOIN payment_transactions pt ON pt.registrationId = r.id
+         AND pt.id = (SELECT MAX(pt2.id) FROM payment_transactions pt2 WHERE pt2.registrationId = r.id)
+       WHERE r.mncUID = ? AND r.mobileNumber = ?
        ORDER BY r.submittedAt DESC`,
       [mncUID.toUpperCase(), mobileNumber]
     );
@@ -46,6 +49,8 @@ export async function POST(request: NextRequest) {
       attendanceStatus: reg.attendanceStatus,
       submittedAt: reg.submittedAt,
       downloadCount: reg.downloadCount || 0,
+      merchantTxnNo: reg.merchantTxnNo || null,
+      iciciPaymentId: reg.iciciPaymentId || null,
       workshopId: {
         _id: reg.workshop_id,
         title: reg.workshop_title,

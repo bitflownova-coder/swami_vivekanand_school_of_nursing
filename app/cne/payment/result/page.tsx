@@ -31,6 +31,7 @@ interface PaymentResult {
     registrationType: string;
     attendanceStatus: string;
     workshopId: {
+      _id: string;
       title: string;
       date: string;
       venue: string;
@@ -54,13 +55,22 @@ function PaymentResultContent() {
 
   const fetchPaymentResult = useCallback(async () => {
     try {
-      const response = await fetch(`/api/cne/payment/verify?merchantTxnNo=${merchantTxnNo}`);
-      const data = await response.json();
+      // First attempt: force-refresh from gateway-backed reconciliation path.
+      const freshResponse = await fetch(`/api/cne/payment/verify?merchantTxnNo=${merchantTxnNo}&forceRefresh=true`);
+      const freshData = await freshResponse.json();
 
-      if (data.success) {
-        setResult(data);
+      if (freshData.success) {
+        setResult(freshData);
       } else {
-        setError(data.error || "Could not fetch payment details");
+        // Fallback to local-only read so users still get the latest stored state.
+        const response = await fetch(`/api/cne/payment/verify?merchantTxnNo=${merchantTxnNo}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setResult(data);
+        } else {
+          setError(data.error || "Could not fetch payment details");
+        }
       }
     } catch (err) {
       setError("Failed to load payment details");
@@ -87,7 +97,7 @@ function PaymentResultContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          workshopId: result.registration.workshopId ? undefined : undefined,
+          workshopId: result.registration.workshopId?._id,
           fullName: result.registration.fullName,
           mncUID: result.registration.mncUID,
           mncRegistrationNumber: result.registration.mncRegistrationNumber,

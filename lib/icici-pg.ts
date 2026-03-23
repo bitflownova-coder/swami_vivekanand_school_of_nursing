@@ -6,8 +6,8 @@ const ICICI_CONFIG = {
   merchantId: process.env.ICICI_MERCHANT_ID || '',
   aggregatorId: process.env.ICICI_AGGREGATOR_ID || '',
   apiKey: process.env.ICICI_API_KEY || '',
-  initiateSaleUrl: process.env.ICICI_INITIATE_SALE_URL || 'https://pgpayuat.icicibank.com/tsp/pg/api/v2/initiateSale',
-  statusCheckUrl: process.env.ICICI_STATUS_CHECK_URL || 'https://pgpayuat.icicibank.com/tsp/pg/api/command',
+  initiateSaleUrl: process.env.ICICI_INITIATE_SALE_URL || 'https://pgpay.icicibank.com/pg/api/v2/initiateSale',
+  statusCheckUrl: process.env.ICICI_STATUS_CHECK_URL || 'https://pgpay.icicibank.com/pg/api/command',
   returnUrl: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/cne/payment/callback`,
 };
 

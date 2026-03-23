@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, Download, AlertCircle, Calendar, MapPin, CheckCircle, Loader2 } from "lucide-react";
+import { Search, Download, AlertCircle, Calendar, MapPin, CheckCircle, Loader2, CreditCard } from "lucide-react";
 import Link from "next/link";
 
 interface Registration {
@@ -22,6 +22,8 @@ interface Registration {
   attendanceStatus: string;
   downloadCount: number;
   submittedAt: string;
+  merchantTxnNo: string | null;
+  iciciPaymentId: string | null;
   workshopId: {
     _id: string;
     title: string;
@@ -41,6 +43,7 @@ export default function ViewRegistrationPage() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(false);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
 
@@ -113,6 +116,34 @@ export default function ViewRegistrationPage() {
     }
   };
 
+  const handleRetryPayment = async (registration: Registration) => {
+    setRetrying(registration._id);
+    try {
+      const response = await fetch("/api/cne/payment/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workshopId: registration.workshopId._id,
+          fullName: registration.fullName,
+          mncUID: registration.mncUID,
+          mncRegistrationNumber: registration.mncRegistrationNumber,
+          mobileNumber: registration.mobileNumber,
+          registrationType: registration.registrationType,
+        }),
+      });
+      const data = await response.json();
+      if (data.success && data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+      } else {
+        setError(data.error || "Failed to initiate payment. Please try again.");
+        setRetrying(null);
+      }
+    } catch (err) {
+      setError("Failed to initiate payment. Please try again.");
+      setRetrying(null);
+    }
+  };
+
   const generatePDF = async (registration: Registration) => {
     // Dynamic import for jspdf
     const { jsPDF } = await import("jspdf");
@@ -158,7 +189,7 @@ export default function ViewRegistrationPage() {
       ["Venue", registration.workshopId.venue],
       ["Fee Paid", `₹${registration.workshopId.fee}`],
       ["Credits", registration.workshopId.credits.toString()],
-      ["Payment Reference", registration.paymentUTR || "Online Gateway"],
+      ["Payment Reference", registration.paymentUTR || registration.merchantTxnNo || "Online Gateway"],
       ["Payment Method", (registration.paymentMethod || 'manual').toUpperCase()],
       ["Registration Type", registration.registrationType.toUpperCase()],
       ["Attendance Status", registration.attendanceStatus.toUpperCase()],
@@ -332,7 +363,7 @@ export default function ViewRegistrationPage() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Payment Reference</p>
-                      <p className="font-medium">{registration.paymentUTR || "Online Gateway"}</p>
+                      <p className="font-medium">{registration.paymentUTR || registration.merchantTxnNo || "Online Gateway"}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Payment Status</p>
@@ -373,29 +404,56 @@ export default function ViewRegistrationPage() {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter className="bg-gray-50 flex justify-between items-center">
-                  <p className="text-sm text-gray-500">
-                    Downloads: {registration.downloadCount}/2 remaining: {2 - registration.downloadCount}
-                  </p>
-                  <Button
-                    onClick={() => handleDownload(registration)}
-                    disabled={registration.downloadCount >= 2 || downloading === registration._id || registration.paymentStatus === 'pending'}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    {downloading === registration._id ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Downloading...
-                      </>
-                    ) : registration.downloadCount >= 2 ? (
-                      "Download Limit Reached"
-                    ) : (
-                      <>
-                        <Download className="h-4 w-4 mr-2" />
-                        Download PDF
-                      </>
-                    )}
-                  </Button>
+                <CardFooter className="bg-gray-50 flex justify-between items-center flex-wrap gap-2">
+                  {(registration.paymentStatus === 'pending' || registration.paymentStatus === 'failed') ? (
+                    <>
+                      <p className="text-sm text-yellow-600">
+                        Payment {registration.paymentStatus} — please retry to complete your registration
+                      </p>
+                      <Button
+                        onClick={() => handleRetryPayment(registration)}
+                        disabled={retrying === registration._id}
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        {retrying === registration._id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Redirecting...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="h-4 w-4 mr-2" />
+                            Retry Payment
+                          </>
+                        )}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-gray-500">
+                        Downloads: {registration.downloadCount}/2 remaining: {2 - registration.downloadCount}
+                      </p>
+                      <Button
+                        onClick={() => handleDownload(registration)}
+                        disabled={registration.downloadCount >= 2 || downloading === registration._id}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        {downloading === registration._id ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Downloading...
+                          </>
+                        ) : registration.downloadCount >= 2 ? (
+                          "Download Limit Reached"
+                        ) : (
+                          <>
+                            <Download className="h-4 w-4 mr-2" />
+                            Download PDF
+                          </>
+                        )}
+                      </Button>
+                    </>
+                  )}
                 </CardFooter>
               </Card>
             ))}

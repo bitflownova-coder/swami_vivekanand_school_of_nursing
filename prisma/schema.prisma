@@ -36,6 +36,7 @@ model Workshop {
   
   registrations            Registration[]
   attendances              Attendance[]
+  attendanceSpots          AttendanceSpot[]
   
   @@map("workshops")
 }
@@ -70,6 +71,25 @@ model Registration {
   @@index([mncUID])
   @@index([mobileNumber])
   @@map("registrations")
+}
+
+// CNE Attendance Spot model - standalone attendance, no registration needed
+model AttendanceSpot {
+  id           String    @id @default(cuid())
+  workshopId   String
+  workshop     Workshop  @relation(fields: [workshopId], references: [id], onDelete: Cascade)
+
+  mncUID       String    @db.VarChar(20)
+  mobileNumber String    @db.VarChar(15)
+  markedAt     DateTime  @default(now())
+  ipAddress    String    @default("") @db.VarChar(50)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([workshopId, mncUID])
+  @@index([workshopId])
+  @@map("attendance_spot")
 }
 
 // CNE Attendance model

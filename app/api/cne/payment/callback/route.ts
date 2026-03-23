@@ -60,6 +60,29 @@ async function handleCallback(params: Record<string, string>) {
     ? verifySecureHash(params, securehash)
     : false;
 
+  if (!hashValid) {
+    await db.query<ResultSetHeader>(
+      `UPDATE payment_transactions SET
+        status = 'failed',
+        iciciResponseDesc = COALESCE(?, iciciResponseDesc),
+        secureHashReceived = ?,
+        rawResponse = ?,
+        completedAt = NOW()
+      WHERE merchantTxnNo = ?`,
+      [
+        'Invalid secure hash in callback',
+        securehash || null,
+        JSON.stringify(params),
+        merchantTxnNo,
+      ]
+    );
+
+    return NextResponse.redirect(
+      `${baseUrl}/cne/payment/result?merchantTxnNo=${merchantTxnNo}&status=error&message=Invalid+payment+signature`,
+      { status: 302 }
+    );
+  }
+
   // Store the raw response
   const rawResponse = JSON.stringify(params);
 

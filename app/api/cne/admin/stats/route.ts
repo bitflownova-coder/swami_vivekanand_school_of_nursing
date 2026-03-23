@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
       const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'spot' AND paymentStatus = 'success'");
       const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE registrationType = 'online' AND paymentStatus = 'success'");
       const [pendingRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE paymentStatus = 'pending'");
+      const [failedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE paymentStatus = 'failed'");
       const [workshopSeats] = await db.query<RowDataPacket[]>('SELECT SUM(maxSeats) as totalSeats FROM workshops');
 
       const totalRegistrations = totalRegs[0].count;
@@ -29,6 +30,7 @@ export async function GET(request: NextRequest) {
           spot: spotRegs[0].count,
           online: onlineRegs[0].count,
           pending: pendingRegs[0].count,
+          failed: failedRegs[0].count,
           totalSeats,
           remaining: totalSeats - totalRegistrations
         }
@@ -53,6 +55,7 @@ export async function GET(request: NextRequest) {
       const [spotRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'spot' AND paymentStatus = 'success'", [workshopId]);
       const [onlineRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND registrationType = 'online' AND paymentStatus = 'success'", [workshopId]);
       const [pendingRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND paymentStatus = 'pending'", [workshopId]);
+      const [failedRegs] = await db.query<RowDataPacket[]>("SELECT COUNT(*) as count FROM registrations WHERE workshopId = ? AND paymentStatus = 'failed'", [workshopId]);
 
       const totalRegistrations = totalRegs[0].count;
 
@@ -65,6 +68,7 @@ export async function GET(request: NextRequest) {
           spot: spotRegs[0].count,
           online: onlineRegs[0].count,
           pending: pendingRegs[0].count,
+          failed: failedRegs[0].count,
           totalSeats: workshops[0].maxSeats,
           remaining: workshops[0].maxSeats - totalRegistrations
         }

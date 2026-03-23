@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { 
   QrCode, Users, UserCheck, Clock, RefreshCw, LogOut, 
   ChevronDown, Loader2, CheckCircle, MapPin, AlertTriangle,
-  Clipboard, UserPlus
+  Clipboard, UserPlus, CreditCard, ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
 
@@ -42,7 +42,18 @@ interface RecentAttendance {
   markedAt: string;
 }
 
-type TabType = 'attendance' | 'spot';
+interface PendingRegistration {
+  _id: string;
+  formNumber: number;
+  fullName: string;
+  mncUID: string;
+  mobileNumber: string;
+  paymentStatus: string;
+  submittedAt: string;
+  merchantTxnNo: string | null;
+}
+
+type TabType = 'attendance' | 'spot' | 'pending';
 
 export default function DeskPortalPage() {
   const router = useRouter();
@@ -54,6 +65,9 @@ export default function DeskPortalPage() {
   const [attendanceStats, setAttendanceStats] = useState<AttendanceStats | null>(null);
   const [spotStats, setSpotStats] = useState<SpotStats | null>(null);
   const [recentAttendance, setRecentAttendance] = useState<RecentAttendance[]>([]);
+  const [pendingRegistrations, setPendingRegistrations] = useState<PendingRegistration[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
+  const [verifyingId, setVerifyingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -113,7 +127,8 @@ export default function DeskPortalPage() {
       generateSpotQRToken(),
       loadAttendanceStats(),
       loadSpotStats(),
-      loadRecentAttendance()
+      loadRecentAttendance(),
+      loadPendingRegistrations()
     ]);
   };
 
@@ -155,6 +170,7 @@ export default function DeskPortalPage() {
       loadAttendanceStats();
       loadSpotStats();
       loadRecentAttendance();
+      loadPendingRegistrations();
     }, 30000);
   };
 
@@ -200,6 +216,49 @@ export default function DeskPortalPage() {
       }
     } catch (err) {
       console.error("Error loading recent attendance:", err);
+    }
+  };
+
+  const loadPendingRegistrations = async () => {
+    if (!selectedWorkshop) return;
+    setPendingLoading(true);
+    try {
+      const response = await fetch(`/api/cne/desk/pending-registrations/${selectedWorkshop}`);
+      const data = await response.json();
+      if (data.success) {
+        setPendingRegistrations(data.registrations);
+      }
+    } catch (err) {
+      console.error("Error loading pending registrations:", err);
+    } finally {
+      setPendingLoading(false);
+    }
+  };
+
+  const handleVerifyPayment = async (registrationId: string) => {
+    setVerifyingId(registrationId);
+    try {
+      const response = await fetch("/api/cne/admin/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ registrationId }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        const msg = data.paymentVerified
+          ? `Payment VERIFIED as SUCCESS. Status updated.`
+          : `Payment NOT successful at ICICI. Status remains: ${data.previousStatus}`;
+        alert(msg);
+        loadPendingRegistrations();
+        loadAttendanceStats();
+        loadSpotStats();
+      } else {
+        alert(`Verification failed: ${data.error}`);
+      }
+    } catch (err) {
+      alert("Error verifying payment.");
+    } finally {
+      setVerifyingId(null);
     }
   };
 
@@ -311,6 +370,21 @@ export default function DeskPortalPage() {
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Spot Registration
+              </Button>
+              <Button
+                onClick={() => { setActiveTab('pending'); loadPendingRegistrations(); }}
+                variant={activeTab === 'pending' ? 'default' : 'outline'}
+                className={activeTab === 'pending' 
+                  ? 'bg-yellow-600 hover:bg-yellow-700 flex-1 sm:flex-none' 
+                  : 'flex-1 sm:flex-none'}
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Pending Payments
+                {pendingRegistrations.length > 0 && (
+                  <span className="ml-2 bg-white/30 text-xs px-2 py-0.5 rounded-full">
+                    {pendingRegistrations.length}
+                  </span>
+                )}
               </Button>
             </div>
 
@@ -442,6 +516,88 @@ export default function DeskPortalPage() {
               </div>
             )}
 
+            {/* Pending Payments Tab */}
+            {activeTab === 'pending' && (
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between bg-yellow-50 border-b">
+                  <CardTitle className="flex items-center gap-2 text-yellow-800">
+                    <CreditCard className="h-5 w-5" />
+                    Pending / Failed Payments ({pendingRegistrations.length})
+                  </CardTitle>
+                  <Button onClick={loadPendingRegistrations} variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {pendingLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <Loader2 className="h-6 w-6 animate-spin text-yellow-600" />
+                    </div>
+                  ) : pendingRegistrations.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
+                      <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-400" />
+                      <p>No pending or failed payments</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b bg-gray-50">
+                            <th className="px-4 py-3 text-left">#</th>
+                            <th className="px-4 py-3 text-left">Name</th>
+                            <th className="px-4 py-3 text-left">MNC UID</th>
+                            <th className="px-4 py-3 text-left">Mobile</th>
+                            <th className="px-4 py-3 text-left">Txn No</th>
+                            <th className="px-4 py-3 text-left">Status</th>
+                            <th className="px-4 py-3 text-left">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {pendingRegistrations.map((reg, i) => (
+                            <tr key={reg._id} className="border-b hover:bg-gray-50">
+                              <td className="px-4 py-3">#{reg.formNumber}</td>
+                              <td className="px-4 py-3 font-medium">{reg.fullName}</td>
+                              <td className="px-4 py-3">{reg.mncUID}</td>
+                              <td className="px-4 py-3">{reg.mobileNumber}</td>
+                              <td className="px-4 py-3 font-mono text-xs">{reg.merchantTxnNo || '-'}</td>
+                              <td className="px-4 py-3">
+                                <span className={`px-2 py-1 text-xs rounded-full ${
+                                  reg.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
+                                }`}>
+                                  {reg.paymentStatus.toUpperCase()}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">
+                                {reg.merchantTxnNo && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-xs h-7"
+                                    onClick={() => handleVerifyPayment(reg._id)}
+                                    disabled={verifyingId === reg._id}
+                                  >
+                                    {verifyingId === reg._id ? (
+                                      <Loader2 className="h-3 w-3 animate-spin" />
+                                    ) : (
+                                      <>
+                                        <ShieldCheck className="h-3 w-3 mr-1" />
+                                        Verify
+                                      </>
+                                    )}
+                                  </Button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Spot Registration Tab */}
             {activeTab === 'spot' && (
               <div className="grid md:grid-cols-2 gap-6">
@@ -541,7 +697,7 @@ export default function DeskPortalPage() {
                       <p>1. Show the QR code to candidates for spot registration</p>
                       <p>2. They scan with their phone camera</p>
                       <p>3. They fill the registration form</p>
-                      <p>4. Payment is collected on spot</p>
+                      <p>4. They are redirected to ICICI payment gateway</p>
                       <p>5. Once registered, they can mark attendance using the Attendance QR</p>
                     </CardContent>
                   </Card>
