@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -114,7 +114,7 @@ export default function DeskLoginPage() {
         </CardContent>
         <CardFooter className="justify-center">
           <Link href="/cne" className="text-sm text-gray-500 hover:text-indigo-600">
-            ← Back to CNE Home
+            â† Back to CNE Home
           </Link>
         </CardFooter>
       </Card>

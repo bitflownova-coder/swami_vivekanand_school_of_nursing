@@ -1,5 +1,6 @@
-"use client";
+﻿"use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -12,10 +13,53 @@ import {
   ChevronDown,
   Facebook,
   Instagram,
+  Send,
+  User,
+  GraduationCap,
+  MessageSquare,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [contactForm, setContactForm] = useState({
+    name: "", phone: "", email: "", course: "", message: "",
+  });
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
+  const [contactError, setContactError] = useState("");
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    setContactError("");
+    try {
+      const res = await fetch("/api/college/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: contactForm.name,
+          phone: contactForm.phone,
+          email: contactForm.email,
+          course: contactForm.course,
+          message: contactForm.message,
+          source: "contact",
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setContactSubmitted(true);
+        setContactForm({ name: "", phone: "", email: "", course: "", message: "" });
+      } else {
+        setContactError(data.error || "Failed to submit. Please try again.");
+      }
+    } catch {
+      setContactError("Network error. Please try again.");
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
 
   const faqs = [
     {
@@ -53,10 +97,10 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero Section */}
-      <div className="relative bg-blue-900 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div className="relative bg-gradient-to-br from-slate-900 to-blue-950 text-white pt-10 pb-20 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight font-serif">
+          <h1 className="font-playfair font-bold text-4xl md:text-6xl mb-6 leading-tight tracking-tight">
             Get in Touch
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed font-light">
@@ -67,14 +111,33 @@ export default function ContactPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-10 relative z-20">
+        {/* Campus photo strip */}
+        <div className="mb-12 rounded-2xl overflow-hidden shadow-xl relative" style={{ height: '280px' }}>
+          <Image
+            src="/photos/institute-building-front-view/1.jpg"
+            alt="Swami Vivekanand School of Nursing campus building"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-transparent flex items-center">
+            <div className="px-8 sm:px-12">
+              <div className="text-blue-300 text-xs font-bold uppercase tracking-[0.2em] mb-2">Our Campus</div>
+              <div className="text-white font-playfair font-bold text-2xl sm:text-3xl mb-1">Swami Vivekanand School of Nursing</div>
+              <div className="text-slate-300 text-sm">Beed Bypass Road, Beside Surya Lawns, Aurangabad</div>
+            </div>
+          </div>
+        </div>
+
         {/* Contact Information Cards */}
         <section className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* College Contact */}
           <Card className="shadow-xl border-0 overflow-hidden">
-            <div className="bg-blue-600 h-2 w-full"></div>
+            <div className="bg-blue-700 h-2 w-full"></div>
             <CardHeader className="bg-blue-50 pb-4">
               <CardTitle className="text-2xl text-gray-900 flex items-center gap-3">
-                <div className="bg-blue-600 p-2 rounded-lg">
+                <div className="bg-blue-700 p-2 rounded-lg">
                   <Building className="h-6 w-6 text-white" />
                 </div>
                 College Office
@@ -83,7 +146,7 @@ export default function ContactPage() {
             <CardContent className="p-6 space-y-5">
               <div className="flex items-start gap-4 group">
                 <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
-                  <MapPin className="h-5 w-5 text-blue-600" />
+                  <MapPin className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">
@@ -102,11 +165,11 @@ export default function ContactPage() {
                 className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
               >
                 <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
-                  <Phone className="h-5 w-5 text-blue-600" />
+                  <Phone className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                  <p className="text-blue-600 font-medium">7517275151</p>
+                  <p className="text-blue-700 font-medium">7517275151</p>
                 </div>
               </a>
 
@@ -115,11 +178,11 @@ export default function ContactPage() {
                 className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
               >
                 <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
-                  <Mail className="h-5 w-5 text-blue-600" />
+                  <Mail className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                  <p className="text-blue-600 text-sm break-all">
+                  <p className="text-blue-700 text-sm break-all">
                     swamivekanandschoolofnursing@gmail.com
                   </p>
                 </div>
@@ -127,7 +190,7 @@ export default function ContactPage() {
 
               <div className="flex items-start gap-4 bg-gray-50 p-3 rounded-lg">
                 <div className="bg-white p-2 rounded-lg">
-                  <Clock className="h-5 w-5 text-blue-600" />
+                  <Clock className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">
@@ -150,10 +213,10 @@ export default function ContactPage() {
 
           {/* Trust Contact */}
           <Card className="shadow-xl border-0 overflow-hidden">
-            <div className="bg-green-600 h-2 w-full"></div>
-            <CardHeader className="bg-green-50 pb-4">
+            <div className="bg-blue-700 h-2 w-full"></div>
+            <CardHeader className="bg-slate-50 pb-4">
               <CardTitle className="text-2xl text-gray-900 flex items-center gap-3">
-                <div className="bg-green-600 p-2 rounded-lg">
+                <div className="bg-blue-700 p-2 rounded-lg">
                   <Users className="h-6 w-6 text-white" />
                 </div>
                 Trust Office
@@ -161,8 +224,8 @@ export default function ContactPage() {
             </CardHeader>
             <CardContent className="p-6 space-y-5">
               <div className="flex items-start gap-4 group">
-                <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-colors">
-                  <MapPin className="h-5 w-5 text-green-600" />
+                <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                  <MapPin className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">
@@ -182,20 +245,20 @@ export default function ContactPage() {
                 href="mailto:indrayanipratishthan51@gmail.com"
                 className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
               >
-                <div className="bg-green-50 p-2 rounded-lg group-hover:bg-green-100 transition-colors">
-                  <Mail className="h-5 w-5 text-green-600" />
+                <div className="bg-blue-50 p-2 rounded-lg group-hover:bg-blue-100 transition-colors">
+                  <Mail className="h-5 w-5 text-blue-700" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                  <p className="text-green-600 text-sm break-all">
+                  <p className="text-blue-700 text-sm break-all">
                     indrayanipratishthan51@gmail.com
                   </p>
                 </div>
               </a>
 
-              <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+              <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
                 <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Building className="h-4 w-4 text-green-600" />
+                  <Building className="h-4 w-4 text-blue-700" />
                   About INDRAYANI PRATISHTHAN
                 </h4>
                 <p className="text-gray-600 text-sm leading-relaxed">
@@ -233,29 +296,158 @@ export default function ContactPage() {
           </Card>
         </section>
 
-        {/* Google Form Embed */}
+        {/* Contact Form */}
         <section className="mb-16">
           <Card className="shadow-xl border-0">
             <CardHeader className="bg-gray-50 border-b">
-              <CardTitle className="text-3xl text-center font-serif text-gray-900">
+              <CardTitle className="text-3xl text-center font-playfair text-gray-900">
                 Send Us a Message
               </CardTitle>
               <p className="text-gray-600 text-center mt-2">
                 Fill out the form below and we will get back to you shortly.
               </p>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="w-full flex justify-center bg-white p-4">
-                <iframe
-                  src="https://docs.google.com/forms/d/e/1FAIpQLSfX3Q0SVVcbnh1LotfbiqXIuJTYRbEJfz92nd-Qc27Yh252NA/viewform?embedded=true"
-                  width="100%"
-                  height="800"
-                  style={{ border: 0 }}
-                  title="Google Contact Form"
-                  className="max-w-4xl mx-auto"
-                >
-                  Loading…
-                </iframe>
+            <CardContent className="p-8">
+              <div className="max-w-2xl mx-auto">
+                {contactSubmitted ? (
+                  <div className="text-center py-10">
+                    <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="h-8 w-8 text-green-600" />
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-2xl mb-3">Message Received!</h3>
+                    <p className="text-slate-500 leading-relaxed mb-6">
+                      Thank you for reaching out. Our admissions team will get back to you within 24 hours.
+                    </p>
+                    <button
+                      onClick={() => setContactSubmitted(false)}
+                      className="bg-blue-700 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
+                    >
+                      Send Another Message
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} className="space-y-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      {/* Name */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                          Full Name <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                          <input
+                            type="text"
+                            placeholder="Your full name"
+                            value={contactForm.name}
+                            onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                            required
+                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Phone */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                          Mobile Number <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                          <input
+                            type="tel"
+                            placeholder="10-digit mobile number"
+                            value={contactForm.phone}
+                            onChange={(e) =>
+                              setContactForm({ ...contactForm, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })
+                            }
+                            required
+                            pattern="[0-9]{10}"
+                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      {/* Email */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                          Email <span className="text-slate-400 font-normal text-xs">(optional)</span>
+                        </label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                          <input
+                            type="email"
+                            placeholder="your@email.com"
+                            value={contactForm.email}
+                            onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
+                          />
+                        </div>
+                      </div>
+                      {/* Course */}
+                      <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                          Course Interest <span className="text-slate-400 font-normal text-xs">(optional)</span>
+                        </label>
+                        <div className="relative">
+                          <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                          <select
+                            value={contactForm.course}
+                            onChange={(e) => setContactForm({ ...contactForm, course: e.target.value })}
+                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all appearance-none bg-white"
+                          >
+                            <option value="">Select a course</option>
+                            <option value="GNM (General Nursing & Midwifery)">GNM (General Nursing & Midwifery)</option>
+                            <option value="Admission Enquiry">Admission Enquiry</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Message */}
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                        Message <span className="text-slate-400 font-normal text-xs">(optional)</span>
+                      </label>
+                      <div className="relative">
+                        <MessageSquare className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />
+                        <textarea
+                          placeholder="Your message or questions..."
+                          value={contactForm.message}
+                          onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                          rows={4}
+                          className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    {contactError && (
+                      <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                        <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                        {contactError}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={contactSubmitting}
+                      className="w-full bg-blue-700 hover:bg-blue-600 disabled:opacity-60 text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2"
+                    >
+                      {contactSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                          </svg>
+                          Submitting…
+                        </span>
+                      ) : (
+                        <><Send className="h-5 w-5" /> Send Message</>
+                      )}
+                    </button>
+                  </form>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -265,7 +457,7 @@ export default function ContactPage() {
         <section className="mb-16">
           <Card className="shadow-xl border-0">
             <CardHeader className="bg-gray-50 border-b">
-              <CardTitle className="text-3xl text-center font-serif text-gray-900">
+              <CardTitle className="text-3xl text-center font-playfair text-gray-900">
                 Frequently Asked Questions
               </CardTitle>
             </CardHeader>
@@ -286,7 +478,7 @@ export default function ContactPage() {
                         {faq.question}
                       </span>
                       <ChevronDown
-                        className={`h-5 w-5 text-blue-600 flex-shrink-0 transition-transform ${
+                        className={`h-5 w-5 text-blue-700 flex-shrink-0 transition-transform ${
                           openFaq === index ? "rotate-180" : ""
                         }`}
                       />
@@ -309,7 +501,7 @@ export default function ContactPage() {
         <section>
           <Card className="shadow-xl border-0 overflow-hidden">
             <CardHeader className="bg-gray-50">
-              <CardTitle className="text-2xl text-center font-serif text-gray-900">
+              <CardTitle className="text-2xl text-center font-playfair text-gray-900">
                 Find Us on Map
               </CardTitle>
             </CardHeader>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -174,7 +174,7 @@ export default function AdminDashboardPage() {
 
       if (data.success) {
         const msg = data.paymentVerified
-          ? `Payment VERIFIED as SUCCESS.\nICICI Ref: ${data.transaction.iciciPaymentId}\nStatus updated from ${data.previousStatus} → ${data.newStatus}`
+          ? `Payment VERIFIED as SUCCESS.\nICICI Ref: ${data.transaction.iciciPaymentId}\nStatus updated from ${data.previousStatus} â†’ ${data.newStatus}`
           : `Payment NOT successful at ICICI.\nResponse: ${data.transaction.iciciResponseDesc || 'No response'}\nStatus remains: ${data.previousStatus}`;
         alert(msg);
         // Reload data

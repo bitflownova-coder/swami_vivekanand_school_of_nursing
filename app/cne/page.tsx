@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -235,7 +235,7 @@ export default function CNEPage() {
               className="mb-4"
               onClick={() => { setShowForm(false); setError(""); }}
             >
-              ← Back to Workshops
+              â† Back to Workshops
             </Button>
 
             <Card className="shadow-xl">

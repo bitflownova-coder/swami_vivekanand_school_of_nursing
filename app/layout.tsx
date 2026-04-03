@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Assuming you use Inter font
+﻿import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/navigation"; // Your components
+import Navigation from "@/components/navigation";
 import Footer from "@/components/footer";
+import FloatingEnquiry from "@/components/floating-enquiry";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", weight: ["400", "600", "700", "800"] });
 
 // 1. METADATA EXPORT (Server-side SEO)
 export const metadata: Metadata = {
@@ -53,11 +55,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico' },
       { url: '/icon.png', type: 'image/png', sizes: '32x32' },
     ],
-    apple: '/apple-touch-icon.png',
-    shortcut: '/favicon.ico',
+    shortcut: '/icon.png',
   },
 };
 
@@ -96,7 +96,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${playfair.variable} ${inter.className}`}>
         {/* Add JSON-LD Script Here */}
         <script
           type="application/ld+json"
@@ -104,8 +104,9 @@ export default function RootLayout({
         />
 
         <Navigation />
-        <main className="min-h-screen">{children}</main>
+        <main className="min-h-screen pt-[152px]">{children}</main>
         <Footer />
+        <FloatingEnquiry />
       </body>
     </html>
   );

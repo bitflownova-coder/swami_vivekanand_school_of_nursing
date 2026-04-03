@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -235,7 +235,7 @@ export default function ViewRegistrationPage() {
           </p>
           <Link href="/cne">
             <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-              ← Back to Registration
+              â† Back to Registration
             </Button>
           </Link>
         </div>

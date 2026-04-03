@@ -92,6 +92,56 @@ model AttendanceSpot {
   @@map("attendance_spot")
 }
 
+// College Enquiry model (contact page + floating widget)
+model Enquiry {
+  id         String   @id @default(cuid())
+  name       String   @db.VarChar(100)
+  phone      String   @db.VarChar(15)
+  email      String   @default("") @db.VarChar(100)
+  course     String   @default("") @db.VarChar(100)
+  message    String   @default("") @db.Text
+  source     String   @default("contact") @db.VarChar(20) // contact | floating
+  ipAddress  String   @default("") @db.VarChar(50)
+  createdAt  DateTime @default(now())
+
+  @@index([phone])
+  @@index([createdAt])
+  @@map("enquiries")
+}
+
+// College Admission Application model
+model AdmissionApplication {
+  id              String   @id @default(cuid())
+  // Personal
+  fullName        String   @db.VarChar(100)
+  dateOfBirth     String   @db.VarChar(20)
+  gender          String   @db.VarChar(10)
+  phone           String   @db.VarChar(15)
+  email           String   @default("") @db.VarChar(100)
+  address         String   @db.Text
+  // Academic
+  tenthBoard      String   @db.VarChar(100)
+  tenthPercent    String   @db.VarChar(10)
+  twelthBoard     String   @db.VarChar(100)
+  twelthPercent   String   @db.VarChar(10)
+  twelthStream    String   @db.VarChar(50)
+  // Category
+  category        String   @default("General") @db.VarChar(20)
+  hasDisability   Boolean  @default(false)
+  isAnmRegistered Boolean  @default(false)
+  // Admin
+  status          String   @default("pending") @db.VarChar(20) // pending | shortlisted | rejected | admitted
+  notes           String   @default("") @db.Text
+  ipAddress       String   @default("") @db.VarChar(50)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([phone])
+  @@index([status])
+  @@index([createdAt])
+  @@map("admission_applications")
+}
+
 // CNE Attendance model
 model Attendance {
   id                    String       @id @default(cuid())

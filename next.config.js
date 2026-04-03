@@ -2,11 +2,16 @@
 const nextConfig = {
   // Removed 'output: export' to enable API routes for CNE system
   images: { unoptimized: true },
+
+  // Fix: tell Turbopack the correct workspace root (prevents 404s from parent lockfile detection)
+  turbopack: {
+    root: __dirname,
+  },
   
   // Optimized for Cloud Startup: 4GB RAM, 2 CPU cores, 100-200 concurrent users
   experimental: {
     workerThreads: false,
-    cpus: 2
+    cpus: 2,
   },
   
   // Optimize production build

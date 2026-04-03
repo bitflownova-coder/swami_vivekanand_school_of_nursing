@@ -111,3 +111,47 @@ CREATE TABLE IF NOT EXISTS `attendances` (
   FOREIGN KEY (`workshopId`) REFERENCES `workshops`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`registrationId`) REFERENCES `registrations`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- College Enquiries (contact form + floating widget)
+CREATE TABLE IF NOT EXISTS `enquiries` (
+  `id` VARCHAR(191) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `phone` VARCHAR(15) NOT NULL,
+  `email` VARCHAR(100) NOT NULL DEFAULT '',
+  `course` VARCHAR(100) NOT NULL DEFAULT '',
+  `message` TEXT NOT NULL,
+  `source` VARCHAR(20) NOT NULL DEFAULT 'contact',
+  `ipAddress` VARCHAR(50) NOT NULL DEFAULT '',
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX idx_phone (`phone`),
+  INDEX idx_createdAt (`createdAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Admission Applications (GNM batch applications)
+CREATE TABLE IF NOT EXISTS `admission_applications` (
+  `id` VARCHAR(191) NOT NULL,
+  `fullName` VARCHAR(100) NOT NULL,
+  `dateOfBirth` VARCHAR(20) NOT NULL,
+  `gender` VARCHAR(10) NOT NULL,
+  `phone` VARCHAR(15) NOT NULL,
+  `email` VARCHAR(100) NOT NULL DEFAULT '',
+  `address` TEXT NOT NULL,
+  `tenthBoard` VARCHAR(100) NOT NULL,
+  `tenthPercent` VARCHAR(10) NOT NULL,
+  `twelthBoard` VARCHAR(100) NOT NULL,
+  `twelthPercent` VARCHAR(10) NOT NULL,
+  `twelthStream` VARCHAR(50) NOT NULL,
+  `category` VARCHAR(20) NOT NULL DEFAULT 'General',
+  `hasDisability` BOOLEAN NOT NULL DEFAULT FALSE,
+  `isAnmRegistered` BOOLEAN NOT NULL DEFAULT FALSE,
+  `status` VARCHAR(20) NOT NULL DEFAULT 'pending',
+  `notes` TEXT NOT NULL,
+  `ipAddress` VARCHAR(50) NOT NULL DEFAULT '',
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX idx_phone (`phone`),
+  INDEX idx_status (`status`),
+  INDEX idx_createdAt (`createdAt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

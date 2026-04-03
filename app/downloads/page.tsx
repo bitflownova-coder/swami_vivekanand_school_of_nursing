@@ -1,393 +1,196 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
 import {
-  Download,
-  FileText,
   BookOpen,
   HelpCircle,
-  Search,
-  File,
-  AlertCircle,
-  X,
-  ExternalLink,
+  FileText,
+  FolderOpen,
+  Calendar,
+  ArrowRight,
 } from "lucide-react";
 
-export default function DownloadsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+const categories = [
+  {
+    id: "syllabus",
+    href: "/resources/syllabus",
+    Icon: BookOpen,
+    label: "Curriculum",
+    title: "Course Syllabi",
+    description:
+      "Year-wise GNM curriculum covering all subjects, clinical hours and exam patterns prescribed by the Maharashtra Nursing Council.",
+    count: "3 documents",
+    bg: "from-blue-50 to-blue-100/50",
+    border: "border-blue-100",
+    iconBg: "bg-blue-600",
+    badgeBg: "bg-blue-50 text-blue-700",
+    btnBg: "bg-blue-600 hover:bg-blue-700",
+    highlight: "First Year · Second Year · Third Year",
+  },
+  {
+    id: "previous-year",
+    href: "/resources/previous-year-questions",
+    Icon: FileText,
+    label: "Exam Prep",
+    title: "Previous Year Questions",
+    description:
+      "Subject-wise previous year examination papers to understand question patterns and prepare effectively for GNM exams.",
+    count: "9 papers",
+    bg: "from-orange-50 to-orange-100/50",
+    border: "border-orange-100",
+    iconBg: "bg-orange-600",
+    badgeBg: "bg-orange-50 text-orange-700",
+    btnBg: "bg-orange-600 hover:bg-orange-700",
+    highlight: "Nursing Foundation · Bio Science · Mental Health · Medical Surgical · Paediatric · and more",
+  },
+  {
+    id: "question-banks",
+    href: "/resources/question-banks",
+    Icon: HelpCircle,
+    label: "Practice Sets",
+    title: "Question Banks",
+    description:
+      "Curated year-wise question banks covering all GNM subjects to help students practise and revise before examinations.",
+    count: "3 books",
+    bg: "from-emerald-50 to-emerald-100/50",
+    border: "border-emerald-100",
+    iconBg: "bg-emerald-600",
+    badgeBg: "bg-emerald-50 text-emerald-700",
+    btnBg: "bg-emerald-600 hover:bg-emerald-700",
+    highlight: "First Year · Second Year · Third Year",
+  },
+  {
+    id: "academic-schedule",
+    href: "/resources/academic-schedule",
+    Icon: Calendar,
+    label: "Academic Year",
+    title: "Academic Schedule",
+    description:
+      "Complete week-by-week timetable of theory classes, clinical postings, revision weeks, examinations and vacations.",
+    count: "2024–25",
+    bg: "from-slate-50 to-slate-100/50",
+    border: "border-slate-100",
+    iconBg: "bg-slate-700",
+    badgeBg: "bg-slate-100 text-slate-700",
+    btnBg: "bg-slate-700 hover:bg-slate-800",
+    highlight: "Theory Blocks · Clinical Postings · Examinations · Vacations",
+  },
+  {
+    id: "other",
+    href: "/resources/other",
+    Icon: FolderOpen,
+    label: "Forms & Guides",
+    title: "Other Resources",
+    description:
+      "Admission forms, student handbook, scholarship guidelines and other essential administrative documents.",
+    count: "4+ files",
+    bg: "from-violet-50 to-violet-100/50",
+    border: "border-violet-100",
+    iconBg: "bg-violet-600",
+    badgeBg: "bg-violet-50 text-violet-700",
+    btnBg: "bg-violet-600 hover:bg-violet-700",
+    highlight: "Admission Form · Student Handbook · Scholarship Info",
+  },
+];
 
-  // Sample Data - Updated with Link
-  const syllabi = [
-    {
-      id: "s1",
-      year: "First Year",
-      title: "First Year GNM Syllabus",
-      size: "View Folder", // Updated size text to reflect it's a link
-      type: "Drive",
-      date: "2024-01-15",
-      category: "Syllabus",
-      link: "https://drive.google.com/drive/folders/1uvwPuDSkNRUlF6oO50eWm-R0PF7DmYW2?usp=sharing", // Added Link
-    },
-    {
-      id: "s2",
-      year: "Second Year",
-      title: "Second Year GNM Syllabus",
-      size: "View Folder",
-      type: "PDF",
-      date: "2024-01-15",
-      category: "Syllabus",
-      link: "https://drive.google.com/drive/folders/1ibswo-fxNmj47Srk5Qls2pqcmrau834P?usp=sharing",
-    },
-    {
-      id: "s3",
-      year: "Third Year",
-      title: "Third Year GNM Syllabus",
-      size: "2.4 MB",
-      type: "PDF",
-      date: "2024-01-15",
-      category: "Syllabus",
-    },
-    {
-      id: "s4",
-      year: "Internship",
-      title: "Internship Guidelines & Logbook",
-      size: "1.5 MB",
-      type: "PDF",
-      date: "2024-01-15",
-      category: "Syllabus",
-    },
-  ];
-
-  const questionBanks = [
-    {
-      id: "q1",
-      year: "First Year",
-      title: "First Year Question Bank",
-      size: "4.2 MB",
-      type: "PDF",
-      date: "2023-12-10",
-      category: "Question Bank",
-    },
-    {
-      id: "q2",
-      year: "Second Year",
-      title: "Second Year Question Bank",
-      size: "4.5 MB",
-      type: "PDF",
-      date: "2023-12-10",
-      category: "Question Bank",
-    },
-    {
-      id: "q3",
-      year: "Third Year",
-      title: "Third Year Question Bank",
-      size: "4.1 MB",
-      type: "PDF",
-      date: "2023-12-10",
-      category: "Question Bank",
-    },
-  ];
-
-  const otherResources = [
-    {
-      id: "r1",
-      title: "Admission Form 2024-25",
-      size: "1.2 MB",
-      type: "PDF",
-      date: "2024-03-01",
-      category: "Forms",
-      link:'https://drive.google.com/file/d/1m4c9Gpc1eAazJCNpbebRbhKeCNejM7j9/view'
-    },
-    {
-      id: "r2",
-      title: "Academic Calendar 2024",
-      size: "0.8 MB",
-      type: "PDF",
-      date: "2024-01-01",
-      category: "Calendar",
-    },
-    {
-      id: "r3",
-      title: "Student Handbook",
-      size: "4.5 MB",
-      type: "PDF",
-      date: "2023-08-15",
-      category: "Guide",
-    },
-    {
-      id: "r4",
-      title: "Scholarship Guidelines",
-      size: "1.5 MB",
-      type: "PDF",
-      date: "2023-09-10",
-      category: "Info",
-    },
-  ];
-
-  // Combine all files for global search
-  const allFiles = [...syllabi, ...questionBanks, ...otherResources];
-
-  // Global Filter Function
-  const filteredFiles = allFiles.filter(
-    (file: any) =>
-      file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (file.year &&
-        file.year.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (file.category &&
-        file.category.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
-  // Helper to determine icon and color based on file type/category
-  const getFileStyle = (file: any) => {
-    if (syllabi.find((s) => s.id === file.id))
-      return { icon: FileText, colorClass: "border-blue-500" };
-    if (questionBanks.find((q) => q.id === file.id))
-      return { icon: HelpCircle, colorClass: "border-green-500" };
-    return { icon: File, colorClass: "border-purple-500" };
-  };
-
-  const FileCard = ({ file }: { file: any }) => {
-    const { icon: Icon, colorClass } = getFileStyle(file);
-    return (
-      <Card
-        className="group hover:shadow-lg transition-all duration-300 border-l-4 hover:-translate-y-1 bg-white"
-        style={{ borderLeftColor: colorClass.replace("border-", "var(--") }}
-      >
-        <CardContent className="p-5">
-          <div className="flex items-start justify-between mb-4">
-            <div
-              className={`p-3 rounded-lg bg-opacity-10 ${colorClass
-                .replace("border-", "bg-")
-                .replace("text-", "bg-")}`}
-            >
-              <Icon
-                className={`h-6 w-6 ${colorClass.replace("border-", "text-")}`}
-              />
-            </div>
-            <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded text-gray-600">
-              {file.type}
-            </span>
-          </div>
-          <h3 className="font-bold text-gray-900 mb-1 line-clamp-2 min-h-[3rem]">
-            {file.title}
-          </h3>
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-            <span className="font-medium text-blue-600">
-              {file.year || file.category}
-            </span>
-            <span>•</span>
-            <span>{file.size}</span>
-          </div>
-
-          {/* Updated Button Logic to handle Links */}
-          <Button
-            asChild
-            className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:text-blue-600 transition-colors group-hover:border-blue-200"
-          >
-            <a
-              href={file.link || "#"}
-              target={file.link ? "_blank" : "_self"}
-              rel="noopener noreferrer"
-            >
-              {file.link ? (
-                <ExternalLink className="h-4 w-4 mr-2" />
-              ) : (
-                <Download className="h-4 w-4 mr-2" />
-              )}
-              {file.link ? "Open Link" : "Download"}
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  };
-
+export default function ResourcesHubPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-blue-900 text-white py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Student Resources
-            </h1>
-            <p className="text-xl text-blue-100 mb-8 font-light">
-              Access all your academic materials, syllabi, and forms in one
-              place.
-            </p>
+    <div className="min-h-screen bg-slate-50">
+      {/* HERO */}
+      <section className="relative bg-gradient-to-br from-slate-900 to-blue-950 pt-10 pb-20 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:22px_22px]" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
 
-            {/* Global Search Bar */}
-            <div className="relative max-w-xl mx-auto">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <div className="w-8 h-px bg-blue-400" />
+            <span className="text-blue-400 text-xs font-bold uppercase tracking-[0.25em]">Academic Portal</span>
+            <div className="w-8 h-px bg-blue-400" />
+          </div>
+          <h1 className="font-playfair font-bold text-4xl sm:text-5xl lg:text-6xl text-white mb-5 leading-tight">
+            Student Resources
+          </h1>
+          <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-12">
+            All academic materials in one place — syllabi, question papers, exam prep, schedules and essential forms.
+          </p>
+
+          {/* Stats */}
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-12">
+            {[
+              { value: "3", label: "Course Syllabi" },
+              { value: "9", label: "Previous Year Papers" },
+              { value: "3", label: "Question Banks" },
+              { value: "4+", label: "Other Documents" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl font-bold text-white">{stat.value}</p>
+                <p className="text-slate-400 text-xs mt-1 uppercase tracking-wider">{stat.label}</p>
               </div>
-              <Input
-                type="text"
-                placeholder="Search for anything (e.g., 'First Year', 'Admission Form')..."
-                className="pl-10 pr-10 py-6 text-lg rounded-full shadow-lg border-0 text-gray-900 placeholder:text-gray-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              )}
-            </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-8 relative z-20">
-        {/* Conditional Rendering: Search Results vs Tabs */}
-        {searchQuery ? (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
-                Search Results
-              </h2>
-              <span className="text-sm text-gray-500">
-                Found {filteredFiles.length} items
-              </span>
-            </div>
+      {/* CATEGORIES */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {categories.map((cat) => {
+            const Icon = cat.Icon;
+            return (
+              <Link
+                key={cat.id}
+                href={cat.href}
+                className={`group relative bg-gradient-to-br ${cat.bg} rounded-3xl border ${cat.border} overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+              >
+                <div className="p-7">
+                  <div className="flex items-start justify-between mb-5">
+                    <div className={`p-3 rounded-2xl ${cat.iconBg} shadow-lg`}>
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                    <span className={`text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${cat.badgeBg}`}>
+                      {cat.count}
+                    </span>
+                  </div>
 
-            {filteredFiles.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredFiles.map((file) => (
-                  <FileCard key={file.id} file={file} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
-                <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900">
-                  No results found
-                </h3>
-                <p className="text-gray-500">
-                  Try adjusting your search terms.
-                </p>
-                <Button
-                  variant="link"
-                  onClick={() => setSearchQuery("")}
-                  className="text-blue-600 mt-2"
-                >
-                  Clear search
-                </Button>
-              </div>
-            )}
+                  <p className="text-xs font-bold uppercase tracking-[0.15em] text-slate-400 mb-1">{cat.label}</p>
+                  <h2 className="font-playfair font-bold text-xl text-slate-900 mb-3 group-hover:text-blue-700 transition-colors">
+                    {cat.title}
+                  </h2>
+                  <p className="text-sm text-slate-500 leading-relaxed mb-4">{cat.description}</p>
+                  <p className="text-xs text-slate-400 italic mb-5 line-clamp-1">{cat.highlight}</p>
+
+                  <div className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl ${cat.btnBg} text-white text-sm font-semibold shadow-sm group-hover:shadow-md transition-all duration-200`}>
+                    View All
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* Decorative circles */}
+                <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/20 rounded-full pointer-events-none" />
+                <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/20 rounded-full pointer-events-none" />
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Notice */}
+        <div className="mt-12 bg-white border border-slate-100 rounded-2xl p-7 flex flex-col sm:flex-row gap-5 items-start shadow-sm">
+          <div className="bg-amber-50 p-3 rounded-xl shrink-0">
+            <FileText className="h-6 w-6 text-amber-600" />
           </div>
-        ) : (
-          /* Default Tabs View */
-          <Tabs defaultValue="syllabus" className="w-full space-y-8">
-            <TabsList className="grid w-full grid-cols-3 lg:w-[600px] mx-auto bg-white p-1 shadow-md rounded-full h-auto">
-              <TabsTrigger
-                value="syllabus"
-                className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-              >
-                Syllabus
-              </TabsTrigger>
-              <TabsTrigger
-                value="question-banks"
-                className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-              >
-                Question Banks
-              </TabsTrigger>
-              <TabsTrigger
-                value="resources"
-                className="rounded-full py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-              >
-                Other Resources
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Syllabus Content */}
-            <TabsContent value="syllabus" className="animate-fade-in">
-              <div className="mb-6 flex items-center gap-2 text-blue-800 bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <BookOpen className="h-5 w-5" />
-                <span className="font-medium">
-                  Detailed curriculum and course content for all academic years.
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {syllabi.map((file) => (
-                  <FileCard key={file.id} file={file} />
-                ))}
-              </div>
-            </TabsContent>
-
-            {/* Question Banks Content */}
-            <TabsContent value="question-banks" className="animate-fade-in">
-              <div className="mb-6 flex items-center gap-2 text-green-800 bg-green-50 p-4 rounded-lg border border-green-100">
-                <HelpCircle className="h-5 w-5" />
-                <span className="font-medium">
-                  Previous year questions and practice sets for First, Second,
-                  and Third Year.
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {questionBanks.map((file) => (
-                  <FileCard key={file.id} file={file} />
-                ))}
-              </div>
-            </TabsContent>
-
-            {/* Other Resources Content */}
-            <TabsContent value="resources" className="animate-fade-in">
-              <div className="mb-6 flex items-center gap-2 text-purple-800 bg-purple-50 p-4 rounded-lg border border-purple-100">
-                <File className="h-5 w-5" />
-                <span className="font-medium">
-                  Administrative forms, handbooks, and academic schedules.
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {otherResources.map((file) => (
-                  <FileCard key={file.id} file={file} />
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
-        )}
-
-        {/* Download Guidelines */}
-        <div className="mt-16 bg-yellow-50 border border-yellow-200 rounded-2xl p-8">
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-            <div className="bg-yellow-100 p-3 rounded-full shrink-0">
-              <AlertCircle className="h-8 w-8 text-yellow-700" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-yellow-900 mb-3">
-                Important Download Instructions
-              </h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-yellow-800/80 text-sm list-disc pl-4">
-                <li>
-                  All documents are provided in PDF format. Ensure you have a
-                  PDF reader installed.
-                </li>
-                <li>
-                  Files are regularly updated. Always check for the latest
-                  version before exams.
-                </li>
-                <li>
-                  If a download fails, try refreshing the page or clearing your
-                  browser cache.
-                </li>
-                <li>
-                  For access to restricted files, please log in to the student
-                  portal.
-                </li>
-              </ul>
-            </div>
+          <div>
+            <h3 className="font-semibold text-slate-800 mb-2">Access Instructions</h3>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-1.5 text-slate-500 text-sm list-disc pl-4">
+              <li>PDF files can be opened or downloaded directly.</li>
+              <li>Google Drive links open in a new tab — no sign-in required.</li>
+              <li>Files are updated at the start of each academic session.</li>
+              <li>Contact the office for any restricted or missing documents.</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

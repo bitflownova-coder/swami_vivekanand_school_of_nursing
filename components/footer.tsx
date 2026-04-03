@@ -32,7 +32,7 @@ const Footer = () => {
                 href="https://www.instagram.com/svs_of_nursing/?hl=en" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-blue-600 p-2 rounded-full transition-colors duration-300"
+                className="bg-gray-800 hover:bg-blue-700 p-2 rounded-full transition-colors duration-300"
               >
                 <Image 
                   src="/instagram.png" 
@@ -45,7 +45,7 @@ const Footer = () => {
                 href="https://www.facebook.com/swamivivekanandschoolofnursing/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gray-800 hover:bg-blue-600 p-2 rounded-full transition-colors duration-300"
+                className="bg-gray-800 hover:bg-blue-700 p-2 rounded-full transition-colors duration-300"
               >
                 <Image 
                   src="/facebook.png" 
@@ -63,51 +63,26 @@ const Footer = () => {
               Quick Links
             </h3>
             <ul className="space-y-3">
-              <li>
-                <Link 
-                  href="/about" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/academic" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Academic Programs
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/admissions" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Admissions
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/facilities" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Facilities
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  href="/downloads" 
-                  className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
-                >
-                  <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  Downloads
-                </Link>
-              </li>
+              {[
+                { label: "About Us",         href: "/about" },
+                { label: "Academic",         href: "/academic" },
+                { label: "Admissions",       href: "/admissions" },
+                { label: "Facilities",       href: "/facilities" },
+                { label: "CNE",              href: "/cne" },
+                { label: "Student's Corner", href: "/downloads" },
+                { label: "Events",           href: "/events" },
+                { label: "Contact Us",       href: "/contact" },
+              ].map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-gray-400 hover:text-blue-400 transition-colors duration-200 flex items-center group"
+                  >
+                    <ArrowRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
