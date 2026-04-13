@@ -114,7 +114,7 @@ export default function DeskLoginPage() {
         </CardContent>
         <CardFooter className="justify-center">
           <Link href="/cne" className="text-sm text-gray-500 hover:text-indigo-600">
-            â† Back to CNE Home
+            &larr; Back to CNE Home
           </Link>
         </CardFooter>
       </Card>

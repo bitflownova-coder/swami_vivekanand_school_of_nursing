@@ -70,12 +70,22 @@ export default function DocumentsPage() {
             Keep the following documents ready before beginning your application.
             Print this checklist and bring it to the college office.
           </p>
-          <button
-            onClick={() => window.print()}
-            className="mt-6 inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
-          >
-            <Printer className="h-4 w-4" /> Print Checklist
-          </button>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+            >
+              <Printer className="h-4 w-4" /> Print Checklist
+            </button>
+            <a
+              href="/downloads/gnm-documents-checklist.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all"
+            >
+              <FileText className="h-4 w-4" /> Download Checklist PDF
+            </a>
+          </div>
         </div>
       </section>
 
@@ -184,6 +194,13 @@ export default function DocumentsPage() {
             >
               <Printer className="h-4 w-4" /> Print / Download Checklist
             </button>
+            <Link
+              href="/admissions/pratigyapatra"
+              target="_blank"
+              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-lg transition-colors text-sm"
+            >
+              <FileText className="h-4 w-4" /> प्रतिज्ञापत्र (हमीपत्र)
+            </Link>
             <Link
               href="/admissions/apply"
               className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition-colors text-sm"

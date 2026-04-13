@@ -1,6 +1,7 @@
-﻿import Image from "next/image";
+﻿﻿import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { PhotoGallery } from "@/components/photo-gallery";
 
 export default function CampusPage() {
   return (
@@ -13,7 +14,7 @@ export default function CampusPage() {
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/facilities" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
-            â† Back to Facilities
+            &larr; Back to Facilities
           </Link>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-px bg-blue-400" />
@@ -46,20 +47,14 @@ export default function CampusPage() {
         </div>
 
         {/* Gallery grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {[2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="relative rounded-2xl overflow-hidden shadow" style={{ aspectRatio: "4/3" }}>
-              <Image
-                src={`/photos/institute-building-front-view/${i}.jpg`}
-                alt={`Institute Building ${i}`}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-500"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
+        <PhotoGallery
+          columns={4}
+          aspect="4/3"
+          photos={[2,3,4,5,6,7,8].map((i) => ({
+            src: `/photos/institute-building-front-view/${i}.jpg`,
+            alt: `Institute Building ${i}`,
+          }))}
+        />
 
         <div className="mt-10 p-6 bg-slate-50 border border-slate-100 rounded-2xl text-sm text-slate-700">
           <strong>Location:</strong> Swami Vivekanand School of Nursing, Hingoli, Maharashtra — strategically located with easy access to the affiliated 60-bed practice hospital.

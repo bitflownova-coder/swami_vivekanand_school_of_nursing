@@ -5,6 +5,24 @@ import { FolderOpen, ExternalLink, Download, ArrowLeft, ChevronRight, FileText }
 
 const otherResources = [
   {
+    id: "r5",
+    title: "GNM 3rd Year Supplementary Exam Timetable (2026-27)",
+    description: "Tentative timetable for GNM 3rd Year Regular Supplementary Examination, A.Y. 2026-27, issued by MSBNPE.",
+    type: "Web",
+    category: "Timetable",
+    link: "/resources/exam-timetable",
+    color: "rose",
+  },
+  {
+    id: "r6",
+    title: "ANM 2nd Year Supplementary Exam Timetable (2026-27)",
+    description: "Tentative timetable for ANM 2nd Year Regular Batch Supplementary Examination, A.Y. 2026-27, issued by MSBNPE.",
+    type: "Web",
+    category: "Timetable",
+    link: "/resources/exam-timetable",
+    color: "rose",
+  },
+  {
     id: "r1",
     title: "Admission Form 2026-27",
     description: "Official admission application form for the 2026–27 academic session.",
@@ -43,6 +61,7 @@ const otherResources = [
 ];
 
 const colorMap: Record<string, { border: string; badge: string; iconBg: string; iconText: string; btn: string }> = {
+  rose:    { border: "border-rose-100",    badge: "bg-rose-50 text-rose-700",       iconBg: "bg-rose-50",    iconText: "text-rose-600",    btn: "border-rose-200 text-rose-700 hover:bg-rose-600"    },
   blue:    { border: "border-blue-100",    badge: "bg-blue-50 text-blue-700",       iconBg: "bg-blue-50",    iconText: "text-blue-600",    btn: "border-blue-200 text-blue-700 hover:bg-blue-600"    },
   emerald: { border: "border-emerald-100", badge: "bg-emerald-50 text-emerald-700", iconBg: "bg-emerald-50", iconText: "text-emerald-600", btn: "border-emerald-200 text-emerald-700 hover:bg-emerald-600" },
   violet:  { border: "border-violet-100",  badge: "bg-violet-50 text-violet-700",   iconBg: "bg-violet-50",  iconText: "text-violet-600",  btn: "border-violet-200 text-violet-700 hover:bg-violet-600"  },

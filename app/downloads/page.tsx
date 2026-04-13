@@ -7,6 +7,7 @@ import {
   FileText,
   FolderOpen,
   Calendar,
+  CalendarDays,
   ArrowRight,
 } from "lucide-react";
 
@@ -16,16 +17,16 @@ const categories = [
     href: "/resources/syllabus",
     Icon: BookOpen,
     label: "Curriculum",
-    title: "Course Syllabi",
+    title: "Course Syllabus",
     description:
       "Year-wise GNM curriculum covering all subjects, clinical hours and exam patterns prescribed by the Maharashtra Nursing Council.",
-    count: "3 documents",
+    count: "1 document",
     bg: "from-blue-50 to-blue-100/50",
     border: "border-blue-100",
     iconBg: "bg-blue-600",
     badgeBg: "bg-blue-50 text-blue-700",
     btnBg: "bg-blue-600 hover:bg-blue-700",
-    highlight: "First Year · Second Year · Third Year",
+    highlight: "All 3 Years · GNM Programme",
   },
   {
     id: "previous-year",
@@ -57,7 +58,7 @@ const categories = [
     iconBg: "bg-emerald-600",
     badgeBg: "bg-emerald-50 text-emerald-700",
     btnBg: "bg-emerald-600 hover:bg-emerald-700",
-    highlight: "First Year · Second Year · Third Year",
+    highlight: "1st Year · 2nd Year · 3rd Year",
   },
   {
     id: "academic-schedule",
@@ -74,6 +75,22 @@ const categories = [
     badgeBg: "bg-slate-100 text-slate-700",
     btnBg: "bg-slate-700 hover:bg-slate-800",
     highlight: "Theory Blocks · Clinical Postings · Examinations · Vacations",
+  },
+  {
+    id: "exam-timetable",
+    href: "/resources/exam-timetable",
+    Icon: CalendarDays,
+    label: "Supplementary Exams",
+    title: "Exam Timetable",
+    description:
+      "Tentative supplementary examination timetable for GNM (1st, 2nd & 3rd Year) and ANM (2nd Year) — A.Y. 2026–27.",
+    count: "2026–27",
+    bg: "from-rose-50 to-rose-100/50",
+    border: "border-rose-100",
+    iconBg: "bg-rose-600",
+    badgeBg: "bg-rose-50 text-rose-700",
+    btnBg: "bg-rose-600 hover:bg-rose-700",
+    highlight: "GNM Year 1 · GNM Year 2 · GNM Year 3 · ANM Year 2",
   },
   {
     id: "other",
@@ -112,15 +129,16 @@ export default function ResourcesHubPage() {
             Student Resources
           </h1>
           <p className="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto mb-12">
-            All academic materials in one place — syllabi, question papers, exam prep, schedules and essential forms.
+            All academic materials in one place — syllabus, question papers, exam prep, schedules and essential forms.
           </p>
 
           {/* Stats */}
           <div className="flex flex-wrap justify-center gap-6 sm:gap-12">
             {[
-              { value: "3", label: "Course Syllabi" },
+              { value: "1", label: "Course Syllabus" },
               { value: "9", label: "Previous Year Papers" },
               { value: "3", label: "Question Banks" },
+              { value: "4", label: "Year Timetables" },
               { value: "4+", label: "Other Documents" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">

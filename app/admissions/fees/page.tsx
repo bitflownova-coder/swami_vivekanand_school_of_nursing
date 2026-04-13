@@ -95,9 +95,10 @@ export default function FeesPage() {
               </div>
 
               {[
-                { sr: 1, year: "2023-24", dev: "₹4,545",  tuition: "₹45,455", total: "₹50,000" },
-                { sr: 2, year: "2024-25", dev: "₹5,225",  tuition: "₹49,775", total: "₹55,000" },
-              ].map(({ sr, year, dev, tuition, total }) => (
+                { sr: 1, year: "2023-24", feeType: "Ad-hoc fee",  dev: "₹4,545",  tuition: "₹45,455", total: "₹50,000" },
+                { sr: 2, year: "2024-25", feeType: "Ad-hoc fee",  dev: "₹5,225",  tuition: "₹49,775", total: "₹55,000" },
+                { sr: 3, year: "2025-26", feeType: "FRA Approved", dev: "₹5,273",  tuition: "₹52,727", total: "₹58,000" },
+              ].map(({ sr, year, feeType, dev, tuition, total }) => (
                 <div
                   key={sr}
                   className="sm:grid sm:grid-cols-[3rem_1fr_5rem_7rem_7rem_7rem_7rem] gap-x-4 px-6 py-5 hover:bg-slate-50 transition-colors"
@@ -108,7 +109,7 @@ export default function FeesPage() {
                       <div className="flex items-center gap-3">
                         <span className="font-bold text-blue-700 text-lg">GNM</span>
                         <span className="text-slate-500 text-sm">{year}</span>
-                        <span className="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full text-xs font-bold">Ad-hoc fee</span>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${feeType === "FRA Approved" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>{feeType}</span>
                       </div>
                       <div className="text-right">
                         <div className="text-xs text-slate-500 mb-0.5">Total Fee</div>
@@ -125,7 +126,7 @@ export default function FeesPage() {
                   <span className="hidden sm:block font-bold text-blue-700 self-center">GNM</span>
                   <span className="hidden sm:block text-slate-600 self-center">{year}</span>
                   <span className="hidden sm:flex self-center">
-                    <span className="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-bold">Ad-hoc fee</span>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${feeType === "FRA Approved" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}>{feeType}</span>
                   </span>
                   <span className="hidden sm:block text-right text-slate-700 self-center">{dev}</span>
                   <span className="hidden sm:block text-right text-slate-700 self-center">{tuition}</span>

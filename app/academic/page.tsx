@@ -29,7 +29,6 @@ export default function AcademicPage() {
             {[
               { value: '3 Years', label: 'Programme Duration' },
               { value: '6 Semesters', label: 'Academic Structure' },
-              { value: 'INC Approved', label: 'Regulatory Body' },
               { value: 'Hospital-Based', label: 'Clinical Training' },
             ].map((s) => (
               <div key={s.label} className="px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl min-w-[140px]">

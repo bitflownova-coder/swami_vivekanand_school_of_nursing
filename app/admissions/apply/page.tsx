@@ -277,15 +277,34 @@ function Sidebar() {
         </div>
       </a>
 
+      {/* Pratigyapatra Download */}
+      <a
+        href="/admissions/pratigyapatra"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-start gap-3 border border-amber-100 bg-amber-50/80 hover:border-amber-300 hover:bg-amber-50 rounded-xl p-3.5 transition-all group"
+      >
+        <div className="w-9 h-9 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+          <FileText className="h-4 w-4 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-[13px] text-slate-800 leading-tight">प्रतिज्ञापत्र <span className="font-normal text-slate-500">(हमीपत्र)</span></p>
+          <p className="text-[11px] text-slate-500 mt-0.5">₹100 Non-Judicial Stamp Paper undertaking</p>
+          <span className="inline-flex items-center gap-1 text-amber-700 text-[11px] font-semibold mt-1.5">
+            <Download className="h-3 w-3" /> Print / Download
+          </span>
+        </div>
+      </a>
+
       {/* GNM Info Card */}
       <div className="border border-slate-200 bg-white rounded-xl p-3.5">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">GNM Programme 2026–27</p>
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">GNM PROGRAM 2026</p>
         <div className="space-y-1.5">
           {[
             ["Programme", "General Nursing & Midwifery"],
-            ["Duration", "3½ Years"],
+            ["Duration", "3 Years"],
             ["Seats", "60"],
-            ["Eligibility", "10+2 with Science"],
+            ["Eligibility", "10+2 with any stream (Art, Commerce, Science)"],
             ["Min. Marks", "40% aggregate"],
           ].map(([k, v]) => (
             <div key={k} className="flex justify-between text-xs">

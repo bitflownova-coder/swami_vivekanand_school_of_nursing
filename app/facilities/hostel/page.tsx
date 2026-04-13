@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+﻿﻿import Image from "next/image";
 import Link from "next/link";
 import { BedDouble, Utensils, Shield, HeartPulse, ChevronRight } from "lucide-react";
 
@@ -13,7 +13,7 @@ export default function HostelPage() {
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/facilities" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
-            â† Back to Facilities
+            &larr; Back to Facilities
           </Link>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-px bg-blue-400" />

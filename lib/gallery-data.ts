@@ -92,8 +92,8 @@ export const EVENTS: EventAlbum[] = [
     description:
       "A glimpse into the vibrant campus life — student activities, extracurricular events, and everyday moments that make Swami Vivekanand School of Nursing a thriving community.",
     coverImage: "/photos/college-activities/1.jpg",
-    photoCount: 1,
-    photos: makePhotos("college-activities", 1),
+    photoCount: 9,
+    photos: makePhotos("college-activities", 9),
   },
   {
     slug: "external-education-visit",
@@ -102,8 +102,8 @@ export const EVENTS: EventAlbum[] = [
     description:
       "Students explore hospitals, community health centres, and healthcare facilities during supervised external education visits — bridging classroom knowledge with real-world practice.",
     coverImage: "/photos/external-education-visit/1.jpg",
-    photoCount: 6,
-    photos: makePhotos("external-education-visit", 6),
+    photoCount: 19,
+    photos: makePhotos("external-education-visit", 19),
   },
   {
     slug: "gnm-practical-posting",

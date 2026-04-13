@@ -12,23 +12,32 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.svsnursing.org"),
   title: {
-    default: "Swami Vivekanand School of Nursing | GNM & ANM College",
-    template: "%s | Swami Vivekanand School of Nursing",
+    default: "Best Nursing College in Aurangabad | Swami Vivekanand School of Nursing | Top GNM & ANM Institute Maharashtra",
+    template: "%s | Swami Vivekanand School of Nursing – Top Nursing College Aurangabad",
   },
   description:
-    "Premier nursing institute in Chh. Sambhajinagar offering GNM and ANM courses. Approved by Maharashtra Nursing Council. 100% placement support.",
+    "Swami Vivekanand School of Nursing is one of the top 10 best nursing colleges in Aurangabad (Chhatrapati Sambhajinagar), Maharashtra. Offering GNM and ANM courses approved by Maharashtra State Board of Nursing. Expert faculty, modern labs, 100% placement support. Admissions open 2026–27.",
   keywords: [
-    "Nursing School",
-    "GNM Course",
-    "ANM Course",
-    "Nursing College Aurangabad",
-    "Swami Vivekanand Nursing",
-    "Medical Education Maharashtra",
+    "top nursing college Aurangabad",
+    "best nursing college Aurangabad",
+    "top 10 nursing colleges Maharashtra",
+    "best GNM college Aurangabad",
+    "GNM nursing admission 2026",
+    "ANM nursing college Aurangabad",
+    "nursing institute Chhatrapati Sambhajinagar",
+    "Swami Vivekanand nursing college",
+    "nursing college near me Aurangabad",
+    "Maharashtra nursing council approved college",
+    "GNM course Maharashtra",
+    "nursing school Marathwada",
+    "top nursing institutes Maharashtra",
+    "best paramedical college Aurangabad",
+    "nursing admission open 2026 Maharashtra",
   ],
   openGraph: {
-    title: "Swami Vivekanand School of Nursing",
+    title: "Best Nursing College Aurangabad | Swami Vivekanand School of Nursing",
     description:
-      "Shaping the future of healthcare professionals with excellence and compassion.",
+      "Top nursing college in Aurangabad (Chhatrapati Sambhajinagar) offering GNM & ANM courses. Maharashtra Nursing Council approved. Modern labs, clinical training, 100% placement. Admissions open 2026–27.",
     url: "https://www.svsnursing.org",
     siteName: "Swami Vivekanand Nursing School",
     images: [
@@ -74,7 +83,7 @@ export default function RootLayout({
     name: "Swami Vivekanand School of Nursing",
     url: "https://www.svsnursing.org",
     logo: "https://www.svsnursing.org/nursinglogo (1).png",
-    description: "Premier nursing institute offering GNM and ANM courses.",
+    description: "One of the top nursing colleges in Aurangabad (Chhatrapati Sambhajinagar), Maharashtra. Offering GNM and ANM nursing courses approved by Maharashtra State Board of Nursing. Modern infrastructure, expert faculty, clinical training, and 100% placement support.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Beed Bypass Road, Beside Surya Lawns",

@@ -40,6 +40,7 @@ export default function Home() {
   }, [api]);
 
   const carouselImages = [
+    { src: "/photos/college-event-group.jpg", pos: "object-center" },
     { src: "/image.png", pos: "object-center" },
     { src: "/photos/lamp-lighting-ceremony.jpg", pos: "object-top" },
     { src: "/photos/institute-building-front-view/1.jpg", pos: "object-center" },
@@ -79,52 +80,83 @@ export default function Home() {
 
         {/* Hero Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4 pointer-events-none">
-          <div className="max-w-6xl mx-auto space-y-5 md:space-y-7 animate-in fade-in slide-in-from-bottom-4 duration-1000 pointer-events-auto pb-8">
+          <div className="max-w-5xl mx-auto pointer-events-auto pb-8">
+
+            {/* Top line */}
+            <div className="flex items-center justify-center gap-3 mb-6">
+              <span className="hidden sm:block h-px w-12 bg-white/30"></span>
+              <span className="text-white/50 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase">
+                Est. · Chhatrapati Sambhajinagar, Maharashtra
+              </span>
+              <span className="hidden sm:block h-px w-12 bg-white/30"></span>
+            </div>
 
             {/* Main Heading */}
-            <h1 className="font-playfair font-bold leading-[1.05] drop-shadow-2xl">
-              <span className="block text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-blue-200 mb-2">
+            <h1 className="font-playfair font-bold leading-[1.08] drop-shadow-2xl mb-6">
+              <span className="block text-lg sm:text-xl md:text-2xl font-normal text-white/70 tracking-wide mb-3">
                 Welcome to
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-blue-300">
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white">
                 Swami Vivekanand
               </span>
-              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white">
+              <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl bg-gradient-to-r from-blue-200 via-blue-300 to-blue-400 bg-clip-text text-transparent">
                 School of Nursing
               </span>
             </h1>
 
-            {/* Sub text */}
-            <div className="space-y-2">
-              <p className="inline-block px-6 py-2 bg-amber-400 text-gray-900 text-base sm:text-lg md:text-xl font-bold tracking-wide rounded-full shadow-lg shadow-amber-900/40">
+            {/* Divider */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="h-px w-16 bg-gradient-to-r from-transparent to-amber-400/60"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span className="h-px w-16 bg-gradient-to-l from-transparent to-amber-400/60"></span>
+            </div>
+
+            {/* Badge */}
+            <div className="mb-8 space-y-3">
+              <span className="inline-flex items-center gap-2.5 px-6 py-2.5 bg-amber-400/90 backdrop-blur-sm text-gray-900 text-sm sm:text-base font-bold tracking-wide rounded-full shadow-lg shadow-amber-900/30">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-900/40"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-gray-900/60"></span>
+                </span>
                 Admissions Open 2026–27
-              </p>
-              <p className="block text-sm sm:text-base md:text-lg text-blue-100 font-semibold tracking-wide drop-shadow-md">
-                GNM Nursing Programme
-              </p>
-              <p className="block text-sm sm:text-base text-gray-300/90 font-light tracking-wide drop-shadow-md">
-                Compassion, Care, and Excellence in Nursing Education.
-              </p>
+              </span>
+              <div className="flex items-center justify-center gap-3 text-white/40 text-xs tracking-[0.2em] uppercase font-medium">
+                <span>GNM</span>
+                <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                <span>ANM</span>
+                <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                <span>Maharashtra Nursing Board Approved</span>
+              </div>
             </div>
 
             {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center pt-1 md:pt-4">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center w-full max-w-xl mx-auto">
               <Button
                 asChild
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-500 text-white px-10 md:px-14 py-6 md:py-7 text-base md:text-lg font-semibold shadow-blue-900/60 shadow-xl transition-all hover:scale-105 rounded-full"
+                className="bg-white text-gray-900 hover:bg-white/90 px-8 py-6 text-sm sm:text-base font-bold shadow-2xl shadow-black/20 transition-all hover:scale-[1.03] rounded-full tracking-wide"
               >
-                <Link href="/admissions/apply" className="flex items-center gap-2">
-                  Apply Now <ArrowRight className="h-5 w-5" />
+                <Link href="/admissions/apply" className="flex items-center justify-center gap-2">
+                  Apply Now <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <Button
                 asChild
                 size="lg"
-                variant="outline"
-                className="border-2 border-white/30 text-white bg-white/5 hover:bg-white hover:text-blue-900 px-10 md:px-14 py-6 md:py-7 text-base md:text-lg font-semibold backdrop-blur-sm transition-all hover:scale-105 rounded-full"
+                className="bg-white text-blue-700 hover:bg-white/90 px-8 py-6 text-sm sm:text-base font-bold shadow-2xl shadow-black/20 transition-all hover:scale-[1.03] rounded-full tracking-wide"
               >
-                <Link href="/facilities">Visit Campus</Link>
+                <Link href="/contact" className="flex items-center justify-center gap-2">
+                  <Phone className="h-4 w-4" /> Contact Us
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                className="bg-transparent border border-white/10 text-white/70 hover:text-white hover:border-white/30 px-8 py-6 text-sm sm:text-base font-semibold transition-all hover:scale-[1.03] rounded-full tracking-wide"
+              >
+                <Link href="/facilities" className="flex items-center justify-center gap-2">
+                  Visit Campus
+                </Link>
               </Button>
             </div>
 
@@ -132,7 +164,7 @@ export default function Home() {
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-50/10 to-transparent pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-50 pointer-events-none z-20"></div>
       </section>
 
       {/* WELCOME SECTION */}
@@ -392,8 +424,14 @@ export default function Home() {
             <Button
               asChild
               size="lg"
-              variant="outline"
-              className="border-blue-400 text-blue-600 hover:bg-blue-800 hover:text-white px-10 py-7 text-lg font-bold"
+              className="bg-white text-blue-900 hover:bg-blue-50 font-bold px-10 py-7 text-lg shadow-xl transition-transform hover:scale-105"
+            >
+              <Link href="/contact">Contact Us</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="bg-white text-blue-900 hover:bg-blue-50 font-bold px-10 py-7 text-lg shadow-xl transition-transform hover:scale-105"
             >
               <Link
                 target="_blank"

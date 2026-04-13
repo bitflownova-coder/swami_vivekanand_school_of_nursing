@@ -4,6 +4,7 @@ import {
   Microscope, BookOpen, Wifi, Shield, Utensils, HeartPulse,
   Baby, Users, Building2, ChevronRight, CheckCircle,
 } from "lucide-react";
+import { PhotoGallery } from "@/components/photo-gallery";
 
 export default function LaboratoriesPage() {
   return (
@@ -16,7 +17,7 @@ export default function LaboratoriesPage() {
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/facilities" className="inline-flex items-center gap-2 text-white/60 hover:text-white text-sm mb-8 transition-colors">
-            â† Back to Facilities
+            &larr; Back to Facilities
           </Link>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-px bg-blue-400" />
@@ -46,51 +47,75 @@ export default function LaboratoriesPage() {
               badge: "bg-red-100 text-red-700", title: "Nutrition Laboratory",
               desc: "Diet planning, food composition analysis, and therapeutic nutrition training.",
               points: ["Diet planning equipment", "Food composition tools", "Cooking demonstration area", "Nutritional assessment"],
+              img: "/photos/nutrition-lab/1.jpg",
+              href: "/facilities/nutrition-lab",
             },
             {
               icon: HeartPulse, color: "bg-blue-50", iconColor: "text-blue-700", accent: "border-blue-100 hover:border-blue-300",
               badge: "bg-blue-100 text-blue-700", title: "Fundamentals of Nursing Lab",
               desc: "Core nursing skills — vitals, injections, wound care — on advanced simulation models.",
               points: ["Patient care mannequins", "Vital signs monitors", "Injection practice models", "Wound care simulation"],
+              img: "/photos/foundation-of-nursing-lab/1.jpg",
+              href: "/facilities/fundamentals-lab",
             },
             {
               icon: Baby, color: "bg-green-50", iconColor: "text-green-700", accent: "border-green-100 hover:border-green-300",
               badge: "bg-green-100 text-green-700", title: "Child Health Nursing Lab",
               desc: "Pediatric care simulation from neonates to adolescents.",
               points: ["Pediatric mannequins (all ages)", "Growth monitoring equipment", "Immunization training kits", "Pediatric emergency gear"],
+              img: "/photos/child-health-lab/3.jpg",
+              href: "/facilities/child-health-lab",
             },
             {
               icon: Microscope, color: "bg-purple-50", iconColor: "text-purple-700", accent: "border-purple-100 hover:border-purple-300",
               badge: "bg-purple-100 text-purple-700", title: "Medical-Surgical Nursing Lab",
               desc: "Surgical procedure simulation and advanced patient care scenarios.",
               points: ["Surgical simulation models", "Advanced patient simulators", "Catheterization models", "Emergency response kit"],
+              img: "/photos/medical-surgical-lab/1.jpg",
+              href: "/facilities/medical-surgical-lab",
             },
             {
               icon: Users, color: "bg-pink-50", iconColor: "text-pink-700", accent: "border-pink-100 hover:border-pink-300",
               badge: "bg-pink-100 text-pink-700", title: "Maternity Nursing Lab",
               desc: "Obstetric and neonatal care training in a realistic maternal setting.",
               points: ["Delivery simulation models", "Antenatal care equipment", "Neonatal care simulators", "Breastfeeding training aids"],
+              img: "/photos/maternity-lab/1.jpg",
+              href: "/facilities/maternity-lab",
             },
             {
               icon: Building2, color: "bg-orange-50", iconColor: "text-orange-700", accent: "border-orange-100 hover:border-orange-300",
               badge: "bg-orange-100 text-orange-700", title: "Community Health Lab",
               desc: "Public health, epidemiology, and home-visit simulation training.",
               points: ["Epidemiology study aids", "Health education materials", "Disease prevention kits", "Home visit simulation"],
+              img: "/photos/community-health-lab/1.jpg",
+              href: "/facilities/community-health-lab",
             },
-          ].map(({ icon: Icon, color, iconColor, accent, title, desc, points }) => (
-            <div key={title} className={`bg-white border ${accent} rounded-2xl p-6 hover:shadow-lg transition-all duration-300 flex flex-col`}>
-              <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center mb-4`}>
-                <Icon className={`h-6 w-6 ${iconColor}`} />
-              </div>
-              <h3 className="font-bold text-slate-900 text-base mb-2">{title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed mb-4 flex-1">{desc}</p>
-              <div className="space-y-1.5">
-                {points.map((p) => (
-                  <div key={p} className="flex items-center gap-2">
-                    <CheckCircle className={`h-3.5 w-3.5 ${iconColor} flex-shrink-0`} />
-                    <span className="text-sm text-slate-600">{p}</span>
-                  </div>
-                ))}
+          ].map(({ icon: Icon, color, iconColor, accent, title, desc, points, img, href }: any) => (
+            <div key={title} className={`bg-white border ${accent} rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col group`}>
+              {img && (
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
+                  <Image src={img} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" loading="lazy" />
+                </div>
+              )}
+              <div className="p-6 flex flex-col flex-1">
+                <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center mb-4`}>
+                  <Icon className={`h-6 w-6 ${iconColor}`} />
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mb-2">{title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-4 flex-1">{desc}</p>
+                <div className="space-y-1.5">
+                  {points.map((p: string) => (
+                    <div key={p} className="flex items-center gap-2">
+                      <CheckCircle className={`h-3.5 w-3.5 ${iconColor} flex-shrink-0`} />
+                      <span className="text-sm text-slate-600">{p}</span>
+                    </div>
+                  ))}
+                </div>
+                {href && (
+                  <Link href={href} className={`mt-4 inline-flex items-center gap-2 ${iconColor} font-semibold text-sm hover:underline`}>
+                    Explore {title} <ChevronRight className="h-4 w-4" />
+                  </Link>
+                )}
               </div>
             </div>
           ))}
@@ -100,23 +125,34 @@ export default function LaboratoriesPage() {
         <div className="mt-16 space-y-14">
           <div>
             <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-0.5 bg-red-600" />
+              <span className="text-red-600 text-xs font-bold uppercase tracking-[0.2em]">Nutrition Training</span>
+            </div>
+            <h3 className="font-playfair font-bold text-2xl text-slate-900 mb-5">Nutrition Laboratory</h3>
+            <PhotoGallery
+              columns={2}
+              aspect="16/9"
+              photos={[
+                { src: "/photos/nutrition-lab/1.jpg", alt: "Nutrition Lab — Kitchen & Equipment Setup" },
+                { src: "/photos/nutrition-lab/2.jpg", alt: "Nutrition Lab — Cooking Station & Charts" },
+              ]}
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-0.5 bg-blue-700" />
               <span className="text-blue-700 text-xs font-bold uppercase tracking-[0.2em]">Foundation of Nursing</span>
             </div>
             <h3 className="font-playfair font-bold text-2xl text-slate-900 mb-5">Foundation of Nursing Lab</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { src: "/photos/foundation-of-nursing-lab/1.jpg", label: "Nursing Lab — Equipment Setup" },
-                { src: "/photos/foundation-of-nursing-lab/2.jpg", label: "Nursing Lab — Training Area" },
-              ].map(({ src, label }) => (
-                <div key={src} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "16/9" }}>
-                  <Image src={src} alt={label} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" loading="lazy" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-4 py-3">
-                    <span className="text-white text-sm font-semibold">{label}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <PhotoGallery
+              columns={2}
+              aspect="16/9"
+              photos={[
+                { src: "/photos/foundation-of-nursing-lab/1.jpg", alt: "Nursing Lab — Equipment Setup" },
+                { src: "/photos/foundation-of-nursing-lab/2.jpg", alt: "Nursing Lab — Training Area" },
+              ]}
+            />
           </div>
 
           <div>
@@ -125,20 +161,15 @@ export default function LaboratoriesPage() {
               <span className="text-blue-700 text-xs font-bold uppercase tracking-[0.2em]">Pre-Clinical Training</span>
             </div>
             <h3 className="font-playfair font-bold text-2xl text-slate-900 mb-5">Pre-Clinical Laboratory</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { src: "/photos/pre-clinical-lab/1.jpg", label: "Pre-Clinical Lab" },
-                { src: "/photos/pre-clinical-lab/2.jpg", label: "Clinical Skills Practice" },
-                { src: "/photos/pre-clinical-lab/3.jpg", label: "Clinical Simulation" },
-              ].map(({ src, label }) => (
-                <div key={src} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
-                  <Image src={src} alt={label} fill className="object-cover" sizes="33vw" loading="lazy" />
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-4 py-3">
-                    <span className="text-white text-sm font-semibold">{label}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <PhotoGallery
+              columns={3}
+              aspect="4/3"
+              photos={[
+                { src: "/photos/pre-clinical-lab/1.jpg", alt: "Pre-Clinical Lab" },
+                { src: "/photos/pre-clinical-lab/2.jpg", alt: "Clinical Skills Practice" },
+                { src: "/photos/pre-clinical-lab/3.jpg", alt: "Clinical Simulation" },
+              ]}
+            />
           </div>
 
           <div>
@@ -147,13 +178,14 @@ export default function LaboratoriesPage() {
               <span className="text-blue-700 text-xs font-bold uppercase tracking-[0.2em]">GNM Clinical Training</span>
             </div>
             <h3 className="font-playfair font-bold text-2xl text-slate-900 mb-5">GNM Practical Posting</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="relative rounded-xl overflow-hidden shadow" style={{ aspectRatio: "1/1" }}>
-                  <Image src={`/photos/gnm-practical-posting/${i}.jpg`} alt={`GNM Practical Training ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="16vw" loading="lazy" />
-                </div>
-              ))}
-            </div>
+            <PhotoGallery
+              columns={4}
+              aspect="1/1"
+              photos={[1,2,3,4,5,6].map((i) => ({
+                src: `/photos/gnm-practical-posting/${i}.jpg`,
+                alt: `GNM Practical Training ${i}`,
+              }))}
+            />
           </div>
         </div>
 

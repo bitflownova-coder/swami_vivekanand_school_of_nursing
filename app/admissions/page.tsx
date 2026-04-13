@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import {
   CheckCircle,
   Clock,
@@ -22,7 +22,7 @@ export default function AdmissionsPage() {
   return (
     <div className="min-h-screen bg-white">
 
-      {/* â”€â”€â”€ HERO â”€â”€â”€ */}
+      {/* ������ HERO ������ */}
       <section className="relative bg-gradient-to-br from-slate-900 to-blue-950 text-white pt-10 pb-24 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div className="absolute right-0 top-0 w-1/2 h-full opacity-10">
@@ -31,7 +31,7 @@ export default function AdmissionsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center gap-3 mb-6 flex-wrap">
             <div className="w-8 h-0.5 bg-blue-400"></div>
-            <span className="text-blue-400 text-xs font-bold uppercase tracking-[0.2em]">GNM Admissions — Batch 2026–27</span>
+            <span className="text-blue-400 text-xs font-bold uppercase tracking-[0.2em]">GNM Admissions – Batch 2026–27</span>
             <span className="relative flex h-2 w-2 ml-1">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -43,8 +43,8 @@ export default function AdmissionsPage() {
               Begin Your Nursing Career
             </h1>
             <p className="text-xl opacity-80 leading-relaxed text-slate-300 mb-10">
-              Join Swami Vivekanand School of Nursing for the GNM programme — INC-approved, 
-              hospital-integrated training that transforms students into confident, 
+              Join Swami Vivekanand School of Nursing for the GNM programme —
+              hospital-integrated training that transforms students into confident,
               compassionate healthcare professionals.
             </p>
           </div>
@@ -52,7 +52,6 @@ export default function AdmissionsPage() {
             {[
               { value: '60', label: 'Seats Available' },
               { value: '3 Years', label: 'Full-Time Programme' },
-              { value: 'INC', label: 'Approved' },
               { value: '₹55,000', label: 'Annual Fees (2024–25)' },
             ].map((s) => (
               <div key={s.label} className="px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl min-w-[130px]">
@@ -67,7 +66,7 @@ export default function AdmissionsPage() {
               <ChevronRight className="h-5 w-5" />
             </a>
             <a
-              href="https://drive.google.com/file/d/1MxykBvnYmWZQ3cqvCMbHLo9IFS6NxMjC/view"
+              href="/downloads/gnm-admission-brochure.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 border border-white/30 hover:bg-white/10 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-200"
@@ -79,7 +78,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ QUICK FACTS STRIP â”€â”€â”€ */}
+      {/* ������ QUICK FACTS STRIP ������ */}
       <section className="bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 divide-y-0 md:divide-x divide-slate-100">
@@ -102,7 +101,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ CAMPUS SNAPSHOT â”€â”€â”€ */}
+      {/* ������ CAMPUS SNAPSHOT ������ */}
       <section className="py-14 bg-white border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -139,7 +138,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ WHY CHOOSE US â”€â”€â”€ */}
+      {/* ������ WHY CHOOSE US ������ */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -198,7 +197,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ ELIGIBILITY CRITERIA â”€â”€â”€ */}
+      {/* ������ ELIGIBILITY CRITERIA ������ */}
       <section className="py-20 bg-white" id="eligibility">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
@@ -222,7 +221,7 @@ export default function AdmissionsPage() {
                   <span className="font-bold">Important Note</span>
                 </div>
                 <p className="text-blue-100 text-sm leading-relaxed">
-                  Reservation is applicable only within the INC-sanctioned intake of 60 seats — 
+                  Reservation is applicable only within the INC-sanctioned intake of 60 seats  
                   not above the sanctioned strength. All reservations are as per State Govt. norms.
                 </p>
               </div>
@@ -239,9 +238,9 @@ export default function AdmissionsPage() {
                 </div>
                 <div className="p-5 sm:p-7 space-y-4">
                   {[
-                    { label: 'Standard Path', text: '10+2 with English and minimum 40% marks in the qualifying examination and English individually, from any recognized board. Candidates from State Open School or NIOS are also eligible. Science is preferable.' },
+                    { label: 'Standard Path', text: '10+2 with English and minimum 40% marks in the qualifying examination and English individually, from any recognized board. Candidates from State Open School or NIOS are also eligible. Students from any stream — Arts, Science, or Commerce — are eligible.' },
                     { label: 'Vocational ANM', text: '10+2 with English and 40% marks in Vocational ANM course from a school recognized by the Indian Nursing Council.' },
-                    { label: 'Health Care Science', text: '10+2 with English and 40% marks in Vocational Stream – Health Care Science from a recognized CBSE / State / Central Board.' },
+                    { label: 'Health Care Science', text: '10+2 with English and 40% marks in Vocational Stream  Health Care Science from a recognized CBSE / State / Central Board.' },
                     { label: 'Registered ANM', text: 'Registered ANM with pass marks is eligible for direct admission.' },
                     { label: 'Foreign Nationals', text: 'Entry qualification equivalency (12th standard) to be obtained from the Association of Indian Universities, New Delhi.', note: true },
                   ].map(({ label, text, note }) => (
@@ -287,7 +286,7 @@ export default function AdmissionsPage() {
                     { label: 'Admissions Cycle', value: 'Once per academic year' },
                     { label: 'Medical Fitness', value: 'Students must be medically fit' },
                     { label: 'Minimum Age', value: '17 years (by 31st Dec of that year)' },
-                    { label: 'Maximum Age', value: '35 years · No bar for ANM / LHV' },
+                    { label: 'Maximum Age', value: '35 years – No bar for ANM / LHV' },
                   ].map(({ label, value }) => (
                     <div key={label} className="bg-slate-50 rounded-xl p-4">
                       <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</div>
@@ -302,7 +301,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ DOCUMENTS REQUIRED â”€â”€â”€ */}
+      {/* ������ DOCUMENTS REQUIRED ������ */}
       <section className="py-20 bg-slate-50" id="documents">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -338,7 +337,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ FEE STRUCTURE â”€â”€â”€ */}
+      {/* ������ FEE STRUCTURE ������ */}
       <section className="py-20 bg-white" id="fees">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -385,10 +384,10 @@ export default function AdmissionsPage() {
                   <span className="text-right">Total</span>
                 </div>
 
-                {/* Row 1 — 2023-24 */}
+                {/* Row 1  2023-24 */}
                 {[
-                  { sr: 1, year: '2023-24', dev: '₹4,545', tuition: '₹45,455', total: '₹50,000' },
-                  { sr: 2, year: '2024-25', dev: '₹5,225', tuition: '₹49,775', total: '₹55,000' },
+                  { sr: 1, year: '2023-24', dev: '�4,545', tuition: '�45,455', total: '�50,000' },
+                  { sr: 2, year: '2024-25', dev: '�5,225', tuition: '�49,775', total: '�55,000' },
                 ].map(({ sr, year, dev, tuition, total }) => (
                   <div key={sr} className="sm:grid sm:grid-cols-[3rem_1fr_5rem_7rem_7rem_7rem_7rem] gap-x-4 px-6 py-5 hover:bg-slate-50 transition-colors">
                     {/* Mobile */}
@@ -429,10 +428,10 @@ export default function AdmissionsPage() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1.5 text-sm text-amber-800">
-                    <p>• Approved by Maharashtra Nursing Council.</p>
-                    <p>• Additional fees for hostel, uniform &amp; exams apply.</p>
-                    <p>• Fees subject to government revision.</p>
-                    <p>• Scholarship options available for eligible students.</p>
+                    <p>" Approved by Maharashtra Nursing Council.</p>
+                    <p>" Additional fees for hostel, uniform &amp; exams apply.</p>
+                    <p>" Fees subject to government revision.</p>
+                    <p>" Scholarship options available for eligible students.</p>
                   </div>
                 </div>
               </div>
@@ -441,12 +440,12 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ HOW TO APPLY + KEY DATES â”€â”€â”€ */}
+      {/* ������ HOW TO APPLY + KEY DATES ������ */}
       <section className="py-20 bg-slate-50" id="apply">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
-            {/* How to Apply — 2 cols */}
+            {/* How to Apply  2 cols */}
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-0.5 bg-blue-700"></div>
@@ -456,7 +455,7 @@ export default function AdmissionsPage() {
               <div className="space-y-5">
                 {[
                   { step: '01', title: 'Fill Online Application',   desc: 'Complete the online admission form with your personal, academic, and contact details.', icon: ClipboardList },
-                  { step: '02', title: 'Upload Documents',           desc: 'Upload scanned copies of all required documents — marksheets, certificates, ID, and photographs.', icon: FileText },
+                  { step: '02', title: 'Upload Documents',           desc: 'Upload scanned copies of all required documents  marksheets, certificates, ID, and photographs.', icon: FileText },
                   { step: '03', title: 'Document Verification',      desc: 'The admissions committee will verify your submitted documents and academic eligibility.', icon: CheckCircle },
                   { step: '04', title: 'Pay Admission Fee',          desc: 'On selection, pay the admission fee online to confirm and secure your seat for the batch.', icon: IndianRupee },
                 ].map(({ step, title, desc, icon: Icon }) => (
@@ -478,7 +477,7 @@ export default function AdmissionsPage() {
               </div>
             </div>
 
-            {/* Key Dates — 1 col */}
+            {/* Key Dates  1 col */}
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-0.5 bg-blue-700"></div>
@@ -490,7 +489,7 @@ export default function AdmissionsPage() {
                   {[
                     { label: 'Application Opens', date: 'April 1, 2026',  color: 'bg-green-400',  ring: 'ring-slate-900' },
                     { label: 'Last Date to Apply', date: 'June 30, 2026', color: 'bg-yellow-400', ring: 'ring-slate-900' },
-                    { label: 'Merit List / Interview', date: 'July 1–15, 2026', color: 'bg-orange-400', ring: 'ring-slate-900' },
+                    { label: 'Merit List / Interview', date: 'July 115, 2026', color: 'bg-orange-400', ring: 'ring-slate-900' },
                     { label: 'Session Begins',    date: 'August 1, 2026', color: 'bg-white',      ring: 'ring-slate-900' },
                   ].map((item) => (
                     <div key={item.label} className="relative pl-8">
@@ -534,7 +533,7 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ FORMS & DOWNLOADS â”€â”€â”€ */}
+      {/* ������ FORMS & DOWNLOADS ������ */}
       <section className="py-20 bg-white border-t border-slate-100" id="forms">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -549,7 +548,7 @@ export default function AdmissionsPage() {
             </p>
           </div>
 
-          {/* Two main options — Online vs Offline */}
+          {/* Two main options  Online vs Offline */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
 
             {/* Online */}
@@ -563,7 +562,7 @@ export default function AdmissionsPage() {
                 </div>
                 <h3 className="font-bold text-xl text-slate-900 mb-3">Online Application</h3>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">
-                  Fill your GNM admission form digitally — save your progress, upload a photo, and submit directly online.
+                  Fill your GNM admission form digitally  save your progress, upload a photo, and submit directly online.
                 </p>
                 <ul className="space-y-2 mb-8">
                   {["Instant submission", "Upload passport photo", "Auto-calculated fields", "Digital declaration"].map((f) => (
@@ -636,7 +635,7 @@ export default function AdmissionsPage() {
                   <FileText className="h-5 w-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm text-slate-900 mb-0.5">à¤ªà¥à¤°à¤¤à¤¿à¤œà¥à¤žà¤¾à¤ªà¤¤à¥à¤° <span className="font-normal text-slate-500">(à¤¹à¤®à¥€à¤ªà¤¤à¥à¤°)</span></p>
+                  <p className="font-bold text-sm text-slate-900 mb-0.5">प्रतिज्ञापत्र <span className="font-normal text-slate-500">(हमीपत्र)</span></p>
                   <p className="text-xs text-slate-500 leading-relaxed">₹100 Non-Judicial Stamp Paper undertaking · Print &amp; notarise</p>
                   <span className="inline-flex items-center gap-1 text-amber-700 text-xs font-bold mt-2">
                     <Download className="h-3 w-3" /> Print / Download
@@ -684,7 +683,7 @@ export default function AdmissionsPage() {
             <div className="mt-6 flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
               <AlertCircle className="h-5 w-5 text-blue-700 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-slate-600">
-                <strong>Tip:</strong> The à¤ªà¥à¤°à¤¤à¤¿à¤œà¥à¤žà¤¾à¤ªà¤¤à¥à¤° (à¤¹à¤®à¥€à¤ªà¤¤à¥à¤°) must be filled, signed, and notarised on a ₹100 Non-Judicial Stamp Paper before submission.
+                <strong>Tip:</strong> The प्रतिज्ञापत्र (हमीपत्र) must be filled, signed, and notarised on a ₹100 Non-Judicial Stamp Paper before submission.
                 Print the form, fill it with a pen, and get it notarised at your nearest notary office.
               </p>
             </div>
@@ -692,13 +691,13 @@ export default function AdmissionsPage() {
         </div>
       </section>
 
-      {/* â”€â”€â”€ CTA â”€â”€â”€ */}
+      {/* ������ CTA ������ */}
       <section className="relative bg-gradient-to-br from-slate-900 to-blue-950 py-20 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.07] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px]"></div>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-8 h-0.5 bg-blue-400"></div>
-            <span className="text-blue-400 text-xs font-bold uppercase tracking-[0.2em]">Limited Seats — Batch 2026–27</span>
+            <span className="text-blue-400 text-xs font-bold uppercase tracking-[0.2em]">Limited Seats  Batch 202627</span>
             <div className="w-8 h-0.5 bg-blue-400"></div>
           </div>
           <h2 className="font-playfair font-bold text-3xl sm:text-4xl md:text-5xl text-white mb-6">
@@ -706,7 +705,7 @@ export default function AdmissionsPage() {
           </h2>
           <p className="text-slate-300 text-lg leading-relaxed mb-10 max-w-2xl mx-auto">
             Don&apos;t miss your opportunity to join one of Maharashtra&apos;s premier nursing 
-            institutes. Only 60 seats available — applications open April 2026.
+            institutes. Only 60 seats available  applications open April 2026.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <a href="/admissions/apply" className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white font-bold px-8 py-4 rounded-xl transition-colors duration-200">

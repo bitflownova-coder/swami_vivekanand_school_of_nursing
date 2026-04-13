@@ -235,7 +235,7 @@ export default function CNEPage() {
               className="mb-4"
               onClick={() => { setShowForm(false); setError(""); }}
             >
-              â† Back to Workshops
+              &larr; Back to Workshops
             </Button>
 
             <Card className="shadow-xl">

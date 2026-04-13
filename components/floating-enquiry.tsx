@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, X, Send, User, Phone, GraduationCap, Mail, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MessageCircle, X, Send, User, Phone, GraduationCap, Mail, AlertCircle, ChevronUp } from "lucide-react";
 
 const SPECIALITIES = [
   "GNM (General Nursing & Midwifery)",
@@ -10,10 +10,17 @@ const SPECIALITIES = [
 
 export default function FloatingEnquiry() {
   const [open, setOpen] = useState(false);
+  const [showTop, setShowTop] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", email: "", speciality: "" });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => setShowTop(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +63,18 @@ export default function FloatingEnquiry() {
 
   return (
     <>
-      {/* Floating button */}
+      {/* Scroll to top button */}
+      {showTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="fixed bottom-24 right-6 z-40 w-11 h-11 flex items-center justify-center bg-slate-700 hover:bg-slate-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Floating enquiry button */}
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold px-5 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"

@@ -8,7 +8,7 @@ import Image from "next/image";
 
 const DEFAULT_ANNOUNCEMENTS = [
   "Admissions Open for GNM Batch 2026–27 – Only 60 Seats Available",
-  "INC-Approved GNM Programme · 3 Years · Chhatrapati Sambhajinagar",
+  "GNM Nursing Programme · 3 Years · Chhatrapati Sambhajinagar",
   "CNE Workshop Schedule Updated – Check CNE Section for Details",
   "New Academic Calendar 2026–27 Published – Download from Resources",
   "Results Declared: GNM First Year Practical Examinations",
@@ -53,15 +53,17 @@ const Navbar = () => {
   const facilitiesDropdownItems = [
     { name: "Laboratories",         href: "/facilities/laboratories" },
     { name: "Classrooms",           href: "/facilities/classrooms" },
-    { name: "Library & Computer Lab", href: "/facilities/library" },
+    { name: "Library",              href: "/facilities/library" },
+    { name: "Computer Laboratory",  href: "/facilities/computer-lab" },
     { name: "Hostel & Amenities",   href: "/facilities/hostel" },
     { name: "Campus Building",      href: "/facilities/campus" },
   ];
   const resourcesDropdownItems = [
-    { name: "GNM Course Syllabi",        href: "/resources/syllabus" },
+    { name: "GNM Course Syllabus",        href: "/resources/syllabus" },
     { name: "Previous Year Questions",   href: "/resources/previous-year-questions" },
     { name: "Question Banks",            href: "/resources/question-banks" },
     { name: "Academic Schedule",         href: "/resources/academic-schedule" },
+    { name: "Exam Timetable",            href: "/resources/exam-timetable" },
     { name: "Forms & Guides",            href: "/resources/other" },
   ];
 
@@ -101,22 +103,22 @@ const Navbar = () => {
     <header className="w-full z-50 fixed top-0 left-0">
 
       {/* â”€â”€ ROW 1: Logo + College Name (white bar, h-14 = 56px) â”€â”€ */}
-      <div className="bg-white border-b border-slate-200 h-20 flex items-center">
+      <div className="bg-white border-b border-slate-200 h-24 flex items-center">
         <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/" className="inline-flex items-center gap-4 group">
-            <div className="relative w-14 h-14 flex-shrink-0">
+            <div className="relative w-20 h-20 flex-shrink-0">
               <Image
                 src="/nursinglogo (1).png"
                 alt="SVS Nursing Logo"
                 fill
                 className="object-contain"
-                sizes="56px"
+                sizes="80px"
                 priority
               />
             </div>
             <div className="leading-none">
               <p className="font-playfair font-bold text-xl text-slate-900 leading-tight">Swami Vivekanand School of Nursing</p>
-              <p className="text-xs text-blue-700 font-semibold tracking-wide mt-1">Chhatrapati Sambhajinagar, Maharashtra · INC Approved</p>
+              <p className="text-xs text-blue-700 font-semibold tracking-wide mt-1">Chhatrapati Sambhajinagar, Maharashtra</p>
             </div>
           </Link>
         </div>
@@ -263,7 +265,7 @@ const Navbar = () => {
               </button>
               {mobileResourcesOpen && (
                 <div className="pl-4 pb-1 space-y-0.5">
-                  <Link href="/downloads" className="block px-4 py-2 text-slate-300 text-sm hover:bg-white/10 hover:text-white rounded transition-colors" onClick={() => setIsOpen(false)}>All Resources</Link>
+                  <Link href="/downloads" className="block px-4 py-2 text-slate-300 text-sm hover:bg-white/10 hover:text-white rounded transition-colors" onClick={() => setIsOpen(false)}>Student&apos;s Corner</Link>
                   {resourcesDropdownItems.map((item) => (
                     <Link key={item.name} href={item.href} className="block px-4 py-2 text-slate-300 text-sm hover:bg-white/10 hover:text-white rounded transition-colors" onClick={() => setIsOpen(false)}>{item.name}</Link>
                   ))}

@@ -97,7 +97,7 @@ export default function EligibilityPage() {
                 </div>
                 <div className="p-5 sm:p-7 space-y-4">
                   {[
-                    { label: "Standard Path",    text: "10+2 with English and minimum 40% marks in the qualifying examination and English individually, from any recognized board. Candidates from State Open School or NIOS are also eligible. Science is preferable." },
+                    { label: "Standard Path",    text: "10+2 with English and minimum 40% marks in the qualifying examination and English individually, from any recognized board. Candidates from State Open School or NIOS are also eligible. Students from any stream — Arts, Science, or Commerce — are eligible." },
                     { label: "Vocational ANM",   text: "10+2 with English and 40% marks in Vocational ANM course from a school recognized by the Indian Nursing Council." },
                     { label: "Health Care Science", text: "10+2 with English and 40% marks in Vocational Stream – Health Care Science from a recognized CBSE / State / Central Board." },
                     { label: "Registered ANM",   text: "Registered ANM with pass marks is eligible for direct admission." },

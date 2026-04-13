@@ -1,4 +1,5 @@
 ﻿import Image from "next/image";
+import Link from "next/link";
 import {
   Microscope,
   BookOpen,
@@ -112,6 +113,8 @@ export default function FacilitiesPage() {
                 title: "Nutrition Laboratory",
                 desc: "Diet planning, food composition analysis, and therapeutic nutrition training.",
                 points: ["Diet planning equipment", "Food composition tools", "Cooking demonstration area", "Nutritional assessment"],
+                href: "/facilities/nutrition-lab",
+                img: "/photos/nutrition-lab/1.jpg",
               },
               {
                 icon: HeartPulse,
@@ -122,6 +125,8 @@ export default function FacilitiesPage() {
                 title: "Fundamentals of Nursing Lab",
                 desc: "Core nursing skills — vitals, injections, wound care — on advanced simulation models.",
                 points: ["Patient care mannequins", "Vital signs monitors", "Injection practice models", "Wound care simulation"],
+                href: "/facilities/fundamentals-lab",
+                img: "/photos/foundation-of-nursing-lab/1.jpg",
               },
               {
                 icon: Baby,
@@ -132,6 +137,8 @@ export default function FacilitiesPage() {
                 title: "Child Health Nursing Lab",
                 desc: "Pediatric care simulation from neonates to adolescents.",
                 points: ["Pediatric mannequins (all ages)", "Growth monitoring equipment", "Immunization training kits", "Pediatric emergency gear"],
+                href: "/facilities/child-health-lab",
+                img: "/photos/child-health-lab/3.jpg",
               },
               {
                 icon: Microscope,
@@ -142,6 +149,8 @@ export default function FacilitiesPage() {
                 title: "Medical-Surgical Nursing Lab",
                 desc: "Surgical procedure simulation and advanced patient care scenarios.",
                 points: ["Surgical simulation models", "Advanced patient simulators", "Catheterization models", "Emergency response kit"],
+                href: "/facilities/medical-surgical-lab",
+                img: "/photos/medical-surgical-lab/1.jpg",
               },
               {
                 icon: Users,
@@ -152,6 +161,8 @@ export default function FacilitiesPage() {
                 title: "Maternity Nursing Lab",
                 desc: "Obstetric and neonatal care training in a realistic maternal setting.",
                 points: ["Delivery simulation models", "Antenatal care equipment", "Neonatal care simulators", "Breastfeeding training aids"],
+                href: "/facilities/maternity-lab",
+                img: "/photos/maternity-lab/1.jpg",
               },
               {
                 icon: Building2,
@@ -162,24 +173,38 @@ export default function FacilitiesPage() {
                 title: "Community Health Lab",
                 desc: "Public health, epidemiology, and home-visit simulation training.",
                 points: ["Epidemiology study aids", "Health education materials", "Disease prevention kits", "Home visit simulation"],
+                href: "/facilities/community-health-lab",
+                img: "/photos/community-health-lab/1.jpg",
               },
-            ].map(({ icon: Icon, color, iconColor, accent, badge, title, desc, points }) => (
+            ].map(({ icon: Icon, color, iconColor, accent, badge, title, desc, points, href, img }: any) => (
               <div
                 key={title}
-                className={`bg-white border ${accent} rounded-2xl p-6 hover:shadow-lg transition-all duration-300 group flex flex-col`}
+                className={`bg-white border ${accent} rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 group flex flex-col`}
               >
+                {img && (
+                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
+                    <Image src={img} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" loading="lazy" />
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-1">
                 <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center mb-4`}>
                   <Icon className={`h-6 w-6 ${iconColor}`} />
                 </div>
                 <h3 className="font-bold text-slate-900 text-base mb-2">{title}</h3>
                 <p className="text-slate-500 text-sm leading-relaxed mb-4 flex-1">{desc}</p>
                 <div className="space-y-1.5">
-                  {points.map((p) => (
+                  {points.map((p: string) => (
                     <div key={p} className="flex items-center gap-2">
                       <CheckCircle className={`h-3.5 w-3.5 ${iconColor} flex-shrink-0`} />
                       <span className="text-sm text-slate-600">{p}</span>
                     </div>
                   ))}
+                </div>
+                {href && (
+                  <Link href={href} className={`mt-4 inline-flex items-center gap-2 ${iconColor} font-semibold text-sm hover:underline`}>
+                    Explore {title} <ChevronRight className="h-4 w-4" />
+                  </Link>
+                )}
                 </div>
               </div>
             ))}
@@ -225,6 +250,28 @@ export default function FacilitiesPage() {
                 ].map(({ src, label }) => (
                   <div key={src} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
                     <Image src={src} alt={label} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" loading="lazy" />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-4 py-3">
+                      <span className="text-white text-sm font-semibold">{label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Nutrition Lab */}
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-8 h-0.5 bg-red-600" />
+                <span className="text-red-600 text-xs font-bold uppercase tracking-[0.2em]">Nutrition Training</span>
+              </div>
+              <h3 className="font-playfair font-bold text-2xl text-slate-900 mb-5">Nutrition Laboratory</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { src: "/photos/nutrition-lab/1.jpg", label: "Nutrition Lab — Kitchen & Equipment Setup" },
+                  { src: "/photos/nutrition-lab/2.jpg", label: "Nutrition Lab — Cooking Station & Charts" },
+                ].map(({ src, label }) => (
+                  <div key={src} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "16/9" }}>
+                    <Image src={src} alt={label} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" loading="lazy" />
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/70 to-transparent px-4 py-3">
                       <span className="text-white text-sm font-semibold">{label}</span>
                     </div>
@@ -304,9 +351,9 @@ export default function FacilitiesPage() {
           {/* Photo grid + features side by side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start mb-12">
 
-            {/* 2×2 classroom photo grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {[1, 2, 3, 4].map((i) => (
+            {/* 3×3 classroom photo grid */}
+            <div className="grid grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
                   <Image
                     src={`/photos/classrooms/${i}.jpg`}
@@ -395,7 +442,7 @@ export default function FacilitiesPage() {
         </div>
       </section>
 
-      {/* --- LIBRARY & COMPUTER LAB --- */}
+      {/* --- LIBRARY --- */}
       <section className="py-20 bg-white" id="library">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -405,15 +452,14 @@ export default function FacilitiesPage() {
               <div className="w-8 h-0.5 bg-blue-700" />
             </div>
             <h2 className="font-playfair font-bold text-3xl sm:text-4xl text-slate-900 mb-4">
-              Library &amp; Computer Lab
+              Library
             </h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
-              A comprehensive collection of nursing and medical literature, 
-              combined with modern digital research and e-learning tools.
+              A comprehensive collection of nursing and medical literature for academic excellence and research.
             </p>
           </div>
 
-          {/* Library photos — prominent full-width */}
+          {/* Library photos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
             {[
               { src: "/photos/labrary/1.jpg", label: "Library — Reading & Study Area" },
@@ -435,9 +481,8 @@ export default function FacilitiesPage() {
             ))}
           </div>
 
-          {/* Feature cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Library */}
+          {/* Feature card + link */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -463,13 +508,36 @@ export default function FacilitiesPage() {
                   </div>
                 ))}
               </div>
+              <Link href="/facilities/library" className="mt-6 inline-flex items-center gap-2 text-blue-700 font-semibold text-sm hover:underline">
+                Explore Library <ChevronRight className="h-4 w-4" />
+              </Link>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Computer Lab */}
-            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 sm:p-8">
+      {/* --- COMPUTER LAB --- */}
+      <section className="py-20 bg-slate-50" id="computer-lab">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-8 h-0.5 bg-blue-700" />
+              <span className="text-blue-700 text-xs font-bold uppercase tracking-[0.2em]">Digital Learning</span>
+              <div className="w-8 h-0.5 bg-blue-700" />
+            </div>
+            <h2 className="font-playfair font-bold text-3xl sm:text-4xl text-slate-900 mb-4">
+              Computer Laboratory
+            </h2>
+            <p className="text-slate-500 max-w-2xl mx-auto">
+              Modern digital infrastructure providing students with internet access, e-learning platforms, and research tools.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-blue-700 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FlaskConical className="h-6 w-6 text-white" />
+                  <Monitor className="h-6 w-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-900 text-lg">Computer Laboratory</h3>
@@ -491,6 +559,76 @@ export default function FacilitiesPage() {
                   </div>
                 ))}
               </div>
+              <Link href="/facilities/computer-lab" className="mt-6 inline-flex items-center gap-2 text-blue-700 font-semibold text-sm hover:underline">
+                Explore Computer Lab <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- NUTRITION LAB --- */}
+      <section className="py-20 bg-white" id="nutrition-lab">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-8 h-0.5 bg-red-600" />
+              <span className="text-red-600 text-xs font-bold uppercase tracking-[0.2em]">Clinical Nutrition</span>
+              <div className="w-8 h-0.5 bg-red-600" />
+            </div>
+            <h2 className="font-playfair font-bold text-3xl sm:text-4xl text-slate-900 mb-4">
+              Nutrition Laboratory
+            </h2>
+            <p className="text-slate-500 max-w-2xl mx-auto">
+              A dedicated space for diet planning, food composition analysis, and therapeutic nutrition training.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 sm:p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Utensils className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 text-lg">Nutrition Laboratory</h3>
+                  <p className="text-slate-500 text-sm">Diet planning and therapeutic nutrition training</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {[
+                  "Full kitchen setup with cooking equipment",
+                  "Diet planning and calorie calculation tools",
+                  "Food composition analysis resources",
+                  "Educational charts for nutrition guidance",
+                  "Utensils and serving ware for practicals",
+                  "Faculty-guided cooking demonstrations",
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <CheckCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+              <Link href="/facilities/nutrition-lab" className="mt-6 inline-flex items-center gap-2 text-red-600 font-semibold text-sm hover:underline">
+                Explore Nutrition Lab <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {/* Nutrition lab photo */}
+            <div className="grid grid-cols-2 gap-3">
+              {[1, 2].map((i) => (
+                <div key={i} className="relative rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/3" }}>
+                  <Image
+                    src={`/photos/nutrition-lab/${i}.jpg`}
+                    alt={`Nutrition Lab ${i}`}
+                    fill
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    sizes="(max-width: 1024px) 50vw, 25vw"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>

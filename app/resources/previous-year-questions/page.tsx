@@ -7,7 +7,7 @@ import { FileText, Download, ArrowLeft, ChevronRight } from "lucide-react";
 const years = [
   {
     id: "year1",
-    label: "First Year G.N.M.",
+    label: "1st Year G.N.M.",
     badge: "Year 1",
     color: {
       hero: "from-blue-800 to-blue-950",
@@ -21,15 +21,19 @@ const years = [
       btn: "bg-blue-50 hover:bg-blue-600 border-blue-200 text-blue-700 hover:text-white hover:border-blue-600",
     },
     papers: [
-      { id: "1a", title: "Nursing Foundation",    link: "/previous_questions/Nursing_foundation.pdf" },
-      { id: "1b", title: "Community Health Nursing", link: "/previous_questions/Community_health_nursing.pdf" },
-      { id: "1c", title: "Bio Science",            link: "/previous_questions/Bio_science.pdf" },
-      { id: "1d", title: "Behavioural Sciences",   link: "/previous_questions/Behavioural_sciences.pdf" },
+      { id: "1a", title: "Nursing Foundation",                       link: "/previous_questions/Nursing_foundation.pdf" },
+      { id: "1b", title: "Community Health Nursing - I",             link: "/previous_questions/Community_health_nursing.pdf" },
+      { id: "1c", title: "Bio Science",                              link: "/previous_questions/Bio_science.pdf" },
+      { id: "1d", title: "Behavioural Sciences",                     link: "/previous_questions/Behavioural_sciences.pdf" },
+      { id: "1e", title: "Behavioural Sciences (Oct 2024)",          link: "/previous_questions/Behavioural_sciences_GNM1_Oct2024.pdf" },
+      { id: "1f", title: "Nursing Foundation (Oct 2024)",            link: "/previous_questions/Nursing_foundation_Oct2024.pdf" },
+      { id: "1g", title: "Bio Science (Oct 2024)",                   link: "/previous_questions/Bio_Science_Oct2024.pdf" },
+      { id: "1h", title: "Community Health Nursing - I (Oct 2024)",  link: "/previous_questions/Community_Health_Nursing_Oct2024.pdf" },
     ],
   },
   {
     id: "year2",
-    label: "Second Year G.N.M.",
+    label: "2nd Year G.N.M.",
     badge: "Year 2",
     color: {
       hero: "from-emerald-800 to-emerald-950",
@@ -43,14 +47,19 @@ const years = [
       btn: "bg-emerald-50 hover:bg-emerald-600 border-emerald-200 text-emerald-700 hover:text-white hover:border-emerald-600",
     },
     papers: [
-      { id: "2a", title: "Mental Health Nursing",      link: "/previous_questions/Mental_Health_Nursing.pdf" },
-      { id: "2b", title: "Medical Surgical Nursing-I",  link: "/previous_questions/Medical_Surgical_Nursing_I.pdf" },
-      { id: "2c", title: "Medical Surgical Nursing-II", link: "/previous_questions/Medical_Surgical_Nursing_II.pdf" },
+      { id: "2a", title: "Medical Surgical Nursing-I",             link: "/previous_questions/Medical_Surgical_Nursing_I.pdf" },
+      { id: "2b", title: "Medical Surgical Nursing-II",            link: "/previous_questions/Medical_Surgical_Nursing_II.pdf" },
+      { id: "2c", title: "Child Health Nursing",                   link: "/previous_questions/Paediatric_Nursing.pdf" },
+      { id: "2d", title: "Mental Health Nursing",                  link: "/previous_questions/Mental_Health_Nursing.pdf" },
+      { id: "2e", title: "Child Health Nursing (Aug 2025)",        link: "/previous_questions/Child_Health_Nursing_Aug2025.pdf" },
+      { id: "2f", title: "Medical Surgical Nursing-I (Aug 2025)",  link: "/previous_questions/Medical_Surgical_Nursing_I_Aug2025.pdf" },
+      { id: "2g", title: "Medical Surgical Nursing-II (Aug 2025)", link: "/previous_questions/Medical_Surgical_Nursing_II_Aug2025.pdf" },
+      { id: "2h", title: "Mental Health Nursing (Aug 2025)",       link: "/previous_questions/Mental_Health_Nursing_Aug2025.pdf" },
     ],
   },
   {
     id: "year3",
-    label: "Third Year G.N.M.",
+    label: "3rd Year G.N.M.",
     badge: "Year 3",
     color: {
       hero: "from-violet-800 to-violet-950",
@@ -64,9 +73,8 @@ const years = [
       btn: "bg-violet-50 hover:bg-violet-600 border-violet-200 text-violet-700 hover:text-white hover:border-violet-600",
     },
     papers: [
-      { id: "3a", title: "Paediatric Nursing",          link: "/previous_questions/Paediatric_Nursing.pdf" },
-      { id: "3b", title: "Midwifery and Gynaecology",   link: "/previous_questions/Midwifery_and_Gynaecology.pdf" },
-      { id: "3c", title: "Community Health Nursing",    link: "/previous_questions/Community_Health_Nursing (1).pdf" },
+      { id: "3a", title: "Midwifery and Gynaecological Nursing", link: "/previous_questions/Midwifery_and_Gynaecology.pdf" },
+      { id: "3b", title: "Community Health Nursing - II",        link: "/previous_questions/Community_Health_Nursing (1).pdf" },
     ],
   },
 ];

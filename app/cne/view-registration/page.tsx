@@ -235,7 +235,7 @@ export default function ViewRegistrationPage() {
           </p>
           <Link href="/cne">
             <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
-              â† Back to Registration
+              &larr; Back to Registration
             </Button>
           </Link>
         </div>
